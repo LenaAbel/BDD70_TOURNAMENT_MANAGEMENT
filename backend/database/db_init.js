@@ -4,30 +4,45 @@ const fs = require('fs');
 
 const db = mysql.createConnection({
     host: process.env.DB_HOST,
-    user: 'bd_70',
-    password: 'bd_70',
+    user: 'root',
+    password: '',
     database: 'bd70_tournament'
 });
 
+db.connect(err => {
+    if (err) {
+        console.error('Error connecting to the database:', err);
+        return;
+    }
+    console.log('Connected to the database.');
 
-function setupDatabase() {
-    const sqlFilePath = './database/db.sql';
-    fs.readFile(sqlFilePath, 'utf8', (err, sql) => {
+    fs.readFile('./database/db.sql', 'utf8', (err, sql) => {
         if (err) {
-            console.error('Error reading SQL file:', err.message);
+            console.error('Error reading SQL file:', err);
             return;
         }
 
-        db.query(sql, (err, result) => {
+        const sqlCommands = sql.split(';').filter(command => command.trim());
+
+        sqlCommands.forEach(command => {
+            db.query(command, (error, results) => {
+                if (error) {
+                    console.error('Error executing command:', command, error);
+                } else {
+                    console.log('Executed command successfully:');
+                }
+            });
+        });
+
+        db.end(err => {
             if (err) {
-                console.error('Error importing SQL file:', err.message);
-                return;
+                console.error('Error closing the connection:', err);
+            } else {
+                console.log('Connection closed successfully.');
             }
-            console.log('Database imported successfully.');
         });
     });
-}
+});
 
-setupDatabase();
 
 module.exports = db;
