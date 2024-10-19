@@ -9,19 +9,19 @@ DROP TABLE IF EXISTS player;
 DROP TABLE IF EXISTS team;
 DROP TABLE IF EXISTS activity;
 
-CREATE TABLE activity (
+CREATE TABLE IF NOT EXISTS activity (
     id int NOT NULL AUTO_INCREMENT,
     name varchar(50) DEFAULT NULL,
     PRIMARY KEY (id)
 );
 
-CREATE TABLE team (
+CREATE TABLE IF NOT EXISTS team (
     id int NOT NULL AUTO_INCREMENT,
     name varchar(50) DEFAULT NULL,
     PRIMARY KEY (id)
 );
 
-CREATE TABLE player (
+CREATE TABLE IF NOT EXISTS player (
     id int NOT NULL AUTO_INCREMENT,
     email varchar(128) DEFAULT NULL,
     name varchar(50) DEFAULT NULL,
@@ -35,7 +35,7 @@ CREATE TABLE player (
     CONSTRAINT player_ibfk_1 FOREIGN KEY (team_id) REFERENCES team (id)
 );
 
-CREATE TABLE rules (
+CREATE TABLE IF NOT EXISTS rules (
     id int NOT NULL AUTO_INCREMENT,
     ruleSet text,
     activity_id int NOT NULL,
@@ -44,7 +44,7 @@ CREATE TABLE rules (
     CONSTRAINT rules_ibfk_1 FOREIGN KEY (activity_id) REFERENCES activity (id)
 );
 
-CREATE TABLE tournament (
+CREATE TABLE IF NOT EXISTS tournament (
     id int NOT NULL AUTO_INCREMENT,
     name varchar(50) DEFAULT NULL,
     start_time datetime DEFAULT NULL,
@@ -60,7 +60,7 @@ CREATE TABLE tournament (
     CONSTRAINT tournament_ibfk_2 FOREIGN KEY (regi) REFERENCES player (id)
 );
 
-CREATE TABLE favoriteactivity (
+CREATE TABLE IF NOT EXISTS favoriteactivity (
     player_id int NOT NULL AUTO_INCREMENT,
     activity_id int NOT NULL,
     PRIMARY KEY (player_id, activity_id),
@@ -69,7 +69,7 @@ CREATE TABLE favoriteactivity (
     CONSTRAINT favoriteactivity_ibfk_2 FOREIGN KEY (activity_id) REFERENCES activity (id)
 );
 
-CREATE TABLE matchs (
+CREATE TABLE IF NOT EXISTS matchs (
     id int NOT NULL AUTO_INCREMENT,
     start_time datetime DEFAULT NULL,
     status varchar(50) DEFAULT NULL,
@@ -80,7 +80,7 @@ CREATE TABLE matchs (
     CONSTRAINT matchs_ibfk_1 FOREIGN KEY (tournament_id) REFERENCES tournament (id)
 ) ;
 
-CREATE TABLE register (
+CREATE TABLE IF NOT EXISTS register (
     player_id int NOT NULL AUTO_INCREMENT,
     team_id int NOT NULL,
     tournament_id int NOT NULL,
@@ -92,7 +92,7 @@ CREATE TABLE register (
     CONSTRAINT register_ibfk_3 FOREIGN KEY (tournament_id) REFERENCES tournament (id)
 );
 
-CREATE TABLE results (
+CREATE TABLE IF NOT EXISTS results (
     id int NOT NULL AUTO_INCREMENT,
     winner_score varchar(50) DEFAULT NULL,
     loser_score varchar(50) DEFAULT NULL,
@@ -102,7 +102,7 @@ CREATE TABLE results (
     CONSTRAINT results_ibfk_1 FOREIGN KEY (match_id) REFERENCES matchs (id)
 ) ;
 
-CREATE TABLE matchpairing (
+CREATE TABLE IF NOT EXISTS matchpairing (
     player_id int NOT NULL AUTO_INCREMENT,
     team_id int NOT NULL,
     match_id int NOT NULL,
