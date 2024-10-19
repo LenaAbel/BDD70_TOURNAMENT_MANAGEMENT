@@ -9,7 +9,7 @@ const db = mysql.createConnection({
     database: 'bd70_tournament'
 });
 
-db.connect(err => {
+/*db.connect(err => {
     if (err) {
         console.error('Error connecting to the database:', err);
         return;
@@ -42,7 +42,7 @@ db.connect(err => {
             }
         });
     });
-});
+});*/
 
 
 module.exports = db;
