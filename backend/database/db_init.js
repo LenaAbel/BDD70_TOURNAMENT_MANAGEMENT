@@ -1,12 +1,12 @@
 const mysql = require("mysql2");
-const dotenv = require("dotenv");
+const dotenv = require("dotenv").config();
 const fs = require('fs');
 
 const db = mysql.createConnection({
     host: process.env.DB_HOST,
-    user: 'root',
-    password: '',
-    database: 'bd70_tournament',
+    user: process.env.DB_USER,
+    password: process.env.DB_PASS,
+    database: process.env.DB_NAME,
 });
 
 db.connect(err => {
@@ -32,14 +32,6 @@ db.connect(err => {
                     console.log('Executed command successfully:');
                 }
             });
-        });
-
-        db.end(err => {
-            if (err) {
-                console.error('Error closing the connection:', err);
-            } else {
-                console.log('Connection closed successfully.');
-            }
         });
     });
 });
