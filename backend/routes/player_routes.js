@@ -4,10 +4,10 @@ const playerController = require('../controllers/player.controller'); // Adjust 
 const router = express.Router();
 
 // Define player routes
-router.get('/players', playerController.getAllPlayers);
-router.post('/players', playerController.createPlayer);
-router.get('/players/:id', playerController.getPlayerById);
-router.put('/players/:id', playerController.updatePlayer);
-router.delete('/players/:id', playerController.deletePlayer);
+router.get('/', playerController.getAllPlayers);
+router.post('/', playerController.createPlayer);
+router.get('/:id', playerController.getPlayerById);
+router.put('/:id', playerController.updatePlayer);
+router.delete('/:id', playerController.deletePlayer);
 
 module.exports = router;
