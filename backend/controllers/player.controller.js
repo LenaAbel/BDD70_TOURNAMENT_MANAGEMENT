@@ -2,13 +2,6 @@ const mysql = require('mysql2');
 
 const db = require('../database/db_init');
 
-db.connect(err => {
-    if (err) {
-        console.error('Error connecting to the database:', err);
-        process.exit(1);
-    }
-});
-
 const getAllPlayers = (req, res) => {
     db.query('SELECT * FROM player', (err, results) => {
         if (err) {
