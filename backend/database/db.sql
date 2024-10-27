@@ -113,3 +113,14 @@ CREATE TABLE IF NOT EXISTS matchpairing (
     CONSTRAINT matchpairing_ibfk_2 FOREIGN KEY (team_id) REFERENCES team (id),
     CONSTRAINT matchpairing_ibfk_3 FOREIGN KEY (match_id) REFERENCES matchs (id)
 );
+
+CREATE TABLE IF NOT EXISTS ranking (
+    id INT NOT NULL AUTO_INCREMENT,
+    player_id INT DEFAULT NULL,
+    team_id INT DEFAULT NULL,
+    points INT DEFAULT 0,
+    rank INT DEFAULT NULL,
+    PRIMARY KEY (id),
+    CONSTRAINT ranking_player FOREIGN KEY (player_id) REFERENCES player(id) ON DELETE CASCADE,
+    CONSTRAINT ranking_team FOREIGN KEY (team_id) REFERENCES team(id) ON DELETE CASCADE
+);
