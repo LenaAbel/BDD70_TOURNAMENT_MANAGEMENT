@@ -109,7 +109,7 @@ CREATE TABLE IF NOT EXISTS ranking (
     player_id INT DEFAULT NULL,
     team_id INT DEFAULT NULL,
     points INT DEFAULT 0,
-    rank INT DEFAULT NULL,
+    ranking INT DEFAULT NULL,
     PRIMARY KEY (id),
     CONSTRAINT ranking_player FOREIGN KEY (player_id) REFERENCES player(id) ON DELETE CASCADE,
     CONSTRAINT ranking_team FOREIGN KEY (team_id) REFERENCES team(id) ON DELETE CASCADE
