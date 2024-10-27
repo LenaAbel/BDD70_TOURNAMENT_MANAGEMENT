@@ -1,72 +1,77 @@
 const db = require('../database/db_init');
 
 // Crée une activité
-const createActivity = (req, res) => {
-    const { name } = req.body;
-    db.query('INSERT INTO activity (name) VALUES (?)', [name], (err, result) => {
-        if (err) {
-            return res.status(500).json({ error: 'Database error', details: err });
-        }
-        res.status(201).json({ id: result.insertId, name });
+const createActivity = (name) => {
+    return new Promise((resolve, reject) => {
+        db.query('INSERT INTO activity (name) VALUES (?)', [name], (err, result) => {
+            if (err) {
+                return reject(err);
+            }
+            resolve({ id: result.insertId, name });
+        });
     });
 };
 
-// obtenir une activité
-const getActivity = (req, res) => {
-    const { id } = req.params;
-    db.query('SELECT * FROM activity WHERE id = ?', [id], (err, result) => {
-        if (err) {
-            return res.status(500).json({ error: 'Database error', details: err });
-        }
-        if (result.length === 0) {
-            return res.status(404).json({ error: 'Activity not found' });
-        }
-        res.json(result[0]);
+// Obtenir une activité par ID
+const getActivityById = (id) => {
+    return new Promise((resolve, reject) => {
+        db.query('SELECT * FROM activity WHERE id = ?', [id], (err, result) => {
+            if (err) {
+                return reject(err);
+            }
+            if (result.length === 0) {
+                return resolve(null);
+            }
+            resolve(result[0]);
+        });
     });
 };
 
-// mettre à jour une activité
-const updateActivity = (req, res) => {
-    const { id } = req.params;
-    const { name } = req.body;
-    db.query('UPDATE activity SET name = ? WHERE id = ?', [name, id], (err, result) => {
-        if (err) {
-            return res.status(500).json({ error: 'Database error', details: err });
-        }
-        if (result.affectedRows === 0) {
-            return res.status(404).json({ error: 'Activity not found' });
-        }
-        res.json({ id, name });
+// Mettre à jour une activité par ID
+const updateActivity = (id, name) => {
+    return new Promise((resolve, reject) => {
+        db.query('UPDATE activity SET name = ? WHERE id = ?', [name, id], (err, result) => {
+            if (err) {
+                return reject(err);
+            }
+            if (result.affectedRows === 0) {
+                return resolve(null);
+            }
+            resolve({ id, name });
+        });
     });
 };
 
-// supprimer une activité
-const deleteActivity = (req, res) => {
-    const { id } = req.params;
-    db.query('DELETE FROM activity WHERE id = ?', [id], (err, result) => {
-        if (err) {
-            return res.status(500).json({ error: 'Database error', details: err });
-        }
-        if (result.affectedRows === 0) {
-            return res.status(404).json({ error: 'Activity not found' });
-        }
-        res.json({ message: 'Activity deleted successfully' });
+// Supprimer une activité par ID
+const deleteActivity = (id) => {
+    return new Promise((resolve, reject) => {
+        db.query('DELETE FROM activity WHERE id = ?', [id], (err, result) => {
+            if (err) {
+                return reject(err);
+            }
+            if (result.affectedRows === 0) {
+                return resolve(null);
+            }
+            resolve({ message: 'Activity deleted successfully' });
+        });
     });
 };
 
-// getAll activités
-const getAllActivities = (req, res) => {
-    db.query('SELECT * FROM activity', (err, results) => {
-        if (err) {
-            return res.status(500).json({ error: 'Database error', details: err });
-        }
-        res.json(results);
+// Obtenir toutes les activités
+const getAllActivities = () => {
+    return new Promise((resolve, reject) => {
+        db.query('SELECT * FROM activity', (err, results) => {
+            if (err) {
+                return reject(err);
+            }
+            resolve(results);
+        });
     });
 };
 
 module.exports = {
     createActivity,
-    getActivity,
+    getActivityById,
     updateActivity,
     deleteActivity,
     getAllActivities,

@@ -7,6 +7,7 @@ const createActivity = async (req, res) => {
         const newActivity = await activityModel.createActivity(name);
         res.status(201).json(newActivity);
     } catch (err) {
+        console.error('Error creating activity:', err);
         res.status(500).json({ error: 'Database error', details: err });
     }
 };
@@ -21,6 +22,7 @@ const getActivity = async (req, res) => {
         }
         res.json(activity);
     } catch (err) {
+        console.error('Error getting activity:', err);
         res.status(500).json({ error: 'Database error', details: err });
     }
 };
@@ -36,6 +38,7 @@ const updateActivity = async (req, res) => {
         }
         res.json(updatedActivity);
     } catch (err) {
+        console.error('Error updating activity:', err);
         res.status(500).json({ error: 'Database error', details: err });
     }
 };
@@ -50,6 +53,7 @@ const deleteActivity = async (req, res) => {
         }
         res.json(result);
     } catch (err) {
+        console.error('Error deleting activity:', err);
         res.status(500).json({ error: 'Database error', details: err });
     }
 };
@@ -60,6 +64,7 @@ const getAllActivities = async (req, res) => {
         const activities = await activityModel.getAllActivities();
         res.json(activities);
     } catch (err) {
+        console.error('Error getting all activities:', err);
         res.status(500).json({ error: 'Database error', details: err });
     }
 };
