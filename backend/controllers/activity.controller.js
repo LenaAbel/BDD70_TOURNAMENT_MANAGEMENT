@@ -1,4 +1,4 @@
-const db = require('../database/db'); // Adjust the path as necessary
+const db = require('../database/db_init'); // Adjust the path as necessary
 
 // Crée une activité
 const createActivity = (req, res) => {
