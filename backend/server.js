@@ -5,10 +5,10 @@ const bodyParser = require("body-parser");
 const server = express();
 const db = require("./database/db_init");
 
-// Import route controllers
+//instanciation des routes
 const playerRoutes = require("./routes/player_routes");
 const activityRoutes = require("./routes/activity_routes");
-// Add other route controllers as needed
+
 
 dotenv.config();
 
@@ -16,10 +16,10 @@ server.use(cors());
 server.use(express.json());
 server.use(bodyParser.json());
 
-// Use route controllers
+// call des routes
 server.use("/api/players", playerRoutes);
 server.use("/api/activity", activityRoutes);
-// Add other route controllers as needed
+
 
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {

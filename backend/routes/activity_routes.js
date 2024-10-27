@@ -4,10 +4,10 @@ const activityController = require('../controllers/activity.controller'); // Adj
 const router = express.Router();
 
 // Define activity routes
-router.get('/activity', activityController.getAllActivities);
-router.post('/activity', activityController.createActivity);
-router.get('/activity/:id', activityController.getActivity);
-router.put('/activity/:id', activityController.updateActivity);
-router.delete('/activity/:id', activityController.deleteActivity);
+router.get('/', activityController.getAllActivities);
+router.post('/', activityController.createActivity);
+router.get('/:id', activityController.getActivity);
+router.put('/:id', activityController.updateActivity);
+router.delete('/:id', activityController.deleteActivity);
 
 module.exports = router;

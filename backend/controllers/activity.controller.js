@@ -1,67 +1,67 @@
-const db = require('../database/db_init'); // Adjust the path as necessary
+const activityModel = require('../models/activity.model');
 
 // Crée une activité
-const createActivity = (req, res) => {
+const createActivity = async (req, res) => {
     const { name } = req.body;
-    db.query('INSERT INTO activity (name) VALUES (?)', [name], (err, result) => {
-        if (err) {
-            return res.status(500).json({ error: 'Database error', details: err });
-        }
-        res.status(201).json({ id: result.insertId, name });
-    });
+    try {
+        const newActivity = await activityModel.createActivity(name);
+        res.status(201).json(newActivity);
+    } catch (err) {
+        res.status(500).json({ error: 'Database error', details: err });
+    }
 };
 
-// obtenir une activité
-const getActivity = (req, res) => {
+// Obtenir une activité par ID
+const getActivity = async (req, res) => {
     const { id } = req.params;
-    db.query('SELECT * FROM activity WHERE id = ?', [id], (err, result) => {
-        if (err) {
-            return res.status(500).json({ error: 'Database error', details: err });
-        }
-        if (result.length === 0) {
+    try {
+        const activity = await activityModel.getActivityById(id);
+        if (!activity) {
             return res.status(404).json({ error: 'Activity not found' });
         }
-        res.json(result[0]);
-    });
+        res.json(activity);
+    } catch (err) {
+        res.status(500).json({ error: 'Database error', details: err });
+    }
 };
 
-// mettre à jour une activité
-const updateActivity = (req, res) => {
+// Mettre à jour une activité par ID
+const updateActivity = async (req, res) => {
     const { id } = req.params;
     const { name } = req.body;
-    db.query('UPDATE activity SET name = ? WHERE id = ?', [name, id], (err, result) => {
-        if (err) {
-            return res.status(500).json({ error: 'Database error', details: err });
-        }
-        if (result.affectedRows === 0) {
+    try {
+        const updatedActivity = await activityModel.updateActivity(id, name);
+        if (!updatedActivity) {
             return res.status(404).json({ error: 'Activity not found' });
         }
-        res.json({ id, name });
-    });
+        res.json(updatedActivity);
+    } catch (err) {
+        res.status(500).json({ error: 'Database error', details: err });
+    }
 };
 
-// supprimer une activité
-const deleteActivity = (req, res) => {
+// Supprimer une activité par ID
+const deleteActivity = async (req, res) => {
     const { id } = req.params;
-    db.query('DELETE FROM activity WHERE id = ?', [id], (err, result) => {
-        if (err) {
-            return res.status(500).json({ error: 'Database error', details: err });
-        }
-        if (result.affectedRows === 0) {
+    try {
+        const result = await activityModel.deleteActivity(id);
+        if (!result) {
             return res.status(404).json({ error: 'Activity not found' });
         }
-        res.json({ message: 'Activity deleted successfully' });
-    });
+        res.json(result);
+    } catch (err) {
+        res.status(500).json({ error: 'Database error', details: err });
+    }
 };
 
-// getAll activités
-const getAllActivities = (req, res) => {
-    db.query('SELECT * FROM activity', (err, results) => {
-        if (err) {
-            return res.status(500).json({ error: 'Database error', details: err });
-        }
-        res.json(results);
-    });
+// Obtenir toutes les activités
+const getAllActivities = async (req, res) => {
+    try {
+        const activities = await activityModel.getAllActivities();
+        res.json(activities);
+    } catch (err) {
+        res.status(500).json({ error: 'Database error', details: err });
+    }
 };
 
 module.exports = {
