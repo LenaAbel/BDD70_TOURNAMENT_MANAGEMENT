@@ -8,6 +8,7 @@ const db = require("./database/db_init");
 //instanciation des routes
 const playerRoutes = require("./routes/player_routes");
 const activityRoutes = require("./routes/activity_routes");
+const teamRoutes = require("./routes/team_routes");
 
 
 dotenv.config();
@@ -19,6 +20,7 @@ server.use(bodyParser.json());
 // call des routes
 server.use("/api/players", playerRoutes);
 server.use("/api/activity", activityRoutes);
+server.use("/api/team", teamRoutes);
 
 
 const PORT = process.env.PORT || 3000;
