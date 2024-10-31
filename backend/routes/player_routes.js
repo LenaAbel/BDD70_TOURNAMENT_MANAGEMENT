@@ -5,6 +5,7 @@ const router = express.Router();
 
 // Define player routes
 router.get('/', playerController.getAllPlayers);
+router.post('/setFavorite/', playerController.setFavoriteActivity);
 router.post('/', playerController.createPlayer);
 router.get('/:id', playerController.getPlayerById);
 router.put('/:id', playerController.updatePlayer);

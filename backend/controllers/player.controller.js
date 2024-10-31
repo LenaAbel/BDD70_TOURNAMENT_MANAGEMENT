@@ -71,10 +71,26 @@ const deletePlayer = (req, res) => {
         });
 };
 
+const setFavoriteActivity = (req, res) => {
+    const { player_id, activity_id } = req.params;
+    playerModel.setFavoriteActivity(player_id, activity_id)
+        .then(result => {
+            if (!result) {
+                return res.status(404).json({ error: 'Activity or player not found'});
+            }
+            res.status(204).send();
+        })
+        .catch(err => {
+            console.error("Error setting up favorite activity:", err);
+            res.status(500).json({error: 'error setting fav activity'})
+        })
+}
+
 module.exports = {
     getAllPlayers,
     createPlayer,
     getPlayerById,
     updatePlayer,
-    deletePlayer
+    deletePlayer,
+    setFavoriteActivity
 };

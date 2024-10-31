@@ -76,10 +76,42 @@ const deletePlayer = (id) => {
     });
 };
 
+const setFavoriteActivity = (idPlayer, idActivity) => {
+    return new Promise((resolve, reject) => {
+        db.query(
+            'INSERT INTO favoriteactivity (player_id, activity_id) VALUES (?, ?)',
+            [idPlayer, idActivity],
+            (err, result) => {
+                if (err) {
+                    return reject(err);
+                }
+                resolve({ id: result.insertId, idPlayer, idActivity});
+            }
+        );
+    })
+}
+
+const deleteFavoriteActivity = (idPlayer, idActivity) => {
+    return new Promise((resolve, reject) => {
+        db.query(
+            `DELETE FROM favoriteactivity WHERE player_id=${idPlayer} AND activity_id=${idActivity}`,
+            [idPlayer, idActivity],
+            (err, result) => {
+                if (err) {
+                    return reject(err);
+                }
+                resolve({ id: result.insertId, idPlayer, idActivity});
+            }
+        );
+    })
+}
+
 module.exports = {
     createPlayer,
     getAllPlayers,
     getPlayerById,
     updatePlayer,
-    deletePlayer
+    deletePlayer,
+    setFavoriteActivity,
+    deleteFavoriteActivity,
 };
