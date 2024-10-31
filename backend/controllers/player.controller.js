@@ -72,7 +72,10 @@ const deletePlayer = (req, res) => {
 };
 
 const setFavoriteActivity = (req, res) => {
-    const { player_id, activity_id } = req.params;
+    const { player_id, activity_id } = req.body;
+    console.log(player_id);
+    console.log(activity_id);
+    
     playerModel.setFavoriteActivity(player_id, activity_id)
         .then(result => {
             if (!result) {
