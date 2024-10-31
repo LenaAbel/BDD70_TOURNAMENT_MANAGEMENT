@@ -9,6 +9,8 @@ const db = require("./database/db_init");
 const playerRoutes = require("./routes/player_routes");
 const activityRoutes = require("./routes/activity_routes");
 const teamRoutes = require("./routes/team_routes");
+const rulesRoutes = require("./routes/rules_routes");
+const tournamentRoutes = require("./routes/tournament.routes");
 
 
 dotenv.config();
@@ -21,6 +23,8 @@ server.use(bodyParser.json());
 server.use("/api/players", playerRoutes);
 server.use("/api/activity", activityRoutes);
 server.use("/api/team", teamRoutes);
+server.use("/api/rules", rulesRoutes);
+server.use("/api/tournament", tournamentRoutes);
 
 
 const PORT = process.env.PORT || 3000;

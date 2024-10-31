@@ -1,8 +1,8 @@
 const mysql = require("mysql2");
 const dotenv = require("dotenv").config();
-const fs = require('fs');
+const fs = require("fs").promises; // Use promises with fs module
 
-//creation connexion
+// Create connection
 const db = mysql.createConnection({
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
@@ -10,32 +10,43 @@ const db = mysql.createConnection({
     database: process.env.DB_NAME,
 });
 
-db.connect(err => {
-    if (err) {
-        console.error('Error connecting to the database:', err);
-        return;
-    }
-    console.log('Connected to the database.');
-    //lecture fichier db.sql
-    fs.readFile('./database/db.sql', 'utf8', (err, sql) => {
-        if (err) {
-            console.error('Error reading SQL file:', err);
-            return;
-        }
-        //split les commandes sql
-        const sqlCommands = sql.split(';').filter(command => command.trim());
-
-        sqlCommands.forEach(command => {
-            db.query(command, (error, results) => {
-                if (error) {
-                    console.error('Error executing command:', command, error);
-                } else {
-                    console.log('Executed command successfully:');
-                }
+// Helper function to read and execute SQL files
+const executeSqlFile = async (filePath, delimiter = ';') => {
+    try {
+        const sql = await fs.readFile(filePath, 'utf8');
+        const sqlStatements = sql.split(delimiter).filter(statement => statement.trim());
+        
+        for (const statement of sqlStatements) {
+            await new Promise((resolve, reject) => {
+                db.query(statement, (queryErr, results) => {
+                    if (queryErr) {
+                        reject('Error executing SQL query: ' + queryErr);
+                    } else {
+                        console.log('Query results:', results);
+                        resolve();
+                    }
+                });
             });
-        });
-    });
-});
+        }
+    } catch (err) {
+        console.error(`Error reading SQL file (${filePath}):`, err);
+    }
+};
 
+// Execute SQL files sequentially
+const executeSqlFiles = async () => {
+    await executeSqlFile('./database/db.sql');
+    await executeSqlFile('./database/procedures.sql', '//');
+    await executeSqlFile('./database/inserts.sql');
+};
+
+// Start the execution
+executeSqlFiles()
+    .then(() => {
+        console.log("All SQL files executed successfully.");
+    })
+    .catch(err => {
+        console.error(err);
+    });
 
 module.exports = db;
