@@ -2,6 +2,7 @@ const mysql = require("mysql2");
 const dotenv = require("dotenv").config();
 const fs = require('fs');
 
+//creation connexion
 const db = mysql.createConnection({
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
@@ -15,13 +16,13 @@ db.connect(err => {
         return;
     }
     console.log('Connected to the database.');
-
+    //lecture fichier db.sql
     fs.readFile('./database/db.sql', 'utf8', (err, sql) => {
         if (err) {
             console.error('Error reading SQL file:', err);
             return;
         }
-
+        //split les commandes sql
         const sqlCommands = sql.split(';').filter(command => command.trim());
 
         sqlCommands.forEach(command => {
