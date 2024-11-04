@@ -84,8 +84,10 @@ CREATE TABLE IF NOT EXISTS matchs (
     status varchar(50) DEFAULT NULL,
     location varchar(50) DEFAULT NULL,
     tournament_id int NOT NULL,
+    round_id INT DEFAULT NULL, /*nouvelle colonne*/
     PRIMARY KEY (matchs_id),
     KEY idx_tournament_id (tournament_id),
+    CONSTRAINT fk_matchs_round FOREIGN KEY (round_id) REFERENCES round (round_id) ON DELETE SET NULL; --nouvelle add 
     CONSTRAINT fk_matchs_tournament FOREIGN KEY (tournament_id) REFERENCES tournament (tournament_id) ON DELETE CASCADE
 );
 
@@ -176,6 +178,13 @@ CREATE TABLE IF NOT EXISTS team_stats (
     CONSTRAINT fk_team_stats_activity FOREIGN KEY (activity_id) REFERENCES activity (activity_id) ON DELETE CASCADE
 );
 
--- Procedure to insert activities
-
+-- nouvelle table
+CREATE TABLE IF NOT EXISTS round (
+    round_id INT NOT NULL AUTO_INCREMENT,
+    tournament_id INT NOT NULL,
+    round_number INT NOT NULL, -- Indique le numéro du tour dans le tournoi
+    PRIMARY KEY (round_id),
+    UNIQUE KEY unique_round (tournament_id, round_number), -- Assure que chaque tour d'un tournoi est unique
+    FOREIGN KEY (tournament_id) REFERENCES tournament (tournament_id) ON DELETE CASCADE
+);
 
