@@ -12,6 +12,7 @@ const teamRoutes = require("./routes/team_routes");
 const rulesRoutes = require("./routes/rules_routes");
 const tournamentRoutes = require("./routes/tournament.routes");
 const team_memberRoutes = require("./routes/team_member_routes");
+const favoriteActivityRoutes = require("./routes/favoriteActivity_routes");
 
 
 dotenv.config();
@@ -27,6 +28,7 @@ server.use("/api/team", teamRoutes);
 server.use("/api/rules", rulesRoutes);
 server.use("/api/tournament", tournamentRoutes);
 server.use("/api/team_member", team_memberRoutes);
+server.use("/api/favoriteActivity", favoriteActivityRoutes);
 
 
 const PORT = process.env.PORT || 3000;

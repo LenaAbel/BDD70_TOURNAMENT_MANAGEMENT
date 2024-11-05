@@ -7,15 +7,15 @@ const createActivity = (name) => {
             if (err) {
                 return reject(err);
             }
-            resolve({ id: result.insertId, name });
+            resolve({ activity_id: result.insertId, name });
         });
     });
 };
 
 // Obtenir une activité par ID
-const getActivityById = (id) => {
+const getActivityById = (activity_id) => {
     return new Promise((resolve, reject) => {
-        db.query('SELECT * FROM activity WHERE id = ?', [id], (err, result) => {
+        db.query('SELECT * FROM activity WHERE activity_id = ?', [activity_id], (err, result) => {
             if (err) {
                 return reject(err);
             }
@@ -28,24 +28,24 @@ const getActivityById = (id) => {
 };
 
 // Mettre à jour une activité par ID
-const updateActivity = (id, name) => {
+const updateActivity = (activity_id, name) => {
     return new Promise((resolve, reject) => {
-        db.query('UPDATE activity SET name = ? WHERE id = ?', [name, id], (err, result) => {
+        db.query('UPDATE activity SET name = ? WHERE activity_id = ?', [name, activity_id], (err, result) => {
             if (err) {
                 return reject(err);
             }
             if (result.affectedRows === 0) {
                 return resolve(null);
             }
-            resolve({ id, name });
+            resolve({ activity_id, name });
         });
     });
 };
 
 // Supprimer une activité par ID
-const deleteActivity = (id) => {
+const deleteActivity = (activity_id) => {
     return new Promise((resolve, reject) => {
-        db.query('DELETE FROM activity WHERE id = ?', [id], (err, result) => {
+        db.query('DELETE FROM activity WHERE activity_id = ?', [activity_id], (err, result) => {
             if (err) {
                 return reject(err);
             }
