@@ -1,0 +1,129 @@
+/* src/assets/css/app.css */
+
+/* CSS Variables */
+:root {
+    --blue: #001994;
+    --violet: #3f0090;
+    --navyblue: #002754;
+    --darkblue: #01042d;
+    --pink: #f8abeb;
+}
+
+/* Font Faces */
+@font-face {
+    font-family: 'Magic Sound';
+    src: url('../font/Magic_Sound.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'MagicNeys';
+    src: url('../font/MagicNeys.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Magical Snow';
+    src: url('../font/Magical Snow.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Magic';
+    src: url('../font/MagicEnglish.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'MagicalBrush';
+    src: url('../font/DK Magical Brush.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Montserrat';
+    src: url('../font/Montserrat-VariableFont_wght.ttf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+
+/* Base Styles */
+body {
+    font-family: 'Magic', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #ffffff; /* Set background to white */
+    color: var(--darkblue);
+    letter-spacing: 2px;
+}
+
+.big-title {
+    font-family: 'Magic Sound', sans-serif;
+}
+
+h1,
+h2 {
+    font-family: 'Magic Sound', sans-serif;
+}
+
+h3,
+h4,
+h5,
+h6 {
+    font-family: 'Magic', sans-serif;
+    color: #f8abeb;
+}
+
+p, th {
+    font-family: 'MagicalBrush', sans-serif;
+    font-weight: normal;
+    color: var(--darkblue);
+}
+legend, b-form-group {
+    font-family: 'MagicalBrush', sans-serif;
+    font-weight: normal;
+    color: var(--darkblue);
+}
+
+b-table, table  {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: bold;
+    color: var(--darkblue);
+
+}
+
+b-button,
+button {
+    font-family: 'MagicalBrush', Helvetica, Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: var(--darkblue);
+    color: #fff;
+    letter-spacing: 2px;
+}
+
+/* Navbar link hover effect */
+.nav-link:hover {
+    color: var(--violet) !important;
+    text-decoration: underline;
+}
+
+/* Logo rotation animation */
+.navbar-brand img {
+    animation: rotate 8s infinite alternate;
+}
+
+@keyframes rotate {
+    0% {
+        transform: rotate(0);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
