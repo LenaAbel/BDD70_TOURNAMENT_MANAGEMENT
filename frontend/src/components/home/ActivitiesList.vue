@@ -308,6 +308,7 @@ select, input {
   font-weight: bold;
   color: gray;
   letter-spacing : 1px;
-  font-size: 15px;}
+  font-size: 15px;
+}
 
 </style>
