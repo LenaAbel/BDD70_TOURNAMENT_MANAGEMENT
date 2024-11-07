@@ -4,7 +4,7 @@ const db = require('../database/db_init');
 const createTournament = (name, start_time, bestofX, poolSize, type, format, rule_id, organizer_id) => {
     return new Promise((resolve, reject) => {
         db.query(
-            'INSERT INTO tournament (name, start_time, bestofX, poolSize, type, format, rule_id, organizer_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+            'INSERT INTO tournament (tournament_name, tournament_start_time, tournament_bestOfX, tournament_poolSize, tournament_type, tournament_format, rule_id, organizer_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
             [name, start_time, bestofX, poolSize, type, format, rule_id, organizer_id],
             (err, result) => {
                 if (err) {
@@ -19,7 +19,7 @@ const createTournament = (name, start_time, bestofX, poolSize, type, format, rul
 // Obtenir tous les tournois
 const getAllTournaments = () => {
     return new Promise((resolve, reject) => {
-        db.query('SELECT * FROM tournament', (err, results) => {
+        db.query('SELECT * FROM tournament t INNER JOIN rules r ON t.rule_id = r.rules_id INNER JOIN activity a ON r.activity_id = a.activity_id', (err, results) => {
             if (err) {
                 return reject(err);
             }
@@ -47,7 +47,7 @@ const getTournamentById = (tournament_id) => {
 const updateTournament = (tournament_id, name, start_time, bestofX, poolSize, type, format, rule_id, organizer_id) => {
     return new Promise((resolve, reject) => {
         db.query(
-            'UPDATE tournament SET name = ?, start_time = ?, bestofX = ?, poolSize = ?, type = ?, format = ?, rule_id = ?, organizer_id = ? WHERE tournament_id = ?',
+            'UPDATE tournament SET tournament_name = ?, tournament_start_time = ?, tournament_bestOfX = ?, tournament_poolSize = ?, tournament_type = ?, tournament_format = ?, rule_id = ?, organizer_id = ? WHERE tournament_id = ?',
             [name, start_time, bestofX, poolSize, type, format, rule_id, organizer_id, tournament_id],
             (err, result) => {
                 if (err) {

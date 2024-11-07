@@ -1,4 +1,3 @@
-// controllers/team.controller.js
 const teamModel = require('../models/team.model');
 
 // Get all teams

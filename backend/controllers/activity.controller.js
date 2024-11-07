@@ -2,9 +2,9 @@ const activityModel = require('../models/activity.model');
 
 // Crée une activité
 const createActivity = async (req, res) => {
-    const { name } = req.body;
+    const { name, player_number, type, description, category } = req.body;
     try {
-        const newActivity = await activityModel.createActivity(name);
+        const newActivity = await activityModel.createActivity(name, player_number, type, description, category);
         res.status(201).json(newActivity);
     } catch (err) {
         console.error('Error creating activity:', err);
@@ -30,9 +30,9 @@ const getActivity = async (req, res) => {
 // Mettre à jour une activité par ID
 const updateActivity = async (req, res) => {
     const { id } = req.params;
-    const { name } = req.body;
+    const { name, player_number, type, description, category } = req.body;
     try {
-        const updatedActivity = await activityModel.updateActivity(id, name);
+        const updatedActivity = await activityModel.updateActivity(id, name, player_number, type, description, category);
         if (!updatedActivity) {
             return res.status(404).json({ error: 'Activity not found' });
         }
