@@ -49,4 +49,8 @@ executeSqlFiles()
         console.error(err);
     });
 
+<<<<<<< HEAD
 module.exports = db;
+=======
+module.exports = db;
+>>>>>>> main
