@@ -1,10 +1,10 @@
-<!-- src/components/ActivitiesList.vue -->
 <template>
   <div class="activities">
     <br>
     <b-container class="mt-5 pt-5">
       <h2 class="text-center mb-4">Activities</h2>
-    <br>
+      <br>
+
       <!-- Filter Controls -->
       <div class="filters mb-3">
         <!-- Search Filter -->
@@ -24,32 +24,6 @@
             </b-button>
           </b-input-group-append>
         </b-input-group>
-
-        <!-- Date Range Filter -->
-        <b-row>
-          <b-col md="6" class="mb-3">
-            <b-form-group class='date' label="Filter by Date Range">
-              <b-form-datepicker
-                  v-model="dateRange"
-                  range
-                  aria-label="Select date range"
-                  :state="dateRangeState"
-              ></b-form-datepicker>
-            </b-form-group>
-          </b-col>
-
-          <!-- Tournament Filter -->
-          <b-col md="6" class="mb-3">
-            <b-form-group label="Filter by Tournament">
-              <b-form-select
-                  v-model="selectedTournament"
-                  :options="tournamentOptions"
-                  aria-label="Filter by tournament"
-                  :state="tournamentState"
-              ></b-form-select>
-            </b-form-group>
-          </b-col>
-        </b-row>
 
         <!-- Sorting Option -->
         <b-form-group label="Sort by">
@@ -91,13 +65,6 @@
           responsive
           aria-label="Activities Table"
       >
-        <!-- Custom Date Formatting -->
-        <template #cell(date)="data">
-          {{ formatDate(data.item.date) }}
-        </template>
-        <template #cell(tournament)="data">
-          {{ data.item.tournament }}
-        </template>
       </b-table>
 
       <!-- Pagination Controls -->
@@ -115,7 +82,6 @@
 </template>
 
 <script>
-import dayjs from 'dayjs';
 import { mapGetters, mapActions } from 'vuex';
 
 export default {
@@ -125,23 +91,8 @@ export default {
   computed: {
     // Access activities from Vuex store
     ...mapGetters(['allActivities']),
-    // Processed activities with tournament names
     activities() {
-      return this.allActivities.map((activity) => ({
-        ...activity,
-        tournament: activity.tournament_id
-            ? `Tournament ${activity.tournament_id}`
-            : 'No Tournament',
-      }));
-    },
-    // Generate options for tournament filter
-    tournamentOptions() {
-      // Extract unique tournaments from activities
-      const tournaments = [...new Set(this.activities.map(activity => activity.tournament))];
-      return [
-        { value: null, text: 'All Tournaments' },
-        ...tournaments.map(tournament => ({ value: tournament, text: tournament })),
-      ];
+      return this.allActivities;
     },
     // Sort options for the sort dropdown
     sortOptions() {
@@ -149,13 +100,9 @@ export default {
         { value: null, text: 'No Sorting' },
         { value: { key: 'name', order: 'asc' }, text: 'Name (A-Z)' },
         { value: { key: 'name', order: 'desc' }, text: 'Name (Z-A)' },
-        { value: { key: 'date', order: 'asc' }, text: 'Date (Oldest First)' },
-        { value: { key: 'date', order: 'desc' }, text: 'Date (Newest First)' },
-        { value: { key: 'tournament', order: 'asc' }, text: 'Tournament (A-Z)' },
-        { value: { key: 'tournament', order: 'desc' }, text: 'Tournament (Z-A)' },
       ];
     },
-    // Computed property for filtered activities based on all filters
+    // Computed property for filtered activities
     filteredActivities() {
       let filtered = this.activities;
 
@@ -167,21 +114,6 @@ export default {
                 String(value).toLowerCase().includes(searchTerm)
             )
         );
-      }
-
-      // Apply date range filter
-      if (this.dateRange && this.dateRange.length === 2) {
-        const [startDate, endDate] = this.dateRange;
-        filtered = filtered.filter(activity => {
-          const activityDate = dayjs(activity.date);
-          return activityDate.isAfter(dayjs(startDate).subtract(1, 'day')) &&
-              activityDate.isBefore(dayjs(endDate).add(1, 'day'));
-        });
-      }
-
-      // Apply tournament filter
-      if (this.selectedTournament) {
-        filtered = filtered.filter(activity => activity.tournament === this.selectedTournament);
       }
 
       // Apply sorting
@@ -197,34 +129,21 @@ export default {
 
       return filtered;
     },
-    // Computed property for paginated activities
     paginatedActivities() {
       const start = (this.currentPage - 1) * this.perPage;
       const end = this.currentPage * this.perPage;
       return this.filteredActivities.slice(start, end);
-    },
-    // State for date range picker validation
-    dateRangeState() {
-      if (!this.dateRange || this.dateRange.length !== 2) return null;
-      const [startDate, endDate] = this.dateRange;
-      return startDate && endDate ? true : false;
-    },
-    // State for tournament select validation
-    tournamentState() {
-      return this.selectedTournament !== null ? true : null;
-    },
+    }
   },
   data() {
     return {
       filter: '',
-      dateRange: [], // Holds [startDate, endDate]
-      selectedTournament: null,
       sortOption: null,
       fields: [
-        { key: 'name', label: 'Activity Name', sortable: true },
-        { key: 'description', label: 'Description', sortable: false },
-        { key: 'date', label: 'Date', sortable: true },
-        { key: 'tournament', label: 'Tournament', sortable: true },
+        { key: 'activity_name', label: 'Activity Name', sortable: true },
+        { key: 'activity_description', label: 'Description', sortable: false },
+        { key: 'activity_number_of_players', label: 'Player Number', sortable: true },
+        { key: 'activity_category', label: 'Category', sortable: true },
       ],
       currentPage: 1,
       perPage: 10,
@@ -235,9 +154,6 @@ export default {
   methods: {
     // Map Vuex actions
     ...mapActions(['fetchActivities']),
-    /**
-     * Fetch activities from the Vuex store
-     */
     fetchData() {
       this.loading = true;
       this.fetchError = null;
@@ -250,21 +166,8 @@ export default {
             this.loading = false;
           });
     },
-    /**
-     * Format date using Day.js
-     * @param {string} date - Date string to format
-     * @returns {string} - Formatted date
-     */
-    formatDate(date) {
-      return dayjs(date).format('MMMM D, YYYY');
-    },
-    /**
-     * Clear all filters
-     */
     clearFilter() {
       this.filter = '';
-      this.dateRange = [];
-      this.selectedTournament = null;
       this.sortOption = null;
       this.currentPage = 1;
     },
@@ -272,12 +175,6 @@ export default {
   watch: {
     // Reset to first page when filters change
     filter() {
-      this.currentPage = 1;
-    },
-    dateRange() {
-      this.currentPage = 1;
-    },
-    selectedTournament() {
       this.currentPage = 1;
     },
     sortOption() {
@@ -299,16 +196,7 @@ select, input {
   font-family: 'Montserrat', sans-serif;
   font-weight: bold;
   color: gray;
-  letter-spacing : 1px;
+  letter-spacing: 1px;
   font-size: 15px;
 }
-
-.date {
-  font-family: 'Montserrat', sans-serif;
-  font-weight: bold;
-  color: gray;
-  letter-spacing : 1px;
-  font-size: 15px;
-}
-
 </style>

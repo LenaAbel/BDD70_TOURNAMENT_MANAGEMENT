@@ -248,8 +248,8 @@ export default {
       fields: [
         { key: 'player_name', label: 'Name', sortable: true },
         { key: 'player_email', label: 'Email', sortable: true },
-        { key: 'player_preferredGames', label: 'Preferred Games', sortable: false },
-        { key: 'team_id', label: 'Team', sortable: true },
+        { key: 'preferredGames', label: 'Preferred Games', sortable: false },
+        { key: 'team_name', label: 'Team', sortable: true },
         { key: 'player_registrationDate', label: 'Registration Date', sortable: true },
       ],
       currentPage: 1,
