@@ -59,9 +59,8 @@ export default {
       filter: '',
       filterFields: ['name', 'game', 'members'],
       fields: [
-        { key: 'name', label: 'Team Name', sortable: true },
-        { key: 'game', label: 'Game', sortable: true },
-        { key: 'members', label: 'Members', sortable: false },
+        { key: 'team_name', label: 'Team Name', sortable: true },
+        { key: 'player_count', label: 'Number of player', sortable: false },
       ],
       isLoading: false,
       error: null,
@@ -76,8 +75,6 @@ export default {
           .then((response) => {
             this.teams = response.data.map((team) => ({
               ...team,
-              members: team.members ? team.members.join(', ') : 'No Members', // Assuming members is an array
-              game: team.game ? team.game : 'N/A',
             }));
           })
           .catch((error) => {

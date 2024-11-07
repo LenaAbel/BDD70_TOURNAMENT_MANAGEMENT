@@ -20,10 +20,11 @@ const getAllPlayers = () => {
     return new Promise((resolve, reject) => {
         db.query(
             `SELECT p.player_id, p.player_email, p.player_name, p.player_lastname, p.player_nickname, p.player_account_type, 
-                    p.team_id, GROUP_CONCAT(a.activity_name) AS preferredGames
+                    p.team_id, GROUP_CONCAT(a.activity_name) AS preferredGames, t.team_name
                 FROM player p 
                 LEFT JOIN favoriteactivity f ON p.player_id = f.player_id 
                 LEFT JOIN activity a ON f.activity_id = a.activity_id 
+                LEFT JOIN team t ON p.team_id = t.team_id
                 GROUP BY p.player_id`,
             (err, results) => {
                 if (err) {
