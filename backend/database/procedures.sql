@@ -9,7 +9,6 @@ BEGIN
     DECLARE CONTINUE HANDLER FOR SQLEXCEPTION
     BEGIN
         -- Handle the exception
-        -- You can log the error or print a message if needed
         SELECT 'Activity insertion failed or already exists';
     END;
 
@@ -25,7 +24,6 @@ BEGIN
     DECLARE CONTINUE HANDLER FOR SQLEXCEPTION
     BEGIN
         -- Handle the exception
-        -- You can log the error or print a message if needed
         SELECT 'Rule insertion failed or already exists';
     END;
 

@@ -1,6 +1,6 @@
 const mysql = require("mysql2");
 const dotenv = require("dotenv").config();
-const fs = require("fs").promises; // Use promises with fs module
+const fs = require("fs").promises;
 
 // Create connection
 const db = mysql.createConnection({

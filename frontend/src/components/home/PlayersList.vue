@@ -96,8 +96,7 @@
           striped
           hover
           responsive
-          aria-label="Players Table"
-      >
+          aria-label="Players Table">
         <!-- Optional: Customize cell rendering if needed -->
         <template #cell(preferredGames)="data">
           {{ data.item.preferredGames }}
@@ -139,11 +138,11 @@ export default {
         ...player,
         preferredGames: player.preferredGames
             ? player.preferredGames.join(', ')
-            : 'N/A', // Assuming preferredGames is an array
+            : 'N/A',
         team: player.team_id ? `Team ${player.team_id}` : 'No Team',
         registrationDate: player.registrationDate
             ? player.registrationDate
-            : null, // Ensure registrationDate exists
+            : null,
       }));
     },
     // Generate options for team filter
@@ -317,5 +316,7 @@ export default {
 </script>
 
 <style scoped>
-
+.players {
+  color: var(--navyblue);
+}
 </style>
