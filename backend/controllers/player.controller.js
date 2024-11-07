@@ -1,4 +1,3 @@
-// controllers/player.controller.js
 const playerModel = require('../models/player.model');
 
 // Get all players
@@ -71,23 +70,16 @@ const deletePlayer = (req, res) => {
         });
 };
 
+// Set favorite activity
 const setFavoriteActivity = (req, res) => {
     const { player_id, activity_id } = req.body;
-    console.log(player_id);
-    console.log(activity_id);
-    
     playerModel.setFavoriteActivity(player_id, activity_id)
-        .then(result => {
-            if (!result) {
-                return res.status(404).json({ error: 'Activity or player not found'});
-            }
-            res.status(204).send();
-        })
+        .then(result => res.status(204).send())
         .catch(err => {
-            console.error("Error setting up favorite activity:", err);
-            res.status(500).json({error: 'error setting fav activity'})
-        })
-}
+            console.error("Error setting favorite activity:", err);
+            res.status(500).json({ error: 'Error setting favorite activity' });
+        });
+};
 
 module.exports = {
     getAllPlayers,
@@ -95,5 +87,5 @@ module.exports = {
     getPlayerById,
     updatePlayer,
     deletePlayer,
-    setFavoriteActivity
+    setFavoriteActivity,
 };

@@ -138,7 +138,7 @@ export default {
       return this.allPlayers.map((player) => ({
         ...player,
         preferredGames: player.preferredGames
-            ? player.preferredGames.join(', ')
+            ? player.preferredGames
             : 'N/A', // Assuming preferredGames is an array
         team: player.team_id ? `Team ${player.team_id}` : 'No Team',
         registrationDate: player.registrationDate
@@ -246,11 +246,11 @@ export default {
       selectedTeam: null,
       sortOption: null,
       fields: [
-        { key: 'name', label: 'Name', sortable: true },
-        { key: 'email', label: 'Email', sortable: true },
-        { key: 'preferredGames', label: 'Preferred Games', sortable: false },
-        { key: 'team', label: 'Team', sortable: true },
-        { key: 'registrationDate', label: 'Registration Date', sortable: true },
+        { key: 'player_name', label: 'Name', sortable: true },
+        { key: 'player_email', label: 'Email', sortable: true },
+        { key: 'player_preferredGames', label: 'Preferred Games', sortable: false },
+        { key: 'team_id', label: 'Team', sortable: true },
+        { key: 'player_registrationDate', label: 'Registration Date', sortable: true },
       ],
       currentPage: 1,
       perPage: 10,

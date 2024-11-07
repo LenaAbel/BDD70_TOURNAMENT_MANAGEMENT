@@ -1,6 +1,6 @@
 CREATE PROCEDURE InsertActivity (
     IN activity_name VARCHAR(255),
-    IN number_of_players INT,
+    IN activity_number_of_players INT,
     IN activity_type VARCHAR(50),
     IN activity_description TEXT,
     IN category VARCHAR(50)
@@ -13,8 +13,8 @@ BEGIN
         SELECT 'Activity insertion failed or already exists';
     END;
 
-    INSERT INTO activity (name, number_of_players, type, description, category)
-    VALUES (activity_name, number_of_players, activity_type, activity_description, category);
+    INSERT INTO activity (activity_name, activity_number_of_players, activity_type, activity_description, activity_category)
+    VALUES (activity_name, activity_number_of_players, activity_type, activity_description, category);
 END //
 
 CREATE PROCEDURE InsertRule (
@@ -29,6 +29,6 @@ BEGIN
         SELECT 'Rule insertion failed or already exists';
     END;
 
-    INSERT INTO rules (ruleSet, activity_id)
+    INSERT INTO rules (rules_ruleSet, activity_id)
     VALUES (rule_set, activity_id);
 END //
