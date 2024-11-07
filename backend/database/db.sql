@@ -77,7 +77,7 @@ CREATE TABLE IF NOT EXISTS favoriteactivity (
     CONSTRAINT fk_favoriteactivity_activity FOREIGN KEY (activity_id) REFERENCES activity (activity_id) ON DELETE CASCADE
 );
 
--- Table tournament_round
+-- Table tournament_round (peut etre à finir?)
 CREATE TABLE IF NOT EXISTS tournament_round (
     round_id INT NOT NULL AUTO_INCREMENT,
     tournament_id INT NOT NULL,
