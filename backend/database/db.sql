@@ -24,6 +24,7 @@ CREATE TABLE IF NOT EXISTS player (
     player_lastname varchar(50) NOT NULL,
     player_nickname varchar(50),
     player_password varchar(256) NOT NULL,
+    player_registragtionDate datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
     player_account_type enum('player', 'organizer', 'admin') DEFAULT 'player',
     team_id int DEFAULT NULL,
     PRIMARY KEY (player_id),
