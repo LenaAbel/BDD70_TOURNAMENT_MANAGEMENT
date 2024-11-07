@@ -1,10 +1,9 @@
-// models/team.model.js
 const db = require('../database/db_init');
 
 // Create a new team
 const createTeam = (name) => {
     return new Promise((resolve, reject) => {
-        db.query('INSERT INTO team (name) VALUES (?)', [name], (err, result) => {
+        db.query('INSERT INTO team (team_name) VALUES (?)', [name], (err, result) => {
             if (err) {
                 return reject(err);
             }
@@ -16,7 +15,7 @@ const createTeam = (name) => {
 // Get a team by ID
 const getTeamById = (id) => {
     return new Promise((resolve, reject) => {
-        db.query('SELECT * FROM team WHERE id = ?', [id], (err, result) => {
+        db.query('SELECT team_id, team_name FROM team WHERE team_id = ?', [id], (err, result) => {
             if (err) {
                 return reject(err);
             }
@@ -31,7 +30,7 @@ const getTeamById = (id) => {
 // Update a team by ID
 const updateTeam = (id, name) => {
     return new Promise((resolve, reject) => {
-        db.query('UPDATE team SET name = ? WHERE id = ?', [name, id], (err, result) => {
+        db.query('UPDATE team SET team_name = ? WHERE team_id = ?', [name, id], (err, result) => {
             if (err) {
                 return reject(err);
             }
@@ -46,7 +45,7 @@ const updateTeam = (id, name) => {
 // Delete a team by ID
 const deleteTeam = (id) => {
     return new Promise((resolve, reject) => {
-        db.query('DELETE FROM team WHERE id = ?', [id], (err, result) => {
+        db.query('DELETE FROM team WHERE team_id = ?', [id], (err, result) => {
             if (err) {
                 return reject(err);
             }
@@ -61,7 +60,7 @@ const deleteTeam = (id) => {
 // Get all teams
 const getAllTeams = () => {
     return new Promise((resolve, reject) => {
-        db.query('SELECT * FROM team', (err, results) => {
+        db.query('SELECT team_id, team_name FROM team', (err, results) => {
             if (err) {
                 return reject(err);
             }

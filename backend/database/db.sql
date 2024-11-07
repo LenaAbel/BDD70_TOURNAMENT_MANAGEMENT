@@ -1,36 +1,36 @@
--- Table activity avec des colonnes supplémentaires
+-- Table activity with prefixed columns
 CREATE TABLE IF NOT EXISTS activity (
     activity_id int NOT NULL AUTO_INCREMENT,
-    name varchar(50) NOT NULL,
-    number_of_players int NOT NULL,
-    type enum('solo', 'team') NOT NULL,
-    description text,
-    category varchar(50),
+    activity_name varchar(50) NOT NULL,
+    activity_number_of_players int NOT NULL,
+    activity_type enum('solo', 'team') NOT NULL,
+    activity_description text,
+    activity_category varchar(50),
     PRIMARY KEY (activity_id)
 );
 
--- Table team
+-- Table team with prefixed columns
 CREATE TABLE IF NOT EXISTS team (
     team_id int NOT NULL AUTO_INCREMENT,
-    name varchar(50) NOT NULL,
+    team_name varchar(50) NOT NULL,
     PRIMARY KEY (team_id)
 );
 
--- Table player avec team_id ajouté
+-- Table player with prefixed columns and team_id added
 CREATE TABLE IF NOT EXISTS player (
     player_id int NOT NULL AUTO_INCREMENT,
-    email varchar(128) NOT NULL UNIQUE,
-    name varchar(50) NOT NULL,
-    lastname varchar(50) NOT NULL,
-    nickname varchar(50),
-    password varchar(256) NOT NULL,
-    account_type enum('player', 'organizer', 'admin') DEFAULT 'player',
-    team_id int DEFAULT NULL,  -- Added team_id column
+    player_email varchar(128) NOT NULL UNIQUE,
+    player_name varchar(50) NOT NULL,
+    player_lastname varchar(50) NOT NULL,
+    player_nickname varchar(50),
+    player_password varchar(256) NOT NULL,
+    player_account_type enum('player', 'organizer', 'admin') DEFAULT 'player',
+    team_id int DEFAULT NULL,
     PRIMARY KEY (player_id),
-    FOREIGN KEY (team_id) REFERENCES team (team_id) ON DELETE SET NULL  -- Added foreign key constraint for team_id
+    FOREIGN KEY (team_id) REFERENCES team (team_id) ON DELETE SET NULL
 );
 
--- Table team_member pour gérer les membres des équipes
+-- Table team_member with prefixed columns
 CREATE TABLE IF NOT EXISTS team_member (
     team_id int NOT NULL,
     player_id int NOT NULL,
@@ -39,25 +39,25 @@ CREATE TABLE IF NOT EXISTS team_member (
     CONSTRAINT fk_team_member_player FOREIGN KEY (player_id) REFERENCES player (player_id) ON DELETE CASCADE
 );
 
--- Table rules
+-- Table rules with prefixed columns
 CREATE TABLE IF NOT EXISTS rules (
     rules_id int NOT NULL AUTO_INCREMENT,
-    ruleSet text,
+    rules_ruleSet text,
     activity_id int NOT NULL,
     PRIMARY KEY (rules_id),
     KEY idx_activity_id (activity_id),
     CONSTRAINT fk_rules_activity FOREIGN KEY (activity_id) REFERENCES activity (activity_id) ON DELETE CASCADE
 );
 
--- Table tournament avec corrections
+-- Table tournament with prefixed columns
 CREATE TABLE IF NOT EXISTS tournament (
     tournament_id int NOT NULL AUTO_INCREMENT,
-    name varchar(50) NOT NULL,
-    start_time datetime NOT NULL,
-    bestOfX int DEFAULT NULL,
-    poolSize int DEFAULT NULL,
-    type enum('solo', 'team') NOT NULL,
-    format enum('elimination', 'round_robin', 'swiss') DEFAULT 'elimination',
+    tournament_name varchar(50) NOT NULL,
+    tournament_start_time datetime NOT NULL,
+    tournament_bestOfX int DEFAULT NULL,
+    tournament_poolSize int DEFAULT NULL,
+    tournament_type enum('solo', 'team') NOT NULL,
+    tournament_format enum('elimination', 'round_robin', 'swiss') DEFAULT 'elimination',
     rule_id int NOT NULL,
     organizer_id int NOT NULL,
     PRIMARY KEY (tournament_id),
@@ -67,7 +67,7 @@ CREATE TABLE IF NOT EXISTS tournament (
     CONSTRAINT fk_tournament_organizer FOREIGN KEY (organizer_id) REFERENCES player (player_id) ON DELETE CASCADE
 );
 
--- Table favoriteactivity corrigée
+-- Table favoriteactivity with prefixed columns
 CREATE TABLE IF NOT EXISTS favoriteactivity (
     player_id int NOT NULL,
     activity_id int NOT NULL,
@@ -77,19 +77,19 @@ CREATE TABLE IF NOT EXISTS favoriteactivity (
     CONSTRAINT fk_favoriteactivity_activity FOREIGN KEY (activity_id) REFERENCES activity (activity_id) ON DELETE CASCADE
 );
 
--- Table matchs
+-- Table matchs with prefixed columns
 CREATE TABLE IF NOT EXISTS matchs (
     matchs_id int NOT NULL AUTO_INCREMENT,
-    start_time datetime NOT NULL,
-    status varchar(50) DEFAULT NULL,
-    location varchar(50) DEFAULT NULL,
+    matchs_start_time datetime NOT NULL,
+    matchs_status varchar(50) DEFAULT NULL,
+    matchs_location varchar(50) DEFAULT NULL,
     tournament_id int NOT NULL,
     PRIMARY KEY (matchs_id),
     KEY idx_tournament_id (tournament_id),
     CONSTRAINT fk_matchs_tournament FOREIGN KEY (tournament_id) REFERENCES tournament (tournament_id) ON DELETE CASCADE
 );
 
--- Table register corrigée
+-- Table register with prefixed columns
 CREATE TABLE IF NOT EXISTS register (
     player_id INT NOT NULL,
     team_id INT DEFAULT NULL,
@@ -101,7 +101,7 @@ CREATE TABLE IF NOT EXISTS register (
     FOREIGN KEY (tournament_id) REFERENCES tournament (tournament_id) ON DELETE CASCADE
 );
 
--- Table results avec identifiants des gagnants et des perdants
+-- Table results with prefixed columns
 CREATE TABLE IF NOT EXISTS results (
     results_id int NOT NULL AUTO_INCREMENT,
     match_id int NOT NULL,
@@ -120,7 +120,7 @@ CREATE TABLE IF NOT EXISTS results (
     CONSTRAINT fk_results_loser_team FOREIGN KEY (loser_team_id) REFERENCES team (team_id) ON DELETE CASCADE
 );
 
--- Table matchpairing unique pour les joueurs et les équipes
+-- Table matchpairing with prefixed columns
 CREATE TABLE IF NOT EXISTS matchpairing (
     matchpairing_id int NOT NULL AUTO_INCREMENT,
     match_id int NOT NULL,
@@ -135,14 +135,14 @@ CREATE TABLE IF NOT EXISTS matchpairing (
     CONSTRAINT fk_matchpairing_team FOREIGN KEY (team_id) REFERENCES team (team_id) ON DELETE CASCADE
 );
 
--- Table ranking avec tournament_id
+-- Table ranking with prefixed columns
 CREATE TABLE IF NOT EXISTS ranking (
     ranking_id INT NOT NULL AUTO_INCREMENT,
     tournament_id INT NOT NULL,
     player_id INT DEFAULT NULL,
     team_id INT DEFAULT NULL,
-    points INT DEFAULT 0,
-    ranking INT DEFAULT NULL,
+    ranking_points INT DEFAULT 0,
+    ranking_ranking INT DEFAULT NULL,
     PRIMARY KEY (ranking_id),
     KEY idx_tournament_id (tournament_id),
     CONSTRAINT fk_ranking_tournament FOREIGN KEY (tournament_id) REFERENCES tournament(tournament_id) ON DELETE CASCADE,
@@ -150,32 +150,39 @@ CREATE TABLE IF NOT EXISTS ranking (
     CONSTRAINT fk_ranking_team FOREIGN KEY (team_id) REFERENCES team(team_id) ON DELETE CASCADE
 );
 
--- Table player_stats pour les statistiques des joueurs
+-- Table player_stats with prefixed columns
 CREATE TABLE IF NOT EXISTS player_stats (
     player_id int NOT NULL,
     activity_id int NOT NULL,
-    total_matches int DEFAULT 0,
-    wins int DEFAULT 0,
-    losses int DEFAULT 0,
-    draws int DEFAULT 0,
+    player_stats_total_matches int DEFAULT 0,
+    player_stats_wins int DEFAULT 0,
+    player_stats_losses int DEFAULT 0,
+    player_stats_draws int DEFAULT 0,
     PRIMARY KEY (player_id, activity_id),
     CONSTRAINT fk_player_stats_player FOREIGN KEY (player_id) REFERENCES player (player_id) ON DELETE CASCADE,
     CONSTRAINT fk_player_stats_activity FOREIGN KEY (activity_id) REFERENCES activity (activity_id) ON DELETE CASCADE
 );
 
--- Table team_stats pour les statistiques des équipes
+-- Table team_stats with prefixed columns
 CREATE TABLE IF NOT EXISTS team_stats (
     team_id int NOT NULL,
     activity_id int NOT NULL,
-    total_matches int DEFAULT 0,
-    wins int DEFAULT 0,
-    losses int DEFAULT 0,
-    draws int DEFAULT 0,
+    team_stats_total_matches int DEFAULT 0,
+    team_stats_wins int DEFAULT 0,
+    team_stats_losses int DEFAULT 0,
+    team_stats_draws int DEFAULT 0,
     PRIMARY KEY (team_id, activity_id),
     CONSTRAINT fk_team_stats_team FOREIGN KEY (team_id) REFERENCES team (team_id) ON DELETE CASCADE,
     CONSTRAINT fk_team_stats_activity FOREIGN KEY (activity_id) REFERENCES activity (activity_id) ON DELETE CASCADE
 );
 
--- Procedure to insert activities
+CREATE TABLE IF NOT EXISTS tournament_round (
+    round_id INT NOT NULL AUTO_INCREMENT,
+    tournament_id INT NOT NULL,
+    round_number INT NOT NULL,
+    PRIMARY KEY (round_id),
+    UNIQUE KEY unique_round (tournament_id, round_number),
+    FOREIGN KEY (tournament_id) REFERENCES tournament (tournament_id) ON DELETE CASCADE
+);
 
 
