@@ -71,7 +71,7 @@ export default {
       this.isLoading = true;
       this.error = null;
       this.$axios
-          .get('team/') // Ensure the route matches your backend
+          .get('team/')
           .then((response) => {
             this.teams = response.data.map((team) => ({
               ...team,

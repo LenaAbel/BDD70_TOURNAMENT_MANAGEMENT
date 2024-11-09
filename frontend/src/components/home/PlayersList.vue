@@ -21,7 +21,7 @@
                 aria-label="Clear Search"
                 class="magical-brush-button"
             >
-            <b-icon icon="x-circle"></b-icon>
+              <b-icon icon="x-circle"></b-icon>
             </b-button>
           </b-input-group-append>
         </b-input-group>
@@ -96,7 +96,8 @@
           striped
           hover
           responsive
-          aria-label="Players Table">
+          aria-label="Players Table"
+      >
         <!-- Optional: Customize cell rendering if needed -->
         <template #cell(preferredGames)="data">
           {{ data.item.preferredGames }}
@@ -138,10 +139,10 @@ export default {
         ...player,
         preferredGames: player.preferredGames
             ? player.preferredGames
-            : 'N/A', // Assuming preferredGames is an array
-        team: player.team_id ? `Team ${player.team_id}` : 'No Team',
-        registrationDate: player.registrationDate
-            ? player.registrationDate
+            : 'N/A', // Assuming preferredGames is an array or a string
+        team: player.team_name ? player.team_name : 'No Team',
+        registrationDate: player.player_registrationDate
+            ? player.player_registrationDate
             : null,
       }));
     },
@@ -158,12 +159,20 @@ export default {
     sortOptions() {
       return [
         { value: null, text: 'No Sorting' },
-        { value: { key: 'name', order: 'asc' }, text: 'Name (A-Z)' },
-        { value: { key: 'name', order: 'desc' }, text: 'Name (Z-A)' },
-        { value: { key: 'email', order: 'asc' }, text: 'Email (A-Z)' },
-        { value: { key: 'email', order: 'desc' }, text: 'Email (Z-A)' },
-        { value: { key: 'registrationDate', order: 'asc' }, text: 'Registration Date (Oldest First)' },
-        { value: { key: 'registrationDate', order: 'desc' }, text: 'Registration Date (Newest First)' },
+        { value: { key: 'player_name', order: 'asc' }, text: 'Name (A-Z)' },
+        { value: { key: 'player_name', order: 'desc' }, text: 'Name (Z-A)' },
+        { value: { key: 'player_lastname', order: 'asc' }, text: 'Lastname (A-Z)' },
+        { value: { key: 'player_lastname', order: 'desc' }, text: 'Lastname (Z-A)' },
+        { value: { key: 'player_email', order: 'asc' }, text: 'Email (A-Z)' },
+        { value: { key: 'player_email', order: 'desc' }, text: 'Email (Z-A)' },
+        {
+          value: { key: 'registrationDate', order: 'asc' },
+          text: 'Registration Date (Oldest First)',
+        },
+        {
+          value: { key: 'registrationDate', order: 'desc' },
+          text: 'Registration Date (Newest First)',
+        },
         { value: { key: 'team', order: 'asc' }, text: 'Team (A-Z)' },
         { value: { key: 'team', order: 'desc' }, text: 'Team (Z-A)' },
       ];
@@ -205,8 +214,11 @@ export default {
         const { key, order } = this.sortOption;
         filtered.sort((a, b) => {
           let comparison = 0;
-          if (a[key] > b[key]) comparison = 1;
-          if (a[key] < b[key]) comparison = -1;
+          const valueA = a[key] ? a[key].toString().toLowerCase() : '';
+          const valueB = b[key] ? b[key].toString().toLowerCase() : '';
+
+          if (valueA > valueB) comparison = 1;
+          if (valueA < valueB) comparison = -1;
           return order === 'asc' ? comparison : -comparison;
         });
       }
@@ -246,10 +258,11 @@ export default {
       sortOption: null,
       fields: [
         { key: 'player_name', label: 'Name', sortable: true },
+        { key: 'player_lastname', label: 'Lastname', sortable: true },
         { key: 'player_email', label: 'Email', sortable: true },
         { key: 'preferredGames', label: 'Preferred Games', sortable: false },
-        { key: 'team_name', label: 'Team', sortable: true },
-        { key: 'player_registrationDate', label: 'Registration Date', sortable: true },
+        { key: 'team', label: 'Team', sortable: true },
+        { key: 'registrationDate', label: 'Registration Date', sortable: true },
       ],
       currentPage: 1,
       perPage: 10,
