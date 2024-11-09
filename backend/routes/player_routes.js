@@ -10,5 +10,7 @@ router.post('/', playerController.createPlayer);
 router.get('/:id', playerController.getPlayerById);
 router.put('/:id', playerController.updatePlayer);
 router.delete('/:id', playerController.deletePlayer);
+router.post('/register', playerController.registerPlayer);
+router.post('/login', playerController.loginPlayer);
 
 module.exports = router;
