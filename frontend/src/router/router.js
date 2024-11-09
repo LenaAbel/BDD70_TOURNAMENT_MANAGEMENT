@@ -1,4 +1,4 @@
-// src/router/index.js
+// src/router/routeur.js
 
 import Vue from 'vue';
 import Router from 'vue-router';
@@ -7,6 +7,8 @@ import TournamentsList from '../components/home/TournamentsList.vue';
 import PlayersList from '../components/home/PlayersList.vue';
 import TeamsList from '../components/home/TeamsList.vue';
 import ActivitiesList from '../components/home/ActivitiesList.vue';
+import mainRegister from '../components/home/mainRegister.vue';
+import mainLogin from '../components/home/mainLogin.vue';
 
 Vue.use(Router);
 
@@ -37,6 +39,16 @@ export default new Router({
             path: '/activities',
             name: 'Activities',
             component: ActivitiesList,
+        },
+        {
+            path: '/register',
+            name: 'Register',
+            component: mainRegister,
+        },
+        {
+            path: '/login',
+            name: 'Login',
+            component: mainLogin,
         },
         {
             path: '*',

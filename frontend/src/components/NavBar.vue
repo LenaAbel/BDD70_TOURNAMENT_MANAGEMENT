@@ -1,9 +1,22 @@
 <!-- src/components/Navbar.vue -->
 <template>
   <div>
-    <b-navbar toggleable="lg" type="dark" variant="dark" class="fixed-top navbar-custom" style="padding: 3px 0;">
+    <b-navbar
+        toggleable="lg"
+        type="dark"
+        variant="dark"
+        class="fixed-top navbar-custom"
+        style="padding: 3px 0;"
+    >
       <b-navbar-brand href="/" class="ml-3">
-        <img src="../assets/logo.png" alt="Logo" width="45" height="40" style="margin: 5px" class="d-inline-block rounded align-top" />
+        <img
+            src="../assets/logo.png"
+            alt="Logo"
+            width="45"
+            height="40"
+            style="margin: 5px"
+            class="d-inline-block rounded align-top"
+        />
       </b-navbar-brand>
 
       <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
@@ -28,10 +41,13 @@
           </b-nav-item>
         </b-navbar-nav>
 
-        <!-- Right-aligned "Login" button -->
+        <!-- Right-aligned "Login" and "Register" buttons -->
         <b-navbar-nav class="ml-auto mr-3">
           <b-nav-item href="/login">
             <b-icon icon="box-arrow-in-right" class="mr-1"></b-icon> Login
+          </b-nav-item>
+          <b-nav-item href="/register">
+            <b-icon icon="person-plus-fill" class="mr-1"></b-icon> Register
           </b-nav-item>
         </b-navbar-nav>
       </b-collapse>
