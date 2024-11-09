@@ -105,6 +105,9 @@
         <template #cell(end_time)="data">
           {{ formatDate(data.item.end_time) }}
         </template>
+        <template #cell(tournament_name)="data">
+          <router-link :to="`/tournaments/${data.item.tournament_id}`">{{ data.item.tournament_name }}</router-link>
+        </template>
       </b-table>
 
       <!-- Pagination Controls -->

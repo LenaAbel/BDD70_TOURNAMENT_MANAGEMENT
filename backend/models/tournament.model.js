@@ -28,7 +28,7 @@ const getAllTournaments = () => {
 
 const getTournamentById = (id) => {
     return new Promise((resolve, reject) => {
-        db.query('SELECT * FROM tournament WHERE tournament_id = ?', [id], (err, results) => {
+        db.query('SELECT * FROM tournament t INNER JOIN rules r ON t.rule_id = r.rules_id INNER JOIN activity a ON r.activity_id = a.activity_id WHERE tournament_id = ?', [id], (err, results) => {
             if (err) {
                 return reject(err);
             }
