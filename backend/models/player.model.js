@@ -1,4 +1,6 @@
 const db = require('../database/db_init');
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 
 const createPlayer = (email, name, lastname, nickname, password, account_type, team_id) => {
     return new Promise((resolve, reject) => {
@@ -14,6 +16,50 @@ const createPlayer = (email, name, lastname, nickname, password, account_type, t
         );
     });
 };
+
+const registerPlayer = (email, name, lastname, nickname, password, account_type, team_id) => {
+    return new Promise((resolve, reject) => {
+        bcrypt.genSalt(saltRounds, function(err, salt) {
+            bcrypt.hash(password, salt, function(err, hash) {
+                db.query(
+                    'INSERT INTO player (player_email, player_name, player_lastname, player_nickname, player_password, player_account_type, team_id) VALUES (?, ?, ?, ?, ?, ?, ?)',
+                    [email, name, lastname, nickname, hash, account_type, team_id],
+                    (err, result) => {
+                        if (err) {
+                            return reject(err);
+                        }
+                        resolve({ id: result.insertId, email, name, lastname, nickname, account_type, team_id });
+                    }
+                );
+            });
+        });
+    });
+};
+
+const loginPlayer = (email, password) => {
+    return new Promise((resolve, reject) => {
+        db.query(
+            'SELECT * FROM player WHERE player_email = ?',
+            [email],
+            (err, results) => {
+                if (err) {
+                    return reject(err);
+                }
+                if (results.length === 0) {
+                    return resolve(null);
+                }
+                bcrypt.compare(password, results[0].player_password, function(err, result) {
+                    if (result) {
+                        resolve(results[0]);
+                    } else {
+                        resolve(null);
+                    }
+                });
+            }
+        );
+    });
+};
+
 
 // Get all players with their favorite activities
 const getAllPlayers = () => {
@@ -133,4 +179,6 @@ module.exports = {
     deletePlayer,
     setFavoriteActivity,
     deleteFavoriteActivity,
+    registerPlayer,
+    loginPlayer
 };

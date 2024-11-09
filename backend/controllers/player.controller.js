@@ -21,6 +21,26 @@ const createPlayer = (req, res) => {
         });
 };
 
+const registerPlayer = (req, res) => {
+    const { email, name, lastname, nickname, password, account_type, team_id } = req.body;
+    playerModel.registerPlayer(email, name, lastname, nickname, password, account_type, team_id)
+        .then(newPlayer => res.status(201).json(newPlayer))
+        .catch(err => {
+            console.error('Error creating player:', err);
+            res.status(500).json({ error: 'Error adding player' });
+        });
+};
+
+const loginPlayer = (req, res) => {
+    const { email, password } = req.body;
+    playerModel.loginPlayer(email, password)
+        .then(newPlayer => res.status(201).json(newPlayer))
+        .catch(err => {
+            console.error('Error Logging player:', err);
+            res.status(500).json({ error: 'Error adding player' });
+        });
+};
+
 // Get a player by ID
 const getPlayerById = (req, res) => {
     const { id } = req.params;
@@ -88,4 +108,6 @@ module.exports = {
     updatePlayer,
     deletePlayer,
     setFavoriteActivity,
+    registerPlayer,
+    loginPlayer
 };
