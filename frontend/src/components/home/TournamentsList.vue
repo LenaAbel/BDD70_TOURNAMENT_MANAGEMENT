@@ -105,6 +105,9 @@
         <template #cell(end_time)="data">
           {{ formatDate(data.item.end_time) }}
         </template>
+        <template #cell(tournament_name)="data">
+          <router-link :to="`/tournaments/${data.item.tournament_id}`">{{ data.item.tournament_name }}</router-link>
+        </template>
       </b-table>
 
       <!-- Pagination Controls -->
@@ -180,7 +183,7 @@ export default {
       if (this.dateRange && this.dateRange.length === 2) {
         const [startDate, endDate] = this.dateRange;
         filtered = filtered.filter((tournament) => {
-          const tournamentStart = dayjs(tournament.start_time);
+          const tournamentStart = dayjs(tournament.tournament_start_time);
           const tournamentEnd = dayjs(tournament.end_time);
           return (
               tournamentStart.isAfter(dayjs(startDate).subtract(1, 'day')) &&
@@ -241,10 +244,9 @@ export default {
       selectedGame: null,
       sortOption: null,
       fields: [
-        { key: 'name', label: 'Name', sortable: true },
-        { key: 'game', label: 'Game', sortable: true },
-        { key: 'start_time', label: 'Start Time', sortable: true },
-        { key: 'end_time', label: 'End Time', sortable: true },
+        { key: 'tournament_name', label: 'Name', sortable: true },
+        { key: 'activity_name', label: 'Game', sortable: true },
+        { key: 'tournament_start_time', label: 'Start Time', sortable: true },
       ],
       currentPage: 1,
       perPage: 10,

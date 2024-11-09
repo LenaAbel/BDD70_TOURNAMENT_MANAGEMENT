@@ -60,7 +60,7 @@ const deleteTeam = (team_id) => {
 // Get all teams
 const getAllTeams = () => {
     return new Promise((resolve, reject) => {
-        db.query('SELECT team_id, team_name FROM team', (err, results) => {
+        db.query('SELECT t.team_id, t.team_name, COUNT(p.player_id) AS player_count FROM team t LEFT JOIN player p ON t.team_id = p.team_id GROUP BY t.team_id, t.team_name', (err, results) => {
             if (err) {
                 return reject(err);
             }

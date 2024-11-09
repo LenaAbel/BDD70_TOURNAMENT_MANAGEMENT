@@ -21,7 +21,7 @@
                 aria-label="Clear Search"
                 class="magical-brush-button"
             >
-            <b-icon icon="x-circle"></b-icon>
+              <b-icon icon="x-circle"></b-icon>
             </b-button>
           </b-input-group-append>
         </b-input-group>
@@ -108,6 +108,11 @@
         <template #cell(registrationDate)="data">
           {{ formatDate(data.item.registrationDate) }}
         </template>
+
+        <!-- Make the Name clickable to go to Player Profile -->
+        <template #cell(player_name)="data">
+          <router-link :to="`/players/${data.item.player_id}`">{{ data.item.player_name }}</router-link>
+        </template>
       </b-table>
 
       <!-- Pagination Controls -->
@@ -139,11 +144,11 @@ export default {
         ...player,
         preferredGames: player.preferredGames
             ? player.preferredGames
-            : 'N/A', // Assuming preferredGames is an array
-        team: player.team_id ? `Team ${player.team_id}` : 'No Team',
-        registrationDate: player.registrationDate
-            ? player.registrationDate
-            : null, // Ensure registrationDate exists
+            : 'N/A', // Assuming preferredGames is an array or a string
+        team: player.team_name ? player.team_name : 'No Team',
+        registrationDate: player.player_registrationDate
+            ? player.player_registrationDate
+            : null,
       }));
     },
     // Generate options for team filter
@@ -159,12 +164,20 @@ export default {
     sortOptions() {
       return [
         { value: null, text: 'No Sorting' },
-        { value: { key: 'name', order: 'asc' }, text: 'Name (A-Z)' },
-        { value: { key: 'name', order: 'desc' }, text: 'Name (Z-A)' },
-        { value: { key: 'email', order: 'asc' }, text: 'Email (A-Z)' },
-        { value: { key: 'email', order: 'desc' }, text: 'Email (Z-A)' },
-        { value: { key: 'registrationDate', order: 'asc' }, text: 'Registration Date (Oldest First)' },
-        { value: { key: 'registrationDate', order: 'desc' }, text: 'Registration Date (Newest First)' },
+        { value: { key: 'player_name', order: 'asc' }, text: 'Name (A-Z)' },
+        { value: { key: 'player_name', order: 'desc' }, text: 'Name (Z-A)' },
+        { value: { key: 'player_lastname', order: 'asc' }, text: 'Lastname (A-Z)' },
+        { value: { key: 'player_lastname', order: 'desc' }, text: 'Lastname (Z-A)' },
+        { value: { key: 'player_email', order: 'asc' }, text: 'Email (A-Z)' },
+        { value: { key: 'player_email', order: 'desc' }, text: 'Email (Z-A)' },
+        {
+          value: { key: 'registrationDate', order: 'asc' },
+          text: 'Registration Date (Oldest First)',
+        },
+        {
+          value: { key: 'registrationDate', order: 'desc' },
+          text: 'Registration Date (Newest First)',
+        },
         { value: { key: 'team', order: 'asc' }, text: 'Team (A-Z)' },
         { value: { key: 'team', order: 'desc' }, text: 'Team (Z-A)' },
       ];
@@ -206,8 +219,11 @@ export default {
         const { key, order } = this.sortOption;
         filtered.sort((a, b) => {
           let comparison = 0;
-          if (a[key] > b[key]) comparison = 1;
-          if (a[key] < b[key]) comparison = -1;
+          const valueA = a[key] ? a[key].toString().toLowerCase() : '';
+          const valueB = b[key] ? b[key].toString().toLowerCase() : '';
+
+          if (valueA > valueB) comparison = 1;
+          if (valueA < valueB) comparison = -1;
           return order === 'asc' ? comparison : -comparison;
         });
       }
@@ -247,10 +263,11 @@ export default {
       sortOption: null,
       fields: [
         { key: 'player_name', label: 'Name', sortable: true },
+        { key: 'player_lastname', label: 'Lastname', sortable: true },
         { key: 'player_email', label: 'Email', sortable: true },
-        { key: 'player_preferredGames', label: 'Preferred Games', sortable: false },
-        { key: 'team_id', label: 'Team', sortable: true },
-        { key: 'player_registrationDate', label: 'Registration Date', sortable: true },
+        { key: 'preferredGames', label: 'Preferred Games', sortable: false },
+        { key: 'team', label: 'Team', sortable: true },
+        { key: 'registrationDate', label: 'Registration Date', sortable: true },
       ],
       currentPage: 1,
       perPage: 10,
@@ -259,59 +276,20 @@ export default {
     };
   },
   methods: {
-    // Map Vuex actions
-    ...mapActions(['fetchPlayers']),
-    /**
-     * Fetch players from the Vuex store
-     */
-    fetchData() {
-      this.loading = true;
-      this.fetchError = null;
-      this.fetchPlayers()
-          .catch((error) => {
-            this.fetchError = 'Failed to load players.';
-            console.error('Error fetching players:', error);
-          })
-          .finally(() => {
-            this.loading = false;
-          });
+    clearFilter() {
+      this.filter = '';
     },
-    /**
-     * Format date using Day.js
-     * @param {string} date - Date string to format
-     * @returns {string} - Formatted date
-     */
     formatDate(date) {
       return dayjs(date).format('MMMM D, YYYY');
     },
-    /**
-     * Clear all filters
-     */
-    clearFilter() {
-      this.filter = '';
-      this.dateRange = [];
-      this.selectedTeam = null;
-      this.sortOption = null;
-      this.currentPage = 1;
-    },
-  },
-  watch: {
-    // Reset to first page when filters change
-    filter() {
-      this.currentPage = 1;
-    },
-    dateRange() {
-      this.currentPage = 1;
-    },
-    selectedTeam() {
-      this.currentPage = 1;
-    },
-    sortOption() {
-      this.currentPage = 1;
-    },
+    ...mapActions(['fetchPlayers']),
   },
   mounted() {
-    this.fetchData();
+    this.fetchPlayers()
+      .catch((error) => {
+        this.fetchError = 'Failed to load players.';
+        console.error('Error fetching players:', error);
+      });
   },
 };
 </script>
