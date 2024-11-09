@@ -9,7 +9,7 @@ const createPlayer = (email, name, lastname, nickname, password, account_type, t
                 if (err) {
                     return reject(err);
                 }
-                resolve({ id: result.insertId, email, name, lastname, nickname, account_type, team_id });
+                resolve({ player_id: result.insertId, email, name, lastname, nickname, account_type, team_id });
             }
         );
     });
@@ -37,11 +37,11 @@ const getAllPlayers = () => {
 };
 
 // Get a player by ID
-const getPlayerById = (id) => {
+const getPlayerById = (player_id) => {
     return new Promise((resolve, reject) => {
         db.query(
             'SELECT * FROM player WHERE player_id = ?', 
-            [id], 
+            [player_id], 
             (err, results) => {
                 if (err) {
                     return reject(err);
@@ -56,11 +56,11 @@ const getPlayerById = (id) => {
 };
 
 // Update a player by ID
-const updatePlayer = (id, email, name, lastname, nickname, password, account_type, team_id) => {
+const updatePlayer = (player_id, email, name, lastname, nickname, password, account_type, team_id) => {
     return new Promise((resolve, reject) => {
         db.query(
             'UPDATE player SET player_email = ?, player_name = ?, player_lastname = ?, player_nickname = ?, player_password = ?, player_account_type = ?, team_id = ? WHERE player_id = ?',
-            [email, name, lastname, nickname, password, account_type, team_id, id],
+            [email, name, lastname, nickname, password, account_type, team_id, player_id],
             (err, result) => {
                 if (err) {
                     return reject(err);
@@ -68,18 +68,18 @@ const updatePlayer = (id, email, name, lastname, nickname, password, account_typ
                 if (result.affectedRows === 0) {
                     return resolve(null);
                 }
-                resolve({ id, email, name, lastname, nickname, account_type, team_id });
+                resolve({ player_id, email, name, lastname, nickname, account_type, team_id });
             }
         );
     });
 };
 
 // Delete a player by ID
-const deletePlayer = (id) => {
+const deletePlayer = (player_id) => {
     return new Promise((resolve, reject) => {
         db.query(
             'DELETE FROM player WHERE player_id = ?', 
-            [id], 
+            [player_id], 
             (err, result) => {
                 if (err) {
                     return reject(err);
