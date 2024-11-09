@@ -13,9 +13,9 @@ const createActivity = (name, player_number, type, description, category) => {
 };
 
 // Obtenir une activité par ID
-const getActivityById = (id) => {
+const getActivityById = (activity_id) => {
     return new Promise((resolve, reject) => {
-        db.query('SELECT * FROM activity WHERE activity_id = ?', [id], (err, result) => {
+        db.query('SELECT * FROM activity WHERE activity_id = ?', [activity_id], (err, result) => {
             if (err) {
                 return reject(err);
             }
@@ -43,9 +43,9 @@ const updateActivity = (id, name, player_number, type, description, category) =>
 };
 
 // Supprimer une activité par ID
-const deleteActivity = (id) => {
+const deleteActivity = (activity_id) => {
     return new Promise((resolve, reject) => {
-        db.query('DELETE FROM activity WHERE activity_id = ?', [id], (err, result) => {
+        db.query('DELETE FROM activity WHERE activity_id = ?', [activity_id], (err, result) => {
             if (err) {
                 return reject(err);
             }

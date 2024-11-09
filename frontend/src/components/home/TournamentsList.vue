@@ -2,8 +2,9 @@
 <template>
   <div class="tournaments-list">
     <b-container class="mt-5 pt-5">
+      <br>
       <h2 class="text-center mb-4">Tournaments</h2>
-
+      <br>
       <!-- Filter Controls -->
       <div class="filters mb-3">
         <!-- Search Filter -->
@@ -101,6 +102,9 @@
         <!-- Custom Date Formatting -->
         <template #cell(tournament_start_time)="data">
           {{ formatDate(data.item.tournament_start_time) }}
+        </template>
+        <template #cell(tournament_name)="data">
+          <router-link :to="`/tournaments/${data.item.tournament_id}`">{{ data.item.tournament_name }}</router-link>
         </template>
       </b-table>
 

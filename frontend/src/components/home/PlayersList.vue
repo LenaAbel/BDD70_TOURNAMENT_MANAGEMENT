@@ -2,7 +2,9 @@
 <template>
   <div class="players">
     <b-container class="mt-5 pt-5">
+      <br>
       <h2 class="text-center mb-4">Players</h2>
+      <br>
 
       <!-- Filter Controls -->
       <div class="filters mb-3">
@@ -107,6 +109,11 @@
         </template>
         <template #cell(registrationDate)="data">
           {{ formatDate(data.item.registrationDate) }}
+        </template>
+
+        <!-- Make the Name clickable to go to Player Profile -->
+        <template #cell(player_name)="data">
+          <router-link :to="`/players/${data.item.player_id}`">{{ data.item.player_name }}</router-link>
         </template>
       </b-table>
 
@@ -271,59 +278,20 @@ export default {
     };
   },
   methods: {
-    // Map Vuex actions
-    ...mapActions(['fetchPlayers']),
-    /**
-     * Fetch players from the Vuex store
-     */
-    fetchData() {
-      this.loading = true;
-      this.fetchError = null;
-      this.fetchPlayers()
-          .catch((error) => {
-            this.fetchError = 'Failed to load players.';
-            console.error('Error fetching players:', error);
-          })
-          .finally(() => {
-            this.loading = false;
-          });
+    clearFilter() {
+      this.filter = '';
     },
-    /**
-     * Format date using Day.js
-     * @param {string} date - Date string to format
-     * @returns {string} - Formatted date
-     */
     formatDate(date) {
       return dayjs(date).format('MMMM D, YYYY');
     },
-    /**
-     * Clear all filters
-     */
-    clearFilter() {
-      this.filter = '';
-      this.dateRange = [];
-      this.selectedTeam = null;
-      this.sortOption = null;
-      this.currentPage = 1;
-    },
-  },
-  watch: {
-    // Reset to first page when filters change
-    filter() {
-      this.currentPage = 1;
-    },
-    dateRange() {
-      this.currentPage = 1;
-    },
-    selectedTeam() {
-      this.currentPage = 1;
-    },
-    sortOption() {
-      this.currentPage = 1;
-    },
+    ...mapActions(['fetchPlayers']),
   },
   mounted() {
-    this.fetchData();
+    this.fetchPlayers()
+      .catch((error) => {
+        this.fetchError = 'Failed to load players.';
+        console.error('Error fetching players:', error);
+      });
   },
 };
 </script>
@@ -332,4 +300,5 @@ export default {
 .players {
   color: var(--navyblue);
 }
+
 </style>

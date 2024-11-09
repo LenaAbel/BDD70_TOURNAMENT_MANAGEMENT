@@ -65,6 +65,9 @@
           responsive
           aria-label="Activities Table"
       >
+      <template #cell(activity_name)="data">
+          <router-link :to="`/activities/${data.item.activity_id}`">{{ data.item.activity_name }}</router-link>
+        </template>
       </b-table>
 
       <!-- Pagination Controls -->

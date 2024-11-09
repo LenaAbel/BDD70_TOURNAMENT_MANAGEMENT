@@ -7,15 +7,15 @@ const createTeam = (name) => {
             if (err) {
                 return reject(err);
             }
-            resolve({ id: result.insertId, name });
+            resolve({ team_id: result.insertId, name });
         });
     });
 };
 
 // Get a team by ID
-const getTeamById = (id) => {
+const getTeamById = (team_id) => {
     return new Promise((resolve, reject) => {
-        db.query('SELECT team_id, team_name FROM team WHERE team_id = ?', [id], (err, result) => {
+        db.query('SELECT team_id, team_name FROM team WHERE team_id = ?', [team_id], (err, result) => {
             if (err) {
                 return reject(err);
             }
@@ -28,24 +28,24 @@ const getTeamById = (id) => {
 };
 
 // Update a team by ID
-const updateTeam = (id, name) => {
+const updateTeam = (team_id, name) => {
     return new Promise((resolve, reject) => {
-        db.query('UPDATE team SET team_name = ? WHERE team_id = ?', [name, id], (err, result) => {
+        db.query('UPDATE team SET team_name = ? WHERE team_id = ?', [name, team_id], (err, result) => {
             if (err) {
                 return reject(err);
             }
             if (result.affectedRows === 0) {
                 return resolve(null);
             }
-            resolve({ id, name });
+            resolve({ team_id, name });
         });
     });
 };
 
 // Delete a team by ID
-const deleteTeam = (id) => {
+const deleteTeam = (team_id) => {
     return new Promise((resolve, reject) => {
-        db.query('DELETE FROM team WHERE team_id = ?', [id], (err, result) => {
+        db.query('DELETE FROM team WHERE team_id = ?', [team_id], (err, result) => {
             if (err) {
                 return reject(err);
             }

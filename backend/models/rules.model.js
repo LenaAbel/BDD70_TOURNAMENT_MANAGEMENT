@@ -7,15 +7,15 @@ const createRule = (ruleSet, activity_id) => {
             if (err) {
                 return reject(err);
             }
-            resolve({ id: result.insertId, ruleSet, activity_id });
+            resolve({ rules_id: result.insertId, ruleSet, activity_id });
         });
     });
 };
 
 // Obtenir une règle par ID
-const getRuleById = (id) => {
+const getRuleById = (rules_id) => {
     return new Promise((resolve, reject) => {
-        db.query('SELECT * FROM rules WHERE id = ?', [id], (err, result) => {
+        db.query('SELECT * FROM rules WHERE rules_id = ?', [rules_id], (err, result) => {
             if (err) {
                 return reject(err);
             }
@@ -28,24 +28,24 @@ const getRuleById = (id) => {
 };
 
 // Mettre à jour une règle par ID
-const updateRule = (id, ruleSet, activity_id) => {
+const updateRule = (rules_id, ruleSet, activity_id) => {
     return new Promise((resolve, reject) => {
-        db.query('UPDATE rules SET ruleSet = ?, activity_id = ? WHERE id = ?', [ruleSet, activity_id, id], (err, result) => {
+        db.query('UPDATE rules SET ruleSet = ?, activity_id = ? WHERE rules_id = ?', [ruleSet, activity_id, rules_id], (err, result) => {
             if (err) {
                 return reject(err);
             }
             if (result.affectedRows === 0) {
                 return resolve(null);
             }
-            resolve({ id, ruleSet, activity_id });
+            resolve({ rules_id, ruleSet, activity_id });
         });
     });
 };
 
 // Supprimer une règle par ID
-const deleteRule = (id) => {
+const deleteRule = (rules_id) => {
     return new Promise((resolve, reject) => {
-        db.query('DELETE FROM rules WHERE id = ?', [id], (err, result) => {
+        db.query('DELETE FROM rules WHERE rules_id = ?', [rules_id], (err, result) => {
             if (err) {
                 return reject(err);
             }
@@ -57,7 +57,7 @@ const deleteRule = (id) => {
     });
 };
 
-// Obtenir toutes les règles par ID de jeu
+// Obtenir toutes les règles par ID de jeu [NE MARCHE PAS]
 const getRulesByGameId = (activity_id) => {
     return new Promise((resolve, reject) => {
         db.query('SELECT * FROM rules WHERE activity_id = ?', [activity_id], (err, results) => {

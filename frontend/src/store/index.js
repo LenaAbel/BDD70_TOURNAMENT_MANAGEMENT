@@ -55,6 +55,19 @@ export default new Vuex.Store({
                 });
         },
         /**
+        * Fetch a specific player by ID (optional)
+        */
+        fetchPlayerById({ commit }, playerId) {
+            return axios.get(`players/${playerId}`)
+            .then((response) => {
+                commit('SET_PLAYERS', [response.data]);  // You might want to replace or append depending on structure
+            })
+            .catch((error) => {
+                console.error('Error fetching player:', error);
+                throw error;
+            });
+        },
+        /**
          * Fetch all teams from the backend
          */
         fetchTeams({ commit }) {
@@ -79,6 +92,19 @@ export default new Vuex.Store({
                     console.error('Error fetching activities:', error);
                     throw error;
                 });
+        },
+        /**
+        * Fetch a specific activity by ID (optional)
+        */
+        fetchActivityById({ commit }, playerId) {
+            return axios.get(`activity/${playerId}`)
+            .then((response) => {
+                commit('SET_ACTIVITIES', [response.data]);  // You might want to replace or append depending on structure
+            })
+            .catch((error) => {
+                console.error('Error fetching player:', error);
+                throw error;
+            });
         },
     },
     getters: {
