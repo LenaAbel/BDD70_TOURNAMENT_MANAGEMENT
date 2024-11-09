@@ -21,7 +21,7 @@
                 aria-label="Clear Search"
                 class="magical-brush-button"
             >
-            <b-icon icon="x-circle"></b-icon>
+              <b-icon icon="x-circle"></b-icon>
             </b-button>
           </b-input-group-append>
         </b-input-group>
@@ -40,7 +40,7 @@
             </b-form-group>
           </b-col>
 
-          <!-- Game Filter (Optional) -->
+          <!-- Game Filter -->
           <b-col md="6" class="mb-3">
             <b-form-group label="Filter by Game">
               <b-form-select
@@ -99,11 +99,8 @@
           aria-label="Tournaments Table"
       >
         <!-- Custom Date Formatting -->
-        <template #cell(start_time)="data">
-          {{ formatDate(data.item.start_time) }}
-        </template>
-        <template #cell(end_time)="data">
-          {{ formatDate(data.item.end_time) }}
+        <template #cell(tournament_start_time)="data">
+          {{ formatDate(data.item.tournament_start_time) }}
         </template>
       </b-table>
 
@@ -139,9 +136,8 @@ export default {
     },
     // Generate options for game filter
     gameOptions() {
-      // Extract unique games from tournaments
       const games = [
-        ...new Set(this.tournaments.map((tournament) => tournament.game)),
+        ...new Set(this.tournaments.map((tournament) => tournament.activity_name)),
       ];
       return [
         { value: null, text: 'All Games' },
@@ -152,14 +148,18 @@ export default {
     sortOptions() {
       return [
         { value: null, text: 'No Sorting' },
-        { value: { key: 'name', order: 'asc' }, text: 'Name (A-Z)' },
-        { value: { key: 'name', order: 'desc' }, text: 'Name (Z-A)' },
-        { value: { key: 'game', order: 'asc' }, text: 'Game (A-Z)' },
-        { value: { key: 'game', order: 'desc' }, text: 'Game (Z-A)' },
-        { value: { key: 'start_time', order: 'asc' }, text: 'Start Time (Oldest First)' },
-        { value: { key: 'start_time', order: 'desc' }, text: 'Start Time (Newest First)' },
-        { value: { key: 'end_time', order: 'asc' }, text: 'End Time (Oldest First)' },
-        { value: { key: 'end_time', order: 'desc' }, text: 'End Time (Newest First)' },
+        { value: { key: 'tournament_name', order: 'asc' }, text: 'Name (A-Z)' },
+        { value: { key: 'tournament_name', order: 'desc' }, text: 'Name (Z-A)' },
+        { value: { key: 'activity_name', order: 'asc' }, text: 'Game (A-Z)' },
+        { value: { key: 'activity_name', order: 'desc' }, text: 'Game (Z-A)' },
+        {
+          value: { key: 'tournament_start_time', order: 'asc' },
+          text: 'Start Time (Oldest First)',
+        },
+        {
+          value: { key: 'tournament_start_time', order: 'desc' },
+          text: 'Start Time (Newest First)',
+        },
       ];
     },
     // Computed property for filtered tournaments based on all filters
@@ -181,10 +181,9 @@ export default {
         const [startDate, endDate] = this.dateRange;
         filtered = filtered.filter((tournament) => {
           const tournamentStart = dayjs(tournament.tournament_start_time);
-          const tournamentEnd = dayjs(tournament.end_time);
           return (
               tournamentStart.isAfter(dayjs(startDate).subtract(1, 'day')) &&
-              tournamentEnd.isBefore(dayjs(endDate).add(1, 'day'))
+              tournamentStart.isBefore(dayjs(endDate).add(1, 'day'))
           );
         });
       }
@@ -192,7 +191,7 @@ export default {
       // Apply game filter
       if (this.selectedGame) {
         filtered = filtered.filter(
-            (tournament) => tournament.game === this.selectedGame
+            (tournament) => tournament.activity_name === this.selectedGame
         );
       }
 
@@ -201,8 +200,16 @@ export default {
         const { key, order } = this.sortOption;
         filtered.sort((a, b) => {
           let comparison = 0;
-          if (a[key] > b[key]) comparison = 1;
-          if (a[key] < b[key]) comparison = -1;
+          if (key === 'tournament_start_time') {
+            const dateA = dayjs(a[key]);
+            const dateB = dayjs(b[key]);
+            comparison = dateA.isAfter(dateB) ? 1 : dateA.isBefore(dateB) ? -1 : 0;
+          } else {
+            const valueA = a[key] ? a[key].toString().toLowerCase() : '';
+            const valueB = b[key] ? b[key].toString().toLowerCase() : '';
+            if (valueA > valueB) comparison = 1;
+            if (valueA < valueB) comparison = -1;
+          }
           return order === 'asc' ? comparison : -comparison;
         });
       }
@@ -252,9 +259,6 @@ export default {
     };
   },
   methods: {
-    /**
-     * Fetch tournaments from the Vuex store
-     */
     ...mapActions(['fetchTournaments']),
     fetchData() {
       this.loading = true;
@@ -268,17 +272,9 @@ export default {
             this.loading = false;
           });
     },
-    /**
-     * Format date using Day.js
-     * @param {string} date - Date string to format
-     * @returns {string} - Formatted date
-     */
     formatDate(date) {
       return dayjs(date).format('MMMM D, YYYY');
     },
-    /**
-     * Clear all filters
-     */
     clearFilter() {
       this.filter = '';
       this.dateRange = [];
@@ -309,12 +305,12 @@ export default {
 </script>
 
 <style scoped>
-
-select, input {
+select,
+input {
   font-family: 'Montserrat', sans-serif;
   font-weight: bold;
   color: gray;
-  letter-spacing : 1px;
+  letter-spacing: 1px;
   font-size: 15px;
 }
 
@@ -322,9 +318,9 @@ select, input {
   font-family: 'Montserrat', sans-serif;
   font-weight: bold;
   color: gray;
-  letter-spacing : 1px;
-  font-size: 15px;}
-
+  letter-spacing: 1px;
+  font-size: 15px;
+}
 
 /* Additional Styling */
 .tournaments-list {
