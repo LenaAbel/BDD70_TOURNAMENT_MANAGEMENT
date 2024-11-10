@@ -69,10 +69,29 @@ const getAllTeams = () => {
     });
 };
 
+const getBestTeamByActivity = (activity_id) => {
+    return new Promise((resolve, reject) => {
+        db.query(
+            `SELECT * FROM meilleur_equipe_par_activité WHERE activity_id = ? ORDER BY total_wins DESC LIMIT 1`,
+            [activity_id],
+            (err, results) => {
+                if (err) {
+                    return reject(err);
+                }
+                if (results.length === 0) {
+                    return resolve(null); // No results found for this activity
+                }
+                resolve(results[0]); // Return the best team for this activity
+            }
+        );
+    });
+};
+
 module.exports = {
     createTeam,
     getTeamById,
     updateTeam,
     deleteTeam,
-    getAllTeams
+    getAllTeams,
+    getBestTeamByActivity
 };
