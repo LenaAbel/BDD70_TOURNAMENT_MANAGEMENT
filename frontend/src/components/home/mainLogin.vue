@@ -3,6 +3,9 @@
   <div class="login mt-5 d-flex align-items-center justify-content-center">
     <b-card class="w-100" style="max-width: 500px;">
       <h2 class="text-center mb-4">Login</h2>
+      <b-alert v-if="error" variant="danger" dismissible class="mt-3">
+        {{ error }}
+      </b-alert>
       <b-form @submit.prevent="login">
         <b-form-group label="Email" label-for="email">
           <b-form-input
@@ -33,16 +36,17 @@
       </b-form>
       <p class="text-center mt-3">
         Don't have an account?
-        <b-link
-            @click="$router.push('/register')"
-            class="magical-brush-link"
-        >Register here</b-link>
+        <b-link @click="$router.push('/register')" class="magical-brush-link"
+        >Register here</b-link
+        >
       </p>
     </b-card>
   </div>
 </template>
 
 <script>
+import { mapActions } from 'vuex';
+
 export default {
   name: 'mainLogin',
   data() {
@@ -51,13 +55,24 @@ export default {
         email: '',
         password: '',
       },
+      error: null,
     };
   },
   methods: {
+    ...mapActions(['loginUser']),
     login() {
-      // Placeholder for login logic
-      console.log('Login form submitted:', this.form);
+      this.error = null;
+      this.loginUser(this.form)
+          .then(() => {
+            // Redirect all users to main home after login
+            this.$router.push('/');
+          })
+          .catch((error) => {
+            console.error('Login error:', error);
+            this.error = error.response?.data?.error || 'Login failed.';
+          });
     },
+
   },
 };
 </script>

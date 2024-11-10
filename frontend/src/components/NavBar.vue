@@ -39,16 +39,37 @@
           <b-nav-item href="/activities">
             <b-icon icon="dice-5-fill" class="mr-1"></b-icon> Activities
           </b-nav-item>
+
+          <!-- Admin Options -->
+          <template v-if="userRole === 'admin'">
+            <b-nav-item href="/admin/dashboard">
+              <b-icon icon="speedometer2" class="mr-1"></b-icon> Dashboard
+            </b-nav-item>
+            <!-- Add more admin navigation items here -->
+          </template>
         </b-navbar-nav>
 
-        <!-- Right-aligned "Login" and "Register" buttons -->
+        <!-- Right-aligned navigation items -->
         <b-navbar-nav class="ml-auto mr-3">
-          <b-nav-item href="/login">
-            <b-icon icon="box-arrow-in-right" class="mr-1"></b-icon> Login
-          </b-nav-item>
-          <b-nav-item href="/register">
-            <b-icon icon="person-plus-fill" class="mr-1"></b-icon> Register
-          </b-nav-item>
+          <!-- Show when user is logged in -->
+          <template v-if="isLoggedIn">
+            <b-nav-item-dropdown text="Account" right>
+              <b-dropdown-item @click="$router.push('/profile')">
+                Profile
+              </b-dropdown-item>
+              <b-dropdown-item @click="logout">Logout</b-dropdown-item>
+            </b-nav-item-dropdown>
+          </template>
+
+          <!-- Show when user is not logged in -->
+          <template v-else>
+            <b-nav-item href="/login">
+              <b-icon icon="box-arrow-in-right" class="mr-1"></b-icon> Login
+            </b-nav-item>
+            <b-nav-item href="/register">
+              <b-icon icon="person-plus-fill" class="mr-1"></b-icon> Register
+            </b-nav-item>
+          </template>
         </b-navbar-nav>
       </b-collapse>
     </b-navbar>
@@ -56,8 +77,16 @@
 </template>
 
 <script>
+import { mapGetters, mapActions } from 'vuex';
+
 export default {
   name: 'NavBar',
+  computed: {
+    ...mapGetters(['isLoggedIn', 'userRole']),
+  },
+  methods: {
+    ...mapActions(['logout']),
+  },
 };
 </script>
 
@@ -65,6 +94,7 @@ export default {
 .navbar-custom {
   background-color: var(--navyblue) !important;
 }
+
 
 .nav-link {
   color: var(--pink) !important;

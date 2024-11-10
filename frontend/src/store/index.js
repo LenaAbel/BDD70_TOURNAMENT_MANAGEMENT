@@ -12,6 +12,7 @@ export default new Vuex.Store({
         players: [],
         teams: [],
         activities: [],
+        user: JSON.parse(localStorage.getItem('user')) || null,
     },
     mutations: {
         SET_TOURNAMENTS(state, tournaments) {
@@ -25,6 +26,14 @@ export default new Vuex.Store({
         },
         SET_ACTIVITIES(state, activities) {
             state.activities = activities;
+        },
+        SET_USER(state, user) {
+            state.user = user;
+            localStorage.setItem('user', JSON.stringify(user));
+        },
+        CLEAR_USER(state) {
+            state.user = null;
+            localStorage.removeItem('user');
         },
     },
     actions: {
@@ -106,11 +115,75 @@ export default new Vuex.Store({
                 throw error;
             });
         },
+        loginUser({ commit }, credentials) {
+            console.log('Attempting login with credentials:', credentials);  // Debug log
+            return axios
+                .post('/players/login', credentials)
+                .then((response) => {
+                    const user = response.data;
+                    console.log('Login successful:', user);  // Check login success
+                    commit('SET_USER', user);
+                    if (user.account_type === 'admin') {
+                        window.location.href = '/admin/dashboard';
+                    } else {
+                        window.location.href = '/';
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error logging in:', error.response ? error.response.data : error);
+                    throw error;
+                });
+        },
+
+
+        /**
+         * Logout user
+         */
+        logout({ commit }) {
+            commit('CLEAR_USER');
+        },
+
+        createTournament({ dispatch }, tournamentData) {
+            return axios
+                .post('/api/tournament', tournamentData)
+                .then(() => {
+                    dispatch('fetchTournaments');
+                })
+                .catch((error) => {
+                    console.error('Error creating tournament:', error);
+                    throw error;
+                });
+        },
+        updateTournament({ dispatch }, { tournamentId, tournamentData }) {
+            return axios
+                .put(`/api/tournament/${tournamentId}`, tournamentData)
+                .then(() => {
+                    dispatch('fetchTournaments');
+                })
+                .catch((error) => {
+                    console.error('Error updating tournament:', error);
+                    throw error;
+                });
+        },
+        deleteTournament({ dispatch }, tournamentId) {
+            return axios
+                .delete(`/api/tournament/${tournamentId}`)
+                .then(() => {
+                    dispatch('fetchTournaments');
+                })
+                .catch((error) => {
+                    console.error('Error deleting tournament:', error);
+                    throw error;
+                });
+        },
     },
     getters: {
         allTournaments: (state) => state.tournaments,
         allPlayers: (state) => state.players,
         allTeams: (state) => state.teams,
         allActivities: (state) => state.activities,
+        isLoggedIn: (state) => !!state.user,
+        currentUser: (state) => state.user,
+        userRole: (state) => (state.user ? state.user.account_type : null),
     },
 });

@@ -3,6 +3,9 @@
   <div class="register mt-5 d-flex align-items-center justify-content-center">
     <b-card class="w-100" style="max-width: 500px;">
       <h2 class="text-center mb-4">Register</h2>
+      <b-alert v-if="error" variant="danger" dismissible class="mt-3">
+        {{ error }}
+      </b-alert>
       <b-form @submit.prevent="register">
         <b-form-group label="Email" label-for="email">
           <b-form-input
@@ -27,6 +30,14 @@
               v-model="form.lastname"
               required
               placeholder="Enter your last name"
+          ></b-form-input>
+        </b-form-group>
+        <b-form-group label="Nickname" label-for="nickname">
+          <b-form-input
+              id="nickname"
+              v-model="form.nickname"
+              required
+              placeholder="Enter your nickname"
           ></b-form-input>
         </b-form-group>
         <b-form-group label="Password" label-for="password">
@@ -59,6 +70,7 @@
 </template>
 
 <script>
+import axios from 'axios';
 
 export default {
   name: 'mainRegister',
@@ -68,14 +80,25 @@ export default {
         email: '',
         name: '',
         lastname: '',
+        nickname: '',
         password: '',
       },
+      error: null,
     };
   },
   methods: {
     register() {
-      // Placeholder for registration logic
-      this.$router.push('/login');
+      this.error = null; // Reset error message
+      axios
+          .post('/players/register', this.form)
+          .then(() => {
+            // Registration successful, redirect to login page
+            this.$router.push('/login');
+          })
+          .catch((error) => {
+            console.error('Registration error:', error);
+            this.error = error.response?.data?.error || 'Registration failed.';
+          });
     },
   },
 };
