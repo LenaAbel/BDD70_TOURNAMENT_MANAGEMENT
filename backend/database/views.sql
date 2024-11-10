@@ -1,4 +1,4 @@
-CREATE VIEW meilleur_joueur_par_activité AS
+CREATE OR REPLACE VIEW meilleur_joueur_par_activité AS
 SELECT
     a.activity_id,
     a.activity_name,
