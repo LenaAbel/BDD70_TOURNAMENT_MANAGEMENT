@@ -125,6 +125,25 @@ const deleteFavoriteActivity = (player_id, activity_id) => {
     });
 };
 
+const getBestPlayerByActivity = (activity_id) => {
+    return new Promise((resolve, reject) => {
+        db.query(
+            `SELECT * FROM meilleur_joueur_par_activité WHERE activity_id = ? ORDER BY total_wins DESC LIMIT 1`,
+            [activity_id],
+            (err, results) => {
+                if (err) {
+                    return reject(err);
+                }
+                if (results.length === 0) {
+                    return resolve(null); 
+                }
+                resolve(results[0]);
+            }
+        );
+    });
+};
+
+
 module.exports = {
     createPlayer,
     getAllPlayers,
@@ -133,4 +152,5 @@ module.exports = {
     deletePlayer,
     setFavoriteActivity,
     deleteFavoriteActivity,
+    getBestPlayerByActivity
 };

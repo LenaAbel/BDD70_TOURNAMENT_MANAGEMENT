@@ -38,6 +38,7 @@ const executeSqlFiles = async () => {
     await executeSqlFile('./database/db.sql');
     await executeSqlFile('./database/procedures.sql', '//');
     await executeSqlFile('./database/inserts.sql');
+    await executeSqlFile('./database/views.sql');
 };
 
 // Start the execution

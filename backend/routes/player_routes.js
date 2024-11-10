@@ -10,5 +10,6 @@ router.post('/', playerController.createPlayer);
 router.get('/:id', playerController.getPlayerById);
 router.put('/:id', playerController.updatePlayer);
 router.delete('/:id', playerController.deletePlayer);
+router.get('/best/:activity_id', playerController.getBestPlayerByActivity);
 
 module.exports = router;

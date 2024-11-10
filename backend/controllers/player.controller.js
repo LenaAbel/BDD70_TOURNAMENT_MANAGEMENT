@@ -81,6 +81,22 @@ const setFavoriteActivity = (req, res) => {
         });
 };
 
+const getBestPlayerByActivity = (req, res) => {
+    const { activity_id } = req.params;
+
+    playerModel.getBestPlayerByActivity(activity_id)
+        .then(bestPlayer => {
+            if (!bestPlayer) {
+                return res.status(404).json({ error: 'No player found for this activity' });
+            }
+            res.json(bestPlayer); // Return the best player for this activity
+        })
+        .catch(err => {
+            console.error('Error fetching best player for activity:', err);
+            res.status(500).json({ error: 'Error fetching best player for activity' });
+        });
+};
+
 module.exports = {
     getAllPlayers,
     createPlayer,
@@ -88,4 +104,5 @@ module.exports = {
     updatePlayer,
     deletePlayer,
     setFavoriteActivity,
+    getBestPlayerByActivity
 };
