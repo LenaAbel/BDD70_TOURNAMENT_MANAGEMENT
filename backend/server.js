@@ -18,6 +18,9 @@ const tournamentRoundRoutes = require("./routes/tournament_round_routes");
 const playerStatsRoutes = require("./routes/player_stats_routes");
 const teamStatsRoutes = require("./routes/team_stats_routes");
 const rankingRoutes = require("./routes/ranking_routes");
+const resultRoutes = require("./routes/result_routes");
+const matchPairingRoutes = require("./routes/matchpairing_routes");
+const registerRoutes = require("./routes/register_routes");
 
 dotenv.config();
 
@@ -38,6 +41,9 @@ server.use("/api/tournamentRound", tournamentRoundRoutes);
 server.use("/api/playerStats", playerStatsRoutes);
 server.use("/api/teamStats", teamStatsRoutes);
 server.use("/api/ranking", rankingRoutes);
+server.use("/api/result", resultRoutes);
+server.use("/api/matchpairing", matchPairingRoutes);
+server.use("/api/register", registerRoutes);
 
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
