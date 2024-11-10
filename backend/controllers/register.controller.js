@@ -70,10 +70,32 @@ const deleteRegister = (req, res) => {
         });
 };
 
+const registerPlayerToTournament = (req, res) => {
+    const { player_id, tournament_id } = req.body;
+    registerModel.registerPlayer(player_id, tournament_id)
+        .then(newRegister => res.status(201).json(newRegister))
+        .catch(err => {
+            console.error('Error registering player to tournament:', err);
+            res.status(500).json({ error: 'Error registering player to tournament' });
+        });
+};
+
+const registerTeamToTournament = (req, res) => {
+    const { team_id, tournament_id } = req.body;
+    registerModel.registerTeam(team_id, tournament_id)
+        .then(newRegister => res.status(201).json(newRegister))
+        .catch(err => {
+            console.error('Error registering team to tournament:', err);
+            res.status(500).json({ error: 'Error registering team to tournament' });
+        });
+};
+
 module.exports = {
     createRegister,
     getRegisterById,
     getAllRegisters,
     updateRegister,
-    deleteRegister
+    deleteRegister,
+    registerPlayerToTournament,
+    registerTeamToTournament
 };

@@ -77,10 +77,54 @@ const deleteRegister = (player_id, tournament_id) => {
     });
 };
 
+//register just one player to a tournament
+const registerPlayer = (player_id, tournament_id) => {
+    return new Promise((resolve, reject) => {
+        db.query('INSERT INTO register (player_id, tournament_id) VALUES (?, ?)', [player_id, tournament_id], (err, result) => {
+            if (err) {
+                return reject(err);
+            }
+            resolve({ player_id, tournament_id });
+        });
+    });
+};
+
+const registerTeam = (team_id, tournament_id) => {
+    return new Promise((resolve, reject) => {
+        // First, get one player from the team
+        db.query('SELECT player_id FROM player WHERE team_id = ? LIMIT 1', [team_id], (err, players) => {
+            if (err) {
+                return reject(err);
+            }
+            
+            if (players.length === 0) {
+                return reject(new Error('No players found for the specified team.'));
+            }
+
+            // Use the first player found in the team
+            const player_id = players[0].player_id;
+
+            // Register this player along with the team to the tournament
+            db.query(
+                'INSERT INTO register (player_id, team_id, tournament_id) VALUES (?, ?, ?)',
+                [player_id, team_id, tournament_id],
+                (err, result) => {
+                    if (err) {
+                        return reject(err);
+                    }
+                    resolve({ player_id, team_id, tournament_id });
+                }
+            );
+        });
+    });
+};
+
 module.exports = {
     createRegister,
     getRegisterById,
     getAllRegisters,
     updateRegister,
-    deleteRegister
+    deleteRegister,
+    registerPlayer,
+    registerTeam
 };

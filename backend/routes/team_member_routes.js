@@ -7,5 +7,6 @@ router.get('/team/:team_id', teamMemberController.getTeamMembersByTeamId);
 router.delete('/team/:team_id/player/:player_id', teamMemberController.removeTeamMember);
 router.get('/player/:player_id', teamMemberController.getTeamsByPlayerId);
 router.get('/', teamMemberController.getAllTeamMembers);
+router.put('/team/:team_id/player/:player_id', teamMemberController.updateTeamMember);
 
 module.exports = router;

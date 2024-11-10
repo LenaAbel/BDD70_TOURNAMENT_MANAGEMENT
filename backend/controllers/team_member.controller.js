@@ -63,10 +63,27 @@ const getAllTeamMembers = async (req, res) => {
     }
 };
 
+const updateTeamMember = (req, res) => {
+    const { team_id, player_id } = req.params;
+    const { new_team_id } = req.body;
+    team_memberModel.updateTeamMember(team_id, player_id, new_team_id)
+        .then(updatedMember => {
+            if (!updatedMember) {
+                return res.status(404).json({ error: 'Team member not found' });
+            }
+            res.json(updatedMember);
+        })
+        .catch(err => {
+            console.error('Error updating team member:', err);
+            res.status(500).json({ error: 'Error updating team member' });
+        });
+};
+
 module.exports = {
     addTeamMember,
     getTeamMembersByTeamId,
     removeTeamMember,
     getTeamsByPlayerId,
-    getAllTeamMembers
+    getAllTeamMembers,
+    updateTeamMember
 };
