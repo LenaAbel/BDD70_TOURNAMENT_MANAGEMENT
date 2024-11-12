@@ -49,7 +49,6 @@ const assignPlayersToTeam = (teamId, playerIds) => {
             return reject(new Error("playerIds must be a non-empty array."));
         }
 
-        // Reset `team_id` for all players in this team to null, then set it for selected players
         const resetQuery = 'UPDATE player SET team_id = NULL WHERE team_id = ? AND player_account_type = "player"';
         const updateQuery = 'UPDATE player SET team_id = ? WHERE player_id IN (?) AND player_account_type = "player"';
 
@@ -57,7 +56,6 @@ const assignPlayersToTeam = (teamId, playerIds) => {
         db.query(resetQuery, [teamId], (err) => {
             if (err) return reject(err);
 
-            // Update only players with the role 'player' for the given player IDs
             db.query(updateQuery, [teamId, playerIds], (err, result) => {
                 if (err) return reject(err);
                 resolve(result);
@@ -65,6 +63,7 @@ const assignPlayersToTeam = (teamId, playerIds) => {
         });
     });
 };
+
 
 
 

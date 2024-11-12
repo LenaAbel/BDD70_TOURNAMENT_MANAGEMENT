@@ -178,24 +178,20 @@ export default {
     },
 
     submitForm() {
-      const teamData = {
-        team_name: this.form.team_name
-      };
+      const { team_name, selectedPlayers, team_id } = this.form;
 
-      if (!teamData.team_name) {
+      if (!team_name) {
         this.error = "Team name is required.";
         return;
       }
 
       const action = this.editing ? this.updateTeam : this.createTeam;
-      action({ teamId: this.form.team_id, teamData })
-          .then(() => {
-            // Assign players after team creation/update is successful
-            return this.$store.dispatch('assignPlayersToTeam', {
-              teamId: this.form.team_id,
-              playerIds: this.form.selectedPlayers
-            });
-          })
+
+      const payload = this.editing
+          ? { teamId: team_id, teamData: { team_name, player_ids: selectedPlayers } }
+          : { team_name, player_ids: selectedPlayers };
+
+      action(payload)
           .then(() => {
             this.closeModal();
             this.fetchTeams();

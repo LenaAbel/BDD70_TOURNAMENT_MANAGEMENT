@@ -1,5 +1,3 @@
-// src/store/index.js
-
 import Vue from 'vue';
 import Vuex from 'vuex';
 import axios from '../axios';
@@ -38,7 +36,6 @@ export default new Vuex.Store({
         CLEAR_USER(state) {
             state.user = null;
             localStorage.removeItem('user');
-            // Redirect to login page
             window.location.href = '/';
         },
         UPDATE_TEAM(state, updatedTeam) {
@@ -79,8 +76,9 @@ export default new Vuex.Store({
                     throw error;
                 });
         },
-        createTeam({ dispatch }, teamData) {
-            return axios.post('/team', teamData)
+        createTeam({ dispatch }, { team_name, player_ids }) {
+            console.log('Data being sent to backend:', { team_name, player_ids });
+            return axios.post('/team', { team_name, player_ids })
                 .then(() => dispatch('fetchTeams'))
                 .catch(error => {
                     console.error('Error creating team:', error);
@@ -88,10 +86,16 @@ export default new Vuex.Store({
                 });
         },
         updateTeam({ dispatch }, { teamId, teamData }) {
-            return axios.put(`/team/${teamId}`, teamData)
+            console.log('Updating team:', teamId, 'with data:', teamData);
+
+            if (!teamId || !teamData.team_name) {
+                console.error("Missing teamId or team_name for update");
+                return Promise.reject(new Error("Team ID and team name are required"));
+            }
+
+            return axios.put(`/team/${teamId}`, { team_name: teamData.team_name })
                 .then(() => {
-                    // Assign players to team if player IDs are provided
-                    if (teamData.player_ids) {
+                    if (teamData.player_ids && teamData.player_ids.length > 0) {
                         return dispatch('assignPlayersToTeam', {
                             teamId,
                             playerIds: teamData.player_ids
@@ -104,7 +108,6 @@ export default new Vuex.Store({
                     throw error;
                 });
         },
-
         deleteTeam({ dispatch }, teamId) {
             return axios.delete(`/team/${teamId}`)
                 .then(() => dispatch('fetchTeams'))

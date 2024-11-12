@@ -13,19 +13,28 @@ const getAllTeams = (req, res) => {
 
 // Create a new team
 const createTeam = (req, res) => {
-    const { team_name } = req.body;
+    const { team_name, player_ids } = req.body;
+    console.log('Received data on backend:', { team_name, player_ids })
 
     if (!team_name) {
         return res.status(400).json({ error: 'Team name is required' });
     }
 
     teamModel.createTeam(team_name)
-        .then(newTeam => res.status(201).json(newTeam))
+        .then(newTeam => {
+            if (player_ids && Array.isArray(player_ids) && player_ids.length > 0) {
+                return teamModel.assignPlayersToTeam(newTeam.team_id, player_ids)
+                    .then(() => res.status(201).json(newTeam));
+            } else {
+                res.status(201).json(newTeam);
+            }
+        })
         .catch(err => {
             console.error('Error creating team:', err);
             res.status(500).json({ error: 'Error adding team' });
         });
 };
+
 
 // Get a team by ID
 const getTeamById = (req, res) => {
@@ -47,6 +56,9 @@ const getTeamById = (req, res) => {
 const updateTeam = (req, res) => {
     const { id } = req.params;
     const { team_name } = req.body;
+
+    console.log("Updating team with ID:", id, "and name:", team_name);
+
     if (!team_name) {
         return res.status(400).json({ error: 'Team name is required' });
     }
