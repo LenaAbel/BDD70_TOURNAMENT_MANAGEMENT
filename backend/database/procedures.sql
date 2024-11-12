@@ -1,6 +1,5 @@
--- Change the delimiter to $$
-DELIMITER $$
-
+-- Drop and create InsertActivity procedure
+DROP PROCEDURE IF EXISTS InsertActivity;
 CREATE PROCEDURE InsertActivity (
     IN activity_name VARCHAR(255),
     IN activity_number_of_players INT,
@@ -9,98 +8,60 @@ CREATE PROCEDURE InsertActivity (
     IN category VARCHAR(50)
 )
 BEGIN
-    DECLARE CONTINUE HANDLER FOR SQLEXCEPTION
-        BEGIN
-            -- Handle the exception
-            SELECT 'Activity insertion failed or already exists';
-        END;
-
     INSERT INTO activity (
         activity_name, activity_number_of_players, activity_type, activity_description, activity_category
     )
     VALUES (
                activity_name, activity_number_of_players, activity_type, activity_description, category
            );
-END $$
+END;
 
+-- Drop and create InsertRule procedure
+DROP PROCEDURE IF EXISTS InsertRule;
 CREATE PROCEDURE InsertRule (
     IN rule_set TEXT,
     IN activity_id INT
 )
 BEGIN
-    DECLARE CONTINUE HANDLER FOR SQLEXCEPTION
-        BEGIN
-            SELECT 'Rule insertion failed or already exists';
-        END;
-
     INSERT INTO rules (
         rules_ruleSet, activity_id
     )
     VALUES (
                rule_set, activity_id
            );
-END $$
+END;
 
+-- Drop and create InsertTeam procedure
+DROP PROCEDURE IF EXISTS InsertTeam;
 CREATE PROCEDURE InsertTeam (
     IN team_name VARCHAR(50)
 )
 BEGIN
-    DECLARE CONTINUE HANDLER FOR SQLEXCEPTION
-        BEGIN
-            SELECT 'Team insertion failed or already exists';
-        END;
-
     INSERT INTO team (
         team_name
     )
     VALUES (
                team_name
            );
-END $$
+END;
 
-CREATE PROCEDURE InsertPlayer (
-    IN player_email VARCHAR(128),
-    IN player_name VARCHAR(50),
-    IN player_lastname VARCHAR(50),
-    IN player_nickname VARCHAR(50),
-    IN player_password VARCHAR(256),
-    IN player_account_type VARCHAR(10),
-    IN team_id INT
-)
-BEGIN
-    DECLARE CONTINUE HANDLER FOR SQLEXCEPTION
-        BEGIN
-            SELECT 'Player insertion failed or already exists';
-        END;
-
-    INSERT INTO player (
-        player_email, player_name, player_lastname, player_nickname,
-        player_password, player_account_type, team_id
-    )
-    VALUES (
-               player_email, player_name, player_lastname, player_nickname,
-               player_password, player_account_type, team_id
-           );
-END $$
-
+-- Drop and create InsertTeamMember procedure
+DROP PROCEDURE IF EXISTS InsertTeamMember;
 CREATE PROCEDURE InsertTeamMember (
     IN team_id INT,
     IN player_id INT
 )
 BEGIN
-    DECLARE CONTINUE HANDLER FOR SQLEXCEPTION
-        BEGIN
-            SELECT 'Team member insertion failed or already exists';
-        END;
-
     INSERT INTO team_member (
         team_id, player_id
     )
     VALUES (
                team_id, player_id
            );
-END $$
+END;
 
+-- Drop and create InsertTournament procedure
+DROP PROCEDURE IF EXISTS InsertTournament;
 CREATE PROCEDURE InsertTournament (
     IN tournament_name VARCHAR(50),
     IN tournament_start_time DATETIME,
@@ -112,11 +73,6 @@ CREATE PROCEDURE InsertTournament (
     IN organizer_id INT
 )
 BEGIN
-    DECLARE CONTINUE HANDLER FOR SQLEXCEPTION
-        BEGIN
-            SELECT 'Tournament insertion failed or already exists';
-        END;
-
     INSERT INTO tournament (
         tournament_name, tournament_start_time, tournament_bestOfX,
         tournament_poolSize, tournament_type, tournament_format, rule_id, organizer_id
@@ -125,44 +81,40 @@ BEGIN
                tournament_name, tournament_start_time, tournament_bestOfX,
                tournament_poolSize, tournament_type, tournament_format, rule_id, organizer_id
            );
-END $$
+END;
 
+-- Drop and create InsertTournamentRound procedure
+DROP PROCEDURE IF EXISTS InsertTournamentRound;
 CREATE PROCEDURE InsertTournamentRound (
     IN tournament_id INT,
     IN round_number INT
 )
 BEGIN
-    DECLARE CONTINUE HANDLER FOR SQLEXCEPTION
-        BEGIN
-            SELECT 'Tournament round insertion failed or already exists';
-        END;
-
     INSERT INTO tournament_round (
         tournament_id, round_number
     )
     VALUES (
                tournament_id, round_number
            );
-END $$
+END;
 
+-- Drop and create InsertFavoriteActivity procedure
+DROP PROCEDURE IF EXISTS InsertFavoriteActivity;
 CREATE PROCEDURE InsertFavoriteActivity (
     IN player_id INT,
     IN activity_id INT
 )
 BEGIN
-    DECLARE CONTINUE HANDLER FOR SQLEXCEPTION
-        BEGIN
-            SELECT 'Favorite activity insertion failed or already exists';
-        END;
-
     INSERT INTO favoriteactivity (
         player_id, activity_id
     )
     VALUES (
                player_id, activity_id
            );
-END $$
+END;
 
+-- Drop and create InsertMatch procedure
+DROP PROCEDURE IF EXISTS InsertMatch;
 CREATE PROCEDURE InsertMatch (
     IN matchs_start_time DATETIME,
     IN matchs_status VARCHAR(50),
@@ -170,38 +122,32 @@ CREATE PROCEDURE InsertMatch (
     IN tournament_id INT
 )
 BEGIN
-    DECLARE CONTINUE HANDLER FOR SQLEXCEPTION
-        BEGIN
-            SELECT 'Match insertion failed or already exists';
-        END;
-
     INSERT INTO matchs (
         matchs_start_time, matchs_status, matchs_location, tournament_id
     )
     VALUES (
                matchs_start_time, matchs_status, matchs_location, tournament_id
            );
-END $$
+END;
 
+-- Drop and create InsertRegister procedure
+DROP PROCEDURE IF EXISTS InsertRegister;
 CREATE PROCEDURE InsertRegister (
     IN player_id INT,
     IN team_id INT,
     IN tournament_id INT
 )
 BEGIN
-    DECLARE CONTINUE HANDLER FOR SQLEXCEPTION
-        BEGIN
-            SELECT 'Registration insertion failed or already exists';
-        END;
-
     INSERT INTO register (
         player_id, team_id, tournament_id
     )
     VALUES (
                player_id, team_id, tournament_id
            );
-END $$
+END;
 
+-- Drop and create InsertResult procedure
+DROP PROCEDURE IF EXISTS InsertResult;
 CREATE PROCEDURE InsertResult (
     IN match_id INT,
     IN winner_player_id INT,
@@ -212,11 +158,6 @@ CREATE PROCEDURE InsertResult (
     IN loser_score INT
 )
 BEGIN
-    DECLARE CONTINUE HANDLER FOR SQLEXCEPTION
-        BEGIN
-            SELECT 'Result insertion failed or already exists';
-        END;
-
     INSERT INTO results (
         match_id, winner_player_id, loser_player_id,
         winner_team_id, loser_team_id, winner_score, loser_score
@@ -225,27 +166,26 @@ BEGIN
                match_id, winner_player_id, loser_player_id,
                winner_team_id, loser_team_id, winner_score, loser_score
            );
-END $$
+END;
 
+-- Drop and create InsertMatchPairing procedure
+DROP PROCEDURE IF EXISTS InsertMatchPairing;
 CREATE PROCEDURE InsertMatchPairing (
     IN match_id INT,
     IN player_id INT,
     IN team_id INT
 )
 BEGIN
-    DECLARE CONTINUE HANDLER FOR SQLEXCEPTION
-        BEGIN
-            SELECT 'Match pairing insertion failed or already exists';
-        END;
-
     INSERT INTO matchpairing (
         match_id, player_id, team_id
     )
     VALUES (
                match_id, player_id, team_id
            );
-END $$
+END;
 
+-- Drop and create InsertRanking procedure
+DROP PROCEDURE IF EXISTS InsertRanking;
 CREATE PROCEDURE InsertRanking (
     IN tournament_id INT,
     IN player_id INT,
@@ -254,19 +194,16 @@ CREATE PROCEDURE InsertRanking (
     IN ranking_ranking INT
 )
 BEGIN
-    DECLARE CONTINUE HANDLER FOR SQLEXCEPTION
-        BEGIN
-            SELECT 'Ranking insertion failed or already exists';
-        END;
-
     INSERT INTO ranking (
         tournament_id, player_id, team_id, ranking_points, ranking_ranking
     )
     VALUES (
                tournament_id, player_id, team_id, ranking_points, ranking_ranking
            );
-END $$
+END;
 
+-- Drop and create InsertPlayerStats procedure
+DROP PROCEDURE IF EXISTS InsertPlayerStats;
 CREATE PROCEDURE InsertPlayerStats (
     IN player_id INT,
     IN activity_id INT,
@@ -276,11 +213,6 @@ CREATE PROCEDURE InsertPlayerStats (
     IN player_stats_draws INT
 )
 BEGIN
-    DECLARE CONTINUE HANDLER FOR SQLEXCEPTION
-        BEGIN
-            SELECT 'Player stats insertion failed or already exists';
-        END;
-
     INSERT INTO player_stats (
         player_id, activity_id, player_stats_total_matches,
         player_stats_wins, player_stats_losses, player_stats_draws
@@ -289,8 +221,10 @@ BEGIN
                player_id, activity_id, player_stats_total_matches,
                player_stats_wins, player_stats_losses, player_stats_draws
            );
-END $$
+END;
 
+-- Drop and create InsertTeamStats procedure
+DROP PROCEDURE IF EXISTS InsertTeamStats;
 CREATE PROCEDURE InsertTeamStats (
     IN team_id INT,
     IN activity_id INT,
@@ -300,11 +234,6 @@ CREATE PROCEDURE InsertTeamStats (
     IN team_stats_draws INT
 )
 BEGIN
-    DECLARE CONTINUE HANDLER FOR SQLEXCEPTION
-        BEGIN
-            SELECT 'Team stats insertion failed or already exists';
-        END;
-
     INSERT INTO team_stats (
         team_id, activity_id, team_stats_total_matches,
         team_stats_wins, team_stats_losses, team_stats_draws
@@ -313,7 +242,4 @@ BEGIN
                team_id, activity_id, team_stats_total_matches,
                team_stats_wins, team_stats_losses, team_stats_draws
            );
-END $$
-
--- Revert back to the default delimiter
-DELIMITER ;
+END;
