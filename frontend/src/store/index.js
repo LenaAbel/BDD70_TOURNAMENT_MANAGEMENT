@@ -46,6 +46,9 @@ export default new Vuex.Store({
         },
     },
     actions: {
+        /**
+         * Fetch all tournaments from the backend
+         */
         fetchTournaments({ commit }) {
             return axios.get('tournament/')
                 .then(response => {
@@ -56,6 +59,10 @@ export default new Vuex.Store({
                     throw error;
                 });
         },
+
+        /**
+         * Fetch all players from the backend
+         */
         fetchPlayers({ commit }) {
             return axios.get('players/')
                 .then(response => {
@@ -66,6 +73,47 @@ export default new Vuex.Store({
                     throw error;
                 });
         },
+        /**
+        * Fetch a specific player by ID (optional)
+        */
+        fetchPlayerById({ commit }, playerId) {
+            return axios.get(`players/${playerId}`)
+            .then((response) => {
+                commit('SET_PLAYERS', [response.data]);  // You might want to replace or append depending on structure
+            })
+            .catch((error) => {
+                console.error('Error fetching player:', error);
+                throw error;
+            });
+        },
+        createPlayer({ dispatch }, playerData) {
+            return axios.post('/players', playerData).then(() => {
+                return dispatch('fetchPlayers');
+            });
+        },
+        updatePlayer({ dispatch }, { playerId, playerData }) {
+            return axios.put(`/players/${playerId}`, playerData).then(() => {
+                return dispatch('fetchPlayers');
+            });
+        },
+        deletePlayer({ dispatch }, playerId) {
+            return axios.delete(`/players/${playerId}`).then(() => {
+                return dispatch('fetchPlayers');
+            });
+        },
+        fetchOrganizers({ commit }) {
+            return axios.get('/players?account_type=organizer')
+                .then(response => {
+                    commit('SET_ORGANIZERS', response.data);
+                })
+                .catch(error => {
+                    console.error('Error fetching organizers:', error);
+                    throw error;
+                });
+        },
+        /**
+         * Fetch all teams from the backend
+         */
         fetchTeams({ commit }) {
             return axios.get('team/')
                 .then(response => {
@@ -124,6 +172,41 @@ export default new Vuex.Store({
                     throw error;
                 });
         },
+        fetchRules({ commit }) {
+            return axios.get('rules/')
+                .then(response => {
+                    commit('SET_RULES', response.data);
+                })
+                .catch(error => {
+                    console.error('Error fetching rules:', error);
+                    throw error;
+                });
+
+        },
+        /**
+         * Fetch all activities from the backend
+         */
+        async fetchActivities({ commit }) {
+            try {
+                const response = await axios.get('/activity');
+                commit('SET_ACTIVITIES', response.data);
+            } catch (error) {
+                console.error('Error fetching activities:', error);
+            }
+        },
+        /**
+         * Fetch a specific activity by ID (optional)
+         */
+        fetchActivityById({ commit }, playerId) {
+            return axios.get(`activity/${playerId}`)
+                .then((response) => {
+                    commit('SET_ACTIVITIES', [response.data]);  // You might want to replace or append depending on structure
+                })
+                .catch((error) => {
+                    console.error('Error fetching player:', error);
+                    throw error;
+                });
+        },
         loginUser({ commit }, credentials) {
             return axios.post('/players/login', credentials)
                 .then(response => {
@@ -140,9 +223,40 @@ export default new Vuex.Store({
                     throw error;
                 });
         },
+
+
+        /**
+         * Logout user
+         */
         logout({ commit }) {
             commit('CLEAR_USER');
         },
+
+        createTournament({ dispatch }, tournamentData) {
+            return axios.post('/tournament', tournamentData)
+                .then(() => dispatch('fetchTournaments'))
+                .catch(error => {
+                    console.error('Error creating tournament:', error);
+                    throw error;
+                });
+        },
+        updateTournament({ dispatch }, { tournamentId, tournamentData }) {
+            return axios.put(`/tournament/${tournamentId}`, tournamentData)
+                .then(() => dispatch('fetchTournaments'))
+                .catch(error => {
+                    console.error('Error updating tournament:', error);
+                    throw error;
+                });
+        },
+        deleteTournament({ dispatch }, tournamentId) {
+            return axios.delete(`/tournament/${tournamentId}`)
+                .then(() => dispatch('fetchTournaments'))
+                .catch(error => {
+                    console.error('Error deleting tournament:', error);
+                    throw error;
+                });
+        },
+
     },
     getters: {
         allTournaments: (state) => state.tournaments,
