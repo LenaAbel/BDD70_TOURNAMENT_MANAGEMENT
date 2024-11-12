@@ -15,6 +15,8 @@ import PlayerDisplay from "@/components/home/Player/PlayerDisplay.vue";
 import TournamentDisplay from "@/components/home/Tournament/TournamentDisplay.vue";
 import AdminTournaments from '../components/admin/AdminTournaments.vue';
 import AdminDashboard from "@/components/admin/AdminDashboard.vue";
+import AdminPlayers from "@/components/admin/AdminPlayers.vue";
+import AdminTeams from "@/components/admin/AdminTeams.vue";
 
 Vue.use(Router);
 
@@ -79,7 +81,19 @@ const router = new Router({
             path: '/admin/tournaments',
             name: 'AdminTournaments',
             component: AdminTournaments,
-            meta: {requiresAuth: true, requiresAdmin: true},
+            meta: { requiresAuth: true, requiresAdmin: true },
+        },
+        {
+            path: '/admin/players',
+            name: 'AdminPlayers',
+            component: AdminPlayers,
+            meta: { requiresAuth: true, requiresAdmin: true },
+        },
+        {
+          path: '/admin/teams',
+            name: 'AdminTeams',
+            component: AdminTeams,
+            meta: { requiresAuth: true, requiresAdmin: true },
         },
         {
             path: '/admin/dashboard',

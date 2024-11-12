@@ -131,11 +131,9 @@ export default {
   computed: {
     // Access tournaments from Vuex store
     ...mapGetters(['allTournaments']),
-    // Processed tournaments with additional formatting if needed
     tournaments() {
       return this.allTournaments.map((tournament) => ({
         ...tournament,
-        // Add any additional processing if required
       }));
     },
     // Generate options for game filter

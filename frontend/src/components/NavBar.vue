@@ -1,4 +1,3 @@
-<!-- src/components/Navbar.vue -->
 <template>
   <div>
     <b-navbar
@@ -24,34 +23,45 @@
       <b-collapse id="nav-collapse" is-nav>
         <!-- Left-aligned navigation items -->
         <b-navbar-nav>
-          <b-nav-item href="/">
-            <b-icon icon="house-door-fill" class="mr-1"></b-icon> Home
-          </b-nav-item>
-          <b-nav-item href="/tournaments">
-            <b-icon icon="trophy-fill" class="mr-1"></b-icon> Tournaments
-          </b-nav-item>
-          <b-nav-item href="/players">
-            <b-icon icon="people-fill" class="mr-1"></b-icon> Players
-          </b-nav-item>
-          <b-nav-item href="/teams">
-            <b-icon icon="people" class="mr-1"></b-icon> Teams
-          </b-nav-item>
-          <b-nav-item href="/activities">
-            <b-icon icon="dice-5-fill" class="mr-1"></b-icon> Activities
-          </b-nav-item>
-
-          <!-- Admin Options -->
-          <template v-if="userRole === 'admin'">
-            <b-nav-item href="/admin/dashboard">
-              <b-icon icon="speedometer2" class="mr-1"></b-icon> Dashboard
+          <!-- Show public navigation items only when the user is not logged in -->
+          <template v-if="!isLoggedIn">
+            <b-nav-item href="/">
+              <b-icon icon="house-door-fill" class="mr-1"></b-icon> Home
             </b-nav-item>
-            <!-- Add more admin navigation items here -->
+            <b-nav-item href="/tournaments">
+              <b-icon icon="trophy-fill" class="mr-1"></b-icon> Tournaments
+            </b-nav-item>
+            <b-nav-item href="/players">
+              <b-icon icon="people-fill" class="mr-1"></b-icon> Players
+            </b-nav-item>
+            <b-nav-item href="/teams">
+              <b-icon icon="people" class="mr-1"></b-icon> Teams
+            </b-nav-item>
+            <b-nav-item href="/activities">
+              <b-icon icon="dice-5-fill" class="mr-1"></b-icon> Activities
+            </b-nav-item>
+          </template>
+
+          <!-- Admin Options - visible only if logged in and user is an admin -->
+          <template v-if="isLoggedIn && userRole === 'admin'">
+            <b-nav-item href="/admin/tournaments">
+              <b-icon icon="trophy-fill" class="mr-1"></b-icon> Manage Tournaments
+            </b-nav-item>
+            <b-nav-item href="/admin/players">
+              <b-icon icon="people-fill" class="mr-1"></b-icon> Manage Players
+            </b-nav-item>
+            <b-nav-item href="/admin/teams">
+              <b-icon icon="people" class="mr-1"></b-icon> Manage Teams
+            </b-nav-item>
+            <b-nav-item href="/admin/activities">
+              <b-icon icon="dice-5-fill" class="mr-1"></b-icon> Manage Activities
+            </b-nav-item>
           </template>
         </b-navbar-nav>
 
         <!-- Right-aligned navigation items -->
         <b-navbar-nav class="ml-auto mr-3">
-          <!-- Show when user is logged in -->
+          <!-- Show Account dropdown if the user is logged in -->
           <template v-if="isLoggedIn">
             <b-nav-item-dropdown text="Account" right>
               <b-dropdown-item @click="$router.push('/profile')">
@@ -61,7 +71,7 @@
             </b-nav-item-dropdown>
           </template>
 
-          <!-- Show when user is not logged in -->
+          <!-- Show Login and Register options if the user is not logged in -->
           <template v-else>
             <b-nav-item href="/login">
               <b-icon icon="box-arrow-in-right" class="mr-1"></b-icon> Login
@@ -81,6 +91,7 @@ import { mapGetters, mapActions } from 'vuex';
 
 export default {
   name: 'NavBar',
+
   computed: {
     ...mapGetters(['isLoggedIn', 'userRole']),
   },
@@ -95,18 +106,17 @@ export default {
   background-color: var(--navyblue) !important;
 }
 
-
 .nav-link {
   color: var(--pink) !important;
   font-weight: bold;
   transition: all 0.3s ease;
-  padding: 5px 10px; /* Add padding for hover effect */
-  border-radius: 15px; /* Rounded edges */
+  padding: 5px 10px;
+  border-radius: 15px;
 }
 
 .nav-link:hover {
   color: var(--pink) !important;
-  background-color: rgba(255, 255, 255, 0.2); /* Light background on hover */
+  background-color: rgba(255, 255, 255, 0.2);
   text-decoration: none;
 }
 
