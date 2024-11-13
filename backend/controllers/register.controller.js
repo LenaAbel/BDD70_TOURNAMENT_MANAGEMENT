@@ -72,7 +72,7 @@ const deleteRegister = (req, res) => {
 
 const registerPlayerToTournament = (req, res) => {
     const { player_id, tournament_id } = req.body;
-    registerModel.registerPlayer(player_id, tournament_id)
+    registerModel.registerPlayerToTournament(player_id, tournament_id)
         .then(newRegister => res.status(201).json(newRegister))
         .catch(err => {
             console.error('Error registering player to tournament:', err);

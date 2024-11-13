@@ -78,7 +78,7 @@ const deleteRegister = (player_id, tournament_id) => {
 };
 
 //register just one player to a tournament
-const registerPlayer = (player_id, tournament_id) => {
+const registerPlayerToTournament = (player_id, tournament_id) => {
     return new Promise((resolve, reject) => {
         db.query('INSERT INTO register (player_id, tournament_id) VALUES (?, ?)', [player_id, tournament_id], (err, result) => {
             if (err) {
@@ -125,6 +125,6 @@ module.exports = {
     getAllRegisters,
     updateRegister,
     deleteRegister,
-    registerPlayer,
+    registerPlayerToTournament,
     registerTeam
 };

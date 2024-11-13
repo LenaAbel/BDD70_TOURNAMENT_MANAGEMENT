@@ -14,7 +14,7 @@ const createTournament = (name, start_time, bestofX, poolSize, type, format, rul
                 if (err) {
                     return reject(err);
                 }
-                resolve({ id: result.insertId, name, start_time, bestofX, poolSize, type, format, rule_id, organizer_id });
+                resolve({ tournament_id: result.insertId, name, start_time, bestofX, poolSize, type, format, rule_id, organizer_id });
             }
         );
     });
