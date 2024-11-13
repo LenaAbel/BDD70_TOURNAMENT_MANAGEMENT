@@ -1,5 +1,5 @@
 const express = require('express');
-const playerController = require('../controllers/player.controller'); // Adjust path as necessary
+const playerController = require('../controllers/player.controller');
 
 const router = express.Router();
 
@@ -11,5 +11,7 @@ router.get('/:id', playerController.getPlayerById);
 router.put('/:id', playerController.updatePlayer);
 router.delete('/:id', playerController.deletePlayer);
 router.get('/best/:activity_id', playerController.getBestPlayerByActivity);
+router.post('/register', playerController.registerPlayer);
+router.post('/login', playerController.loginPlayer);
 
 module.exports = router;

@@ -10,5 +10,6 @@ router.get('/:id', teamController.getTeamById);
 router.put('/:id', teamController.updateTeam);
 router.delete('/:id', teamController.deleteTeam);
 router.get('/best/:activity_id', teamController.getBestTeamByActivity);
+router.put('/:id/players', teamController.assignPlayersToTeam);
 
 module.exports = router;

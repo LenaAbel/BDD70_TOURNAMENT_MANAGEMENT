@@ -1,9 +1,7 @@
-<!-- src/components/PlayerProfile.vue -->
 <template>
     <div class="player-profile">
         <b-container class="mt-5 pt-5">
             <h2 class="text-center mb-4">Player Profile</h2>
-
             <!-- Loading Indicator -->
             <div v-if="isLoading" class="text-center my-4">
                 <b-spinner label="Loading..."></b-spinner>
@@ -15,7 +13,7 @@
             </b-alert>
 
             <!-- Player Info -->
-            <div v-if="!isLoading && !error && player">
+            <div class="card" v-if="!isLoading && !error && player">
                 <b-card>
                     <b-card-body>
                         <h4>{{ player.player_name }} {{ player.player_lastname }}</h4>
@@ -32,17 +30,21 @@
 </template>
 
 <script>
-    import {
-        mapGetters
-    } from 'vuex';
+    import { mapGetters } from 'vuex';
     import dayjs from 'dayjs';
 
     export default {
         name: 'PlayerProfile',
+        props: {
+            playerId: {
+                type: Number,
+                required: true,
+            },
+        },
         computed: {
-            ...mapGetters(['allPlayers']),
+            ...mapGetters(['playerById']),
             player() {
-                return this.allPlayers.find((player) => player.player_id === this.playerId);
+                return this.$store.getters.playerById;
             },
             isLoading() {
                 return this.loading;
@@ -53,19 +55,19 @@
         },
         data() {
             return {
-                playerId: 1, // You can dynamically get this from route params or a parent component
                 loading: false,
                 fetchError: null,
             };
         },
         mounted() {
+            console.log('Player ID:', this.playerId);
             this.fetchPlayerData();
         },
         methods: {
             fetchPlayerData() {
                 this.loading = true;
                 this.fetchError = null;
-                this.$store.dispatch('fetchPlayers')
+                this.$store.dispatch('fetchPlayerById', this.playerId)
                     .catch((error) => {
                         this.fetchError = 'Failed to load player data.';
                         console.error('Error fetching player data:', error);
@@ -82,7 +84,7 @@
 </script>
 
 <style scoped>
-    .player-profile {
-        padding: 20px;
-    }
+.player-profile {
+    color: var(--navyblue);
+}
 </style>

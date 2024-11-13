@@ -1,6 +1,7 @@
+// src/controllers/tournament.controller.js
+
 const tournamentModel = require('../models/tournament.model');
 
-// Get all tournaments
 const getAllTournaments = (req, res) => {
     tournamentModel.getAllTournaments()
         .then(tournaments => res.json(tournaments))
@@ -10,9 +11,21 @@ const getAllTournaments = (req, res) => {
         });
 };
 
-// Create a new tournament
 const createTournament = (req, res) => {
     const { name, start_time, bestofX, poolSize, type, format, rule_id, organizer_id } = req.body;
+    console.log("Received Data in API:", req.body); // Log the request payload for verification
+
+    // Check missing fields and log each one specifically
+    if (!name) console.error("Missing field: name");
+    if (!start_time) console.error("Missing field: start_time");
+    if (!type) console.error("Missing field: type");
+    if (!rule_id) console.error("Missing field: rule_id");
+    if (!organizer_id) console.error("Missing field: organizer_id");
+
+    if (!name || !start_time || !type || !rule_id || !organizer_id) {
+        return res.status(400).json({ error: "Required fields are missing" });
+    }
+
     tournamentModel.createTournament(name, start_time, bestofX, poolSize, type, format, rule_id, organizer_id)
         .then(newTournament => res.status(201).json(newTournament))
         .catch(err => {
@@ -21,7 +34,8 @@ const createTournament = (req, res) => {
         });
 };
 
-// Get a tournament by ID
+
+
 const getTournamentById = (req, res) => {
     const { id } = req.params;
     tournamentModel.getTournamentById(id)
@@ -37,11 +51,11 @@ const getTournamentById = (req, res) => {
         });
 };
 
-// Update a tournament by ID
 const updateTournament = (req, res) => {
-    const { id } = req.params;
+    const { id: tournament_id } = req.params;
     const { name, start_time, bestofX, poolSize, type, format, rule_id, organizer_id } = req.body;
-    tournamentModel.updateTournament(id, name, start_time, bestofX, poolSize, type, format, rule_id, organizer_id)
+
+    tournamentModel.updateTournament(tournament_id, name, start_time, bestofX, poolSize, type, format, rule_id, organizer_id)
         .then(updatedTournament => {
             if (!updatedTournament) {
                 return res.status(404).json({ error: 'Tournament not found or not updated' });
@@ -54,15 +68,16 @@ const updateTournament = (req, res) => {
         });
 };
 
-// Delete a tournament by ID
+
 const deleteTournament = (req, res) => {
     const { id } = req.params;
+
     tournamentModel.deleteTournament(id)
         .then(result => {
             if (!result) {
                 return res.status(404).json({ error: 'Tournament not found or not deleted' });
             }
-            res.status(204).send();
+            res.status(204).send(); // Send a 204 No Content response on success
         })
         .catch(err => {
             console.error('Error deleting tournament:', err);
@@ -70,10 +85,11 @@ const deleteTournament = (req, res) => {
         });
 };
 
+
 module.exports = {
     createTournament,
     getAllTournaments,
     getTournamentById,
     updateTournament,
-    deleteTournament
+    deleteTournament,
 };

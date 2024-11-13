@@ -1,8 +1,10 @@
 const playerModel = require('../models/player.model');
+const pool = require("../database/db_init");
 
 // Get all players
 const getAllPlayers = (req, res) => {
-    playerModel.getAllPlayers()
+    const { account_type } = req.query;
+    playerModel.getAllPlayers(account_type)
         .then(players => res.json(players))
         .catch(err => {
             console.error('Error fetching players:', err);
@@ -20,6 +22,43 @@ const createPlayer = (req, res) => {
             res.status(500).json({ error: 'Error adding player' });
         });
 };
+
+const registerPlayer = (req, res) => {
+    const { email, name, lastname, nickname, password } = req.body;
+    const account_type = 'player'; // Default account type
+    const team_id = null; // Default team
+
+    playerModel.registerPlayer(email, name, lastname, nickname, password, account_type, team_id, pool)
+        .then(newPlayer => res.status(201).json(newPlayer))
+        .catch(err => {
+            console.error('Error registering player:', err);
+            if (err.message === 'Email already exists') {
+                res.status(409).json({ error: 'Email already exists' });
+            } else {
+                res.status(500).json({ error: 'Error registering player' });
+            }
+        });
+};
+
+// Login a player
+const loginPlayer = (req, res) => {
+    const { email, password } = req.body;
+    playerModel.loginPlayer(email, password, pool)
+        .then(player => {
+            if (!player) {
+                console.log('Invalid credentials');
+                return res.status(401).json({ error: 'Invalid email or password' });
+            }
+            res.json(player);
+        })
+        .catch(err => {
+            console.error('Error logging in player:', err);
+            res.status(500).json({ error: 'Error logging in player' });
+        });
+};
+
+
+
 
 // Get a player by ID
 const getPlayerById = (req, res) => {
@@ -105,4 +144,6 @@ module.exports = {
     deletePlayer,
     setFavoriteActivity,
     getBestPlayerByActivity
+    registerPlayer,
+    loginPlayer
 };

@@ -1,7 +1,8 @@
+<!-- ActivityDisplay.vue -->
 <template>
     <div class="activity-profile">
         <b-container class="mt-5 pt-5">
-            <h2 class="text-center mb-4">Activity Profile</h2>
+            <h2 class="text-center mb-4">Activity</h2>
 
             <!-- Loading Indicator -->
             <div v-if="isLoading" class="text-center my-4">
@@ -84,5 +85,6 @@
 <style scoped>
     .activity-profile {
         padding: 20px;
+      color: var(--navyblue);
     }
 </style>

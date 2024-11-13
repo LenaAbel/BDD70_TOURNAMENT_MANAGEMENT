@@ -2,7 +2,9 @@
 <template>
   <div class="players">
     <b-container class="mt-5 pt-5">
+      <br>
       <h2 class="text-center mb-4">Players</h2>
+      <br>
 
       <!-- Filter Controls -->
       <div class="filters mb-3">
@@ -295,5 +297,8 @@ export default {
 </script>
 
 <style scoped>
+.players {
+  color: var(--navyblue);
+}
 
 </style>

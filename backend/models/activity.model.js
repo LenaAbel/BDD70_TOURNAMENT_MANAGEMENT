@@ -60,7 +60,22 @@ const deleteActivity = (activity_id) => {
 // Obtenir toutes les activités
 const getAllActivities = () => {
     return new Promise((resolve, reject) => {
-        db.query('SELECT * FROM activity', (err, results) => {
+        const query = `
+            SELECT 
+                activity.activity_id, 
+                activity.activity_name, 
+                activity.activity_number_of_players, 
+                activity.activity_type, 
+                activity.activity_description, 
+                activity.activity_category,
+                rules.rules_id AS rule_id
+            FROM 
+                activity
+            LEFT JOIN 
+                rules ON activity.activity_id = rules.activity_id
+        `;
+
+        db.query(query, (err, results) => {
             if (err) {
                 return reject(err);
             }
@@ -68,6 +83,7 @@ const getAllActivities = () => {
         });
     });
 };
+
 
 module.exports = {
     createActivity,
