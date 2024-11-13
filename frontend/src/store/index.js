@@ -8,6 +8,7 @@ export default new Vuex.Store({
     state: {
         tournaments: [],
         players: [],
+        player: {},
         teams: [],
         activities: [],
         organizers: [],
@@ -19,6 +20,9 @@ export default new Vuex.Store({
         },
         SET_PLAYERS(state, players) {
             state.players = players;
+        },
+        SET_PLAYER(state, player) {
+            state.player = player;
         },
         SET_TEAMS(state, teams) {
             state.teams = teams;
@@ -79,7 +83,7 @@ export default new Vuex.Store({
         fetchPlayerById({ commit }, playerId) {
             return axios.get(`players/${playerId}`)
             .then((response) => {
-                commit('SET_PLAYERS', [response.data]);  // You might want to replace or append depending on structure
+                commit('SET_PLAYER', response.data);
             })
             .catch((error) => {
                 console.error('Error fetching player:', error);
@@ -261,6 +265,7 @@ export default new Vuex.Store({
     getters: {
         allTournaments: (state) => state.tournaments,
         allPlayers: (state) => state.players,
+        playerById: (state) => state.player,
         allTeams: (state) => state.teams,
         allActivities: (state) => state.activities,
         allOrganizers: (state) => state.organizers,

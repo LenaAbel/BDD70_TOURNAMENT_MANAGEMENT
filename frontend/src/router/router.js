@@ -45,10 +45,12 @@ const router = new Router({
             component: PlayersList,
         },
         {
-            path: '/players/:id',
+            path: '/players/:playerId',
             name: 'PlayerDisplay',
             component: PlayerDisplay,
-            props: true,
+            props: route => {
+                return { playerId: Number(route.params.playerId) };
+            }
         },
 
         {
