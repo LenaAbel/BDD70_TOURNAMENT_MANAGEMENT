@@ -23,6 +23,7 @@ CALL InsertFavoriteActivity(3, 5); -- Carol likes Catan
 -- Insert Matches
 CALL InsertMatch('2024-01-15 09:00:00', 'Scheduled', 'Main Hall', 1);
 CALL InsertMatch('2024-01-15 10:00:00', 'Scheduled', 'Main Hall', 1);
+CALL InsertMatch('2024-01-15 10:00:00', 'Scheduled', 'Main Hall', 1);
 
 -- Insert Register records
 CALL InsertRegister(1, NULL, 1); -- Alice registers for Chess Championship
@@ -35,6 +36,8 @@ CALL InsertResult(1, 1, 2, NULL, NULL, 1, 0); -- Alice wins over Bob in match 1
 -- Insert Match Pairings
 CALL InsertMatchPairing(1, 1, NULL); -- Alice in match 1
 CALL InsertMatchPairing(1, 2, NULL); -- Bob in match 1
+CALL InsertMatchPairing(3, 1, NULL); -- Alice in match 1
+CALL InsertMatchPairing(3, 2, NULL); -- Bob in match 1
 
 -- Insert Rankings
 CALL InsertRanking(1, 1, NULL, 10, 1); -- Alice ranks first in tournament 1
@@ -47,3 +50,10 @@ CALL InsertPlayerStats(2, 1, 10, 5, 5, 0); -- Bob's stats in Chess
 -- Insert Team Stats
 CALL InsertTeamStats(1, 4, 15, 10, 5, 0); -- Knights' stats in Scrabble
 CALL InsertTeamStats(2, 4, 15, 8, 7, 0);  -- Bishops' stats in Scrabble
+
+-- Insert a medal reward
+CALL InsertReward('Gold Medal', 'medal', 0, 'Awarded to the top player or team in a tournament.');
+CALL InsertReward('Champion Trophy', 'trophy', 0, 'Given to the winner of the championship.');
+CALL InsertReward('Participation Points', 'points', 100, 'Awarded for participation in a tournament.');
+CALL InsertReward('Top Scorer Badge', 'badge', 0, 'Given to the player with the highest score in a tournament.');
+CALL InsertResult(2, 1, 2, NULL, NULL, 1, 0);

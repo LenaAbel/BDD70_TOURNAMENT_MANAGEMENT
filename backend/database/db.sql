@@ -210,3 +210,9 @@ CREATE TABLE IF NOT EXISTS reward_assignment (
     FOREIGN KEY (team_id) REFERENCES team (team_id) ON DELETE CASCADE,
     CHECK ((player_id IS NOT NULL AND team_id IS NULL) OR (player_id IS NULL AND team_id IS NOT NULL))
 );
+
+CREATE TABLE IF NOT EXISTS trigger_log (
+    log_id INT AUTO_INCREMENT PRIMARY KEY,
+    log_message VARCHAR(255),
+    log_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
