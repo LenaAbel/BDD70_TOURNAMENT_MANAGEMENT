@@ -263,7 +263,7 @@ module.exports = {
     deletePlayer,
     setFavoriteActivity,
     deleteFavoriteActivity,
-    getBestPlayerByActivity
+    getBestPlayerByActivity,
     registerPlayer,
     loginPlayer
 };

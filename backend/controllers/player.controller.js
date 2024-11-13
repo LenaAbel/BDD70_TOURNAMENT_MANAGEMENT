@@ -143,7 +143,7 @@ module.exports = {
     updatePlayer,
     deletePlayer,
     setFavoriteActivity,
-    getBestPlayerByActivity
+    getBestPlayerByActivity,
     registerPlayer,
     loginPlayer
 };

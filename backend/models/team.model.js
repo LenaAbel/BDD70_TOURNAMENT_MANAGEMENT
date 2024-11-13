@@ -118,6 +118,6 @@ module.exports = {
     updateTeam,
     deleteTeam,
     getAllTeams,
-    getBestTeamByActivity
+    getBestTeamByActivity,
     assignPlayersToTeam,
 };
