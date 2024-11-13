@@ -10,5 +10,5 @@ router.get('/', favoriteActivityController.getAllFavoriteActivities);
 router.get('/activity/:activity_id', favoriteActivityController.getFavoriteActivityByActivityId);
 router.put('/player/:player_id/activity/:activity_id', favoriteActivityController.updateFavoriteActivity);
 router.delete('/player/:player_id/activity/:activity_id', favoriteActivityController.deleteFavoriteActivity);
-
+//gitpush test
 module.exports = router;

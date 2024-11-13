@@ -125,11 +125,28 @@ const deleteTeam = (req, res) => {
         });
 };
 
+const getBestTeamByActivity = (req, res) => {
+    const { activity_id } = req.params;
+
+    teamModel.getBestTeamByActivity(activity_id)
+        .then(bestTeam => {
+            if (!bestTeam) {
+                return res.status(404).json({ error: 'No team found for this activity' });
+            }
+            res.json(bestTeam); // Return the best team for this activity
+        })
+        .catch(err => {
+            console.error('Error fetching best team for activity:', err);
+            res.status(500).json({ error: 'Error fetching best team for activity' });
+        });
+};
+
 module.exports = {
     getAllTeams,
     createTeam,
     getTeamById,
     updateTeam,
     deleteTeam,
+    getBestTeamByActivity
     assignPlayersToTeam,
 };

@@ -77,9 +77,9 @@ const getAllRules = async (req, res) => {
 // Obtenir toutes les règles par game_id
 
 const getRulesByGameId = async (req, res) => {
-    const { game_id } = req.params;
+    const { activity_id } = req.params;
     try {
-        const rules = await rulesModel.getRulesByGameId(game_id);
+        const rules = await rulesModel.getRulesByGameId(activity_id);
         res.json(rules);
     } catch (err) {
         console.error('Error getting rules:', err);
