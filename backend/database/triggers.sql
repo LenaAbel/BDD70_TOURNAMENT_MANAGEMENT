@@ -75,8 +75,7 @@ BEGIN
             SELECT matchs_id, player_id, NULL
             FROM register
             WHERE tournament_id = new_id_tournament
-            ORDER BY player_id
-            LIMIT activity_players;
+            ORDER BY player_id;
 
             -- Log the player_id and team_id
             INSERT INTO debug_log (message, tournament_id, player_id, team_id) 
@@ -88,7 +87,7 @@ BEGIN
         ELSE
             -- Si tournoi de type team, associer les équipes aux matchs
             INSERT INTO matchpairing (match_id, player_id, team_id)
-            SELECT matchs_id, NULL, team_id
+            SELECT matchs_id, player_id, team_id
             FROM register
             WHERE tournament_id = new_id_tournament
             ORDER BY team_id
