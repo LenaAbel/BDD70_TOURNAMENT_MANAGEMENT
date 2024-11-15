@@ -12,6 +12,8 @@ export default new Vuex.Store({
         teams: [],
         activities: [],
         organizers: [],
+        playerStats: [],
+        playerRanking: [],
         user: JSON.parse(localStorage.getItem('user')) || null,
     },
     mutations: {
@@ -23,6 +25,12 @@ export default new Vuex.Store({
         },
         SET_PLAYER(state, player) {
             state.player = player;
+        },
+        SET_PLAYER_STATS(state, playerStats) {
+            state.playerStats = playerStats;
+        },
+        SET_PLAYER_RANKING(state, playerRanking) {
+            state.playerRanking = playerRanking;
         },
         SET_TEAMS(state, teams) {
             state.teams = teams;
@@ -67,15 +75,15 @@ export default new Vuex.Store({
         /**
          * Fetch all players from the backend
          */
-        fetchPlayers({ commit }) {
-            return axios.get('players/')
-                .then(response => {
-                    commit('SET_PLAYERS', response.data);
-                })
-                .catch(error => {
-                    console.error('Error fetching players:', error);
-                    throw error;
-                });
+        async fetchPlayers({ commit }) {
+            try {
+                const response = await axios.get('/players');
+                commit('SET_PLAYERS', response.data);  // Optional mutation if you need to store it
+                return response.data; // Make sure this returns the player data array
+            } catch (error) {
+                console.error('Error fetching players:', error);
+                throw error;
+            }
         },
         /**
         * Fetch a specific player by ID (optional)
@@ -89,6 +97,24 @@ export default new Vuex.Store({
                 console.error('Error fetching player:', error);
                 throw error;
             });
+        },
+        async fetchPlayerStats(_, playerId) {
+            try {
+                const response = await axios.get(`/playerStats/${playerId}`);
+                return response.data; // Ensure it returns the array directly
+            } catch (error) {
+                console.error('Error fetching player stats:', error);
+                throw error;
+            }
+        },
+        async fetchPlayerRanking(_, playerId) {
+            try {
+                const response = await axios.get(`/ranking/player/${playerId}`);
+                return response.data; // Return the player ranking data
+            } catch (error) {
+                console.error('Error fetching player ranking:', error);
+                throw error;
+            }
         },
         createPlayer({ dispatch }, playerData) {
             return axios.post('/players', playerData).then(() => {
@@ -119,14 +145,25 @@ export default new Vuex.Store({
          * Fetch all teams from the backend
          */
         fetchTeams({ commit }) {
-            return axios.get('team/')
+            return axios.get('/team') // Adjust the endpoint if necessary
                 .then(response => {
                     commit('SET_TEAMS', response.data);
+                    return response.data; // Ensure teams are returned
                 })
                 .catch(error => {
                     console.error('Error fetching teams:', error);
                     throw error;
                 });
+        },
+        async fetchTeamStats(_, teamId) {
+            try {
+                const response = await axios.get(`/teamStats/team/${teamId}`);
+                console.log('API response for team stats:', response.data); // Debugging log
+                return response.data; // Ensure it returns the array directly
+            } catch (error) {
+                console.error('Error fetching team stats:', error);
+                throw error;
+            }
         },
         createTeam({ dispatch }, { team_name, player_ids }) {
             console.log('Data being sent to backend:', { team_name, player_ids });
@@ -272,5 +309,9 @@ export default new Vuex.Store({
         isLoggedIn: (state) => !!state.user,
         currentUser: (state) => state.user,
         userRole: (state) => (state.user ? state.user.account_type : null),
+        totalPlayers: (state) => state.players.length,
+        totalTournaments: (state) => state.tournaments.length,
+        totalTeams: (state) => state.teams.length,
+        totalActivities: (state) => state.activities.length,
     },
 });
