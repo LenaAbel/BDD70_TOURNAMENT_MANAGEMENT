@@ -9,5 +9,6 @@ router.get('/:ranking_id', rankingController.getRankingById);
 router.get('/', rankingController.getAllRankings);
 router.put('/:ranking_id', rankingController.updateRanking);
 router.delete('/:ranking_id', rankingController.deleteRanking);
+router.get('/player/:player_id', rankingController.getRankingByPlayerId);
 
 module.exports = router;

@@ -56,6 +56,9 @@
             <b-nav-item href="/admin/activities">
               <b-icon icon="dice-5-fill" class="mr-1"></b-icon> Manage Activities
             </b-nav-item>
+            <b-nav-item href="/admin/statistics">
+              <b-icon icon="bar-chart-fill" class="mr-1"></b-icon> Statistics
+            </b-nav-item>
           </template>
         </b-navbar-nav>
 

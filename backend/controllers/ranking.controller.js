@@ -70,10 +70,22 @@ const deleteRanking = (req, res) => {
         });
 };
 
+// Get ranking by player ID
+const getRankingByPlayerId = (req, res) => {
+    const { player_id } = req.params;
+    rankingModel.getRankingByPlayerId(player_id)
+        .then(ranking => res.json(ranking))
+        .catch(err => {
+            console.error('Error fetching ranking by player ID:', err);
+            res.status(500).json({ error: 'Error fetching ranking by player ID' });
+        });
+};
+
 module.exports = {
     createRanking,
     getRankingById,
     getAllRankings,
     updateRanking,
-    deleteRanking
+    deleteRanking,
+    getRankingByPlayerId
 };

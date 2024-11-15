@@ -186,6 +186,8 @@ CREATE TABLE IF NOT EXISTS tournament_round (
     FOREIGN KEY (tournament_id) REFERENCES tournament (tournament_id) ON DELETE CASCADE
 );
 
+
+
 CREATE TABLE IF NOT EXISTS debug_log (
     id INT AUTO_INCREMENT PRIMARY KEY,
     message VARCHAR(255),
@@ -198,4 +200,35 @@ CREATE TABLE IF NOT EXISTS debug_log (
     player_id INT,
     team_id INT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Create reward table
+CREATE TABLE IF NOT EXISTS reward (
+    reward_id INT NOT NULL AUTO_INCREMENT,
+    reward_name VARCHAR(100) NOT NULL,
+    reward_type ENUM('medal', 'trophy', 'points', 'badge') NOT NULL,
+    reward_points INT DEFAULT 0,
+    reward_description TEXT,
+    PRIMARY KEY (reward_id)
+);
+
+CREATE TABLE IF NOT EXISTS reward_assignment (
+    reward_assignment_id INT NOT NULL AUTO_INCREMENT,
+    tournament_id INT NOT NULL,
+    reward_id INT NOT NULL,
+    player_id INT DEFAULT NULL,
+    team_id INT DEFAULT NULL,
+    award_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (reward_assignment_id),
+    FOREIGN KEY (tournament_id) REFERENCES tournament (tournament_id) ON DELETE CASCADE,
+    FOREIGN KEY (reward_id) REFERENCES reward (reward_id) ON DELETE CASCADE,
+    FOREIGN KEY (player_id) REFERENCES player (player_id) ON DELETE CASCADE,
+    FOREIGN KEY (team_id) REFERENCES team (team_id) ON DELETE CASCADE,
+    CHECK ((player_id IS NOT NULL AND team_id IS NULL) OR (player_id IS NULL AND team_id IS NOT NULL))
+);
+
+CREATE TABLE IF NOT EXISTS trigger_log (
+    log_id INT AUTO_INCREMENT PRIMARY KEY,
+    log_message VARCHAR(255),
+    log_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
