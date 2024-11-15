@@ -99,6 +99,9 @@ const executeSqlFiles = async () => {
         // Insert dependent data that references initial inserts
         await executeSqlFile('./database/insert2.sql');
 
+        //test
+        await executeSqlFile('./database/triggers.sql');
+
         console.log("All SQL files and user inserts executed successfully.");
     } catch (err) {
         console.error("Error during execution:", err);

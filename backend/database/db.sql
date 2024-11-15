@@ -186,6 +186,22 @@ CREATE TABLE IF NOT EXISTS tournament_round (
     FOREIGN KEY (tournament_id) REFERENCES tournament (tournament_id) ON DELETE CASCADE
 );
 
+
+
+CREATE TABLE IF NOT EXISTS debug_log (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    message VARCHAR(255),
+    tournament_id INT,
+    activity_players INT,
+    tournament_type VARCHAR(50),
+    player_count INT,
+    match_start_time DATETIME,
+    matchs_id INT,
+    player_id INT,
+    team_id INT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 -- Create reward table
 CREATE TABLE IF NOT EXISTS reward (
     reward_id INT NOT NULL AUTO_INCREMENT,
