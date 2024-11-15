@@ -1,3 +1,4 @@
+<!-- mainHome.vue -->
 <template>
   <div class="home">
     <!-- Hero Section -->

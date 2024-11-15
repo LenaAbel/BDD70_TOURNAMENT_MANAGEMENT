@@ -309,8 +309,14 @@ export default new Vuex.Store({
         isLoggedIn: (state) => !!state.user,
         currentUser: (state) => state.user,
         userRole: (state) => (state.user ? state.user.account_type : null),
-        totalPlayers: (state) => state.players.length,
-        totalTournaments: (state) => state.tournaments.length,
+        totalPlayers: (state) => {
+            console.log('Total players computed:', state.players.length);
+            return state.players.length;
+        },
+        totalTournaments: (state) => {
+            console.log('Total tournaments computed:', state.tournaments.length);
+            return state.tournaments.length;
+        },
         totalTeams: (state) => state.teams.length,
         totalActivities: (state) => state.activities.length,
     },

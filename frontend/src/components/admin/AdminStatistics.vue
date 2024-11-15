@@ -171,7 +171,6 @@ export default {
 
         // Set team options
         const teams = await this.fetchTeams();
-        console.log('Fetched teams:', teams); // Debugging log
         if (Array.isArray(teams)) {
           this.teamOptions = teams.map(team => ({ value: team.team_id, text: team.team_name }));
         }
@@ -217,7 +216,6 @@ export default {
 
       try {
         const stats = await this.fetchTeamStats(this.selectedTeamId);
-        console.log('Team stats received:', stats); // Log to see the data structure
 
         // Make sure we are accessing the first element in the array if it exists
         this.teamStats = stats[0] || { team_stats_total_matches: 0, team_stats_wins: 0, team_stats_losses: 0, team_stats_draws: 0 };
