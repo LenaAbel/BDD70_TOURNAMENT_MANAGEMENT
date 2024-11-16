@@ -31,9 +31,7 @@ CALL InsertFavoriteActivity(2, 2); -- Bob likes Checkers
 CALL InsertFavoriteActivity(3, 5); -- Carol likes Catan
 
 -- Insert Matches
-CALL InsertMatch('2024-01-15 09:00:00', 'Scheduled', 'Main Hall', 1);
-CALL InsertMatch('2024-01-15 10:00:00', 'Scheduled', 'Main Hall', 1);
-CALL InsertMatch('2024-01-15 10:00:00', 'Scheduled', 'Main Hall', 1);
+
 
 -- Insert Register records
 CALL InsertRegister(1, NULL, 1); -- Alice registers for Chess Championship
@@ -44,10 +42,7 @@ CALL InsertRegister(4, 2, 2);    -- Dave registers with team Bishops for Scrabbl
 
 
 -- Insert Match Pairings
-CALL InsertMatchPairing(1, 1, NULL); -- Alice in match 1
-CALL InsertMatchPairing(1, 2, NULL); -- Bob in match 1
-CALL InsertMatchPairing(3, 1, NULL); -- Alice in match 1
-CALL InsertMatchPairing(3, 2, NULL); -- Bob in match 1
+
 
 -- Insert Rankings
 CALL InsertRanking(1, 1, NULL, 10, 1); -- Alice ranks first in tournament 1
