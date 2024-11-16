@@ -41,7 +41,7 @@ CALL InsertRegister(2, NULL, 1); -- Bob registers for Chess Championship
 CALL InsertRegister(4, 2, 2);    -- Dave registers with team Bishops for Scrabble Tournament
 
 -- Insert Results
-CALL InsertResult(1, 1, 2, NULL, NULL, 1, 0); -- Alice wins over Bob in match 1
+
 
 -- Insert Match Pairings
 CALL InsertMatchPairing(1, 1, NULL); -- Alice in match 1
@@ -67,4 +67,3 @@ CALL InsertReward('Gold Medal', 'medal', 0, 'Awarded to the top player or team i
 CALL InsertReward('Champion Trophy', 'trophy', 0, 'Given to the winner of the championship.');
 CALL InsertReward('Participation Points', 'points', 100, 'Awarded for participation in a tournament.');
 CALL InsertReward('Top Scorer Badge', 'badge', 0, 'Given to the player with the highest score in a tournament.');
-CALL InsertResult(2, 1, 2, NULL, NULL, 1, 0);

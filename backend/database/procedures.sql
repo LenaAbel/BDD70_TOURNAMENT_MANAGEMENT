@@ -268,7 +268,11 @@ BEGIN
         type_name
     )
     VALUES (
-               type_name
+               type_name);
+
+END;
+
+
 DROP PROCEDURE IF EXISTS InsertReward;
 
 
