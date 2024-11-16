@@ -8,7 +8,7 @@ const createTournament = (name, start_time, bestofX, poolSize, type, format, rul
 
     return new Promise((resolve, reject) => {
         db.query(
-            'INSERT INTO tournament (tournament_name, tournament_start_time, tournament_bestOfX, tournament_poolSize, tournament_type, tournament_format, rule_id, organizer_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+            'INSERT INTO tournament (tournament_name, tournament_start_time, tournament_bestOfX, tournament_poolSize, tournament_type_id, format_id, rule_id, organizer_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
             [name, start_time, bestofX, poolSize, type, format, rule_id, organizer_id],
             (err, result) => {
                 if (err) {
@@ -24,7 +24,21 @@ const createTournament = (name, start_time, bestofX, poolSize, type, format, rul
 // Obtenir tous les tournois
 const getAllTournaments = () => {
     return new Promise((resolve, reject) => {
-        db.query(`SELECT t.*, r.*, a.*, (SELECT JSON_ARRAYAGG(JSON_OBJECT('player_id', p.player_id, 'player_nickname', p.player_nickname)) FROM register rg INNER JOIN player p ON rg.player_id = p.player_id WHERE rg.tournament_id = t.tournament_id) AS players FROM tournament t INNER JOIN rules r ON t.rule_id = r.rules_id INNER JOIN activity a ON r.activity_id = a.activity_id`, (err, results) => {
+        db.query(`
+            SELECT 
+                t.*, 
+                r.*, 
+                a.*, 
+                f.format_name,
+                (SELECT JSON_ARRAYAGG(JSON_OBJECT('player_id', p.player_id, 'player_nickname', p.player_nickname)) 
+                 FROM register rg 
+                 INNER JOIN player p ON rg.player_id = p.player_id 
+                 WHERE rg.tournament_id = t.tournament_id) AS players 
+            FROM tournament t 
+            INNER JOIN rules r ON t.rule_id = r.rules_id 
+            INNER JOIN activity a ON r.activity_id = a.activity_id
+            INNER JOIN format_type f ON t.format_id = f.format_id
+        `, (err, results) => {
             if (err) {
                 return reject(err);
             }
@@ -35,7 +49,26 @@ const getAllTournaments = () => {
 
 const getTournamentById = (id) => {
     return new Promise((resolve, reject) => {
-        db.query(`SELECT t.*, r.*, a.*, (SELECT JSON_ARRAYAGG(JSON_OBJECT('matchs_id', m.matchs_id, 'matchs_start_time', m.matchs_start_time, 'matchpairings', (SELECT JSON_ARRAYAGG(JSON_OBJECT('matchpairing_id', mp.matchpairing_id, 'player_id', mp.player_id, 'team_id', mp.team_id)) FROM matchpairing mp WHERE mp.match_id = m.matchs_id))) FROM matchs m WHERE m.tournament_id = t.tournament_id) AS matchs, (SELECT JSON_ARRAYAGG(JSON_OBJECT('player_id', p.player_id, 'player_nickname', p.player_nickname)) FROM register rg INNER JOIN player p ON rg.player_id = p.player_id WHERE rg.tournament_id = t.tournament_id) AS players FROM tournament t INNER JOIN rules r ON t.rule_id = r.rules_id INNER JOIN activity a ON r.activity_id = a.activity_id WHERE t.tournament_id = ?`, [tournament_id], (err, result) => {
+        db.query(`
+            SELECT 
+                t.*, 
+                r.*, 
+                a.*, 
+                f.format_name,
+                (SELECT JSON_ARRAYAGG(JSON_OBJECT('matchs_id', m.matchs_id, 'matchs_start_time', m.matchs_start_time, 'matchpairings', 
+                    (SELECT JSON_ARRAYAGG(JSON_OBJECT('matchpairing_id', mp.matchpairing_id, 'player_id', mp.player_id, 'team_id', mp.team_id)) 
+                    FROM matchpairing mp WHERE mp.match_id = m.matchs_id))) 
+                FROM matchs m WHERE m.tournament_id = t.tournament_id) AS matchs, 
+                (SELECT JSON_ARRAYAGG(JSON_OBJECT('player_id', p.player_id, 'player_nickname', p.player_nickname)) 
+                FROM register rg 
+                INNER JOIN player p ON rg.player_id = p.player_id 
+                WHERE rg.tournament_id = t.tournament_id) AS players 
+            FROM tournament t 
+            INNER JOIN rules r ON t.rule_id = r.rules_id 
+            INNER JOIN activity a ON r.activity_id = a.activity_id
+            INNER JOIN format_type f ON t.format_id = f.format_id
+            WHERE t.tournament_id = ?
+        `, [id], (err, results) => {
             if (err) {
                 return reject(err);
             }
@@ -50,7 +83,7 @@ const getTournamentById = (id) => {
 const updateTournament = (tournament_id, name, start_time, bestofX, poolSize, type, format, rule_id, organizer_id) => {
     return new Promise((resolve, reject) => {
         db.query(
-            'UPDATE tournament SET tournament_name = ?, tournament_start_time = ?, tournament_bestOfX = ?, tournament_poolSize = ?, tournament_type = ?, tournament_format = ?, rule_id = ?, organizer_id = ? WHERE tournament_id = ?',
+            'UPDATE tournament SET tournament_name = ?, tournament_start_time = ?, tournament_bestOfX = ?, tournament_poolSize = ?, tournament_type_id = ?, format_id = ?, rule_id = ?, organizer_id = ? WHERE tournament_id = ?',
             [name, start_time, bestofX, poolSize, type, format, rule_id, organizer_id, tournament_id],
             (err, result) => {
                 if (err) {

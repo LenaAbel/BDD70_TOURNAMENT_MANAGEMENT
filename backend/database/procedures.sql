@@ -67,19 +67,19 @@ CREATE PROCEDURE InsertTournament (
     IN tournament_start_time DATETIME,
     IN tournament_bestOfX INT,
     IN tournament_poolSize INT,
-    IN tournament_type VARCHAR(10),
-    IN tournament_format VARCHAR(20),
+    IN tournament_type_id INT,
+    IN format_id INT,
     IN rule_id INT,
     IN organizer_id INT
 )
 BEGIN
     INSERT INTO tournament (
         tournament_name, tournament_start_time, tournament_bestOfX,
-        tournament_poolSize, tournament_type, tournament_format, rule_id, organizer_id
+        tournament_poolSize, tournament_type_id, format_id, rule_id, organizer_id
     )
     VALUES (
                tournament_name, tournament_start_time, tournament_bestOfX,
-               tournament_poolSize, tournament_type, tournament_format, rule_id, organizer_id
+               tournament_poolSize, tournament_type_id, format_id, rule_id, organizer_id
            );
 END;
 
@@ -244,7 +244,38 @@ BEGIN
            );
 END;
 
+-- Drop and create InsertFormatType procedure
+DROP PROCEDURE IF EXISTS InsertFormatType;
+CREATE PROCEDURE InsertFormatType (
+    IN format_name VARCHAR(50)
+)
+BEGIN
+    INSERT INTO format_type (
+        format_name
+    )
+    VALUES (
+               format_name
+           );
+END;
+
+-- Drop and create Insert Tournament type
+DROP PROCEDURE IF EXISTS InsertTournamentType;
+CREATE PROCEDURE InsertTournamentType (
+    IN type_name VARCHAR(50)
+)
+BEGIN
+    INSERT INTO tournament_type (
+        type_name
+    )
+    VALUES (
+               type_name);
+
+END;
+
+
 DROP PROCEDURE IF EXISTS InsertReward;
+
+
 CREATE PROCEDURE InsertReward (
     IN reward_name VARCHAR(100),
     IN reward_type ENUM('medal', 'trophy', 'points', 'badge'),
