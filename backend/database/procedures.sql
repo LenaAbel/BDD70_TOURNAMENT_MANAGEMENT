@@ -269,5 +269,20 @@ BEGIN
     )
     VALUES (
                type_name
+DROP PROCEDURE IF EXISTS InsertReward;
+
+
+CREATE PROCEDURE InsertReward (
+    IN reward_name VARCHAR(100),
+    IN reward_type ENUM('medal', 'trophy', 'points', 'badge'),
+    IN reward_points INT,
+    IN reward_description TEXT
+)
+BEGIN
+    INSERT INTO reward (
+        reward_name, reward_type, reward_points, reward_description
+    )
+    VALUES (
+               reward_name, reward_type, reward_points, reward_description
            );
 END;

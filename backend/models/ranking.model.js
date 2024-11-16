@@ -31,6 +31,18 @@ const getRankingById = (ranking_id) => {
     });
 };
 
+// Get ranking by player ID
+const getRankingByPlayerId = (player_id) => {
+    return new Promise((resolve, reject) => {
+        db.query('SELECT * FROM ranking WHERE player_id = ?', [player_id], (err, results) => {
+            if (err) {
+                return reject(err);
+            }
+            resolve(results);
+        });
+    });
+};
+
 // Obtenir tous les classements
 const getAllRankings = () => {
     return new Promise((resolve, reject) => {
@@ -82,5 +94,6 @@ module.exports = {
     getRankingById,
     getAllRankings,
     updateRanking,
-    deleteRanking
+    deleteRanking,
+    getRankingByPlayerId,
 };
