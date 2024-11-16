@@ -53,9 +53,9 @@ CALL InsertTeamMember(1, 2); -- Bob to Knights
 CALL InsertTeamMember(2, 4); -- Dave to Bishops
 
 -- Insert Tournaments
-CALL InsertTournament('Chess Championship', '2024-01-15 09:00:00', 3, 16, 'solo', 'elimination', 1, 3);
-CALL InsertTournament('Team Scrabble Tournament', '2024-02-20 10:00:00', NULL, 8, 'team', 'round_robin', 4, 3);
-CALL InsertTournament('Monopoly Masters', '2024-03-25 14:00:00', 3, 16, 'team', 'elimination', 3, 3);
+CALL InsertTournament('Chess Championship', '2024-01-15 09:00:00', 3, 16, 1, 'elimination', 1, 3);
+CALL InsertTournament('Team Scrabble Tournament', '2024-02-20 10:00:00', NULL, 8, 2, 'round_robin', 4, 3);
+CALL InsertTournament('Monopoly Masters', '2024-03-25 14:00:00', 3, 16, 2 , 'elimination', 3, 3);
 
 -- Insert Tournament rounds
 CALL InsertTournamentRound(1, 1);

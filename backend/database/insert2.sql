@@ -5,10 +5,20 @@ CALL InsertTeamMember(1, 1); -- Alice to Knights
 CALL InsertTeamMember(1, 2); -- Bob to Knights
 CALL InsertTeamMember(2, 4); -- Dave to Bishops
 
+CALL InsertTournamentType('solo');
+CALL InsertTournamentType('team');
+
+-- Insert FormatsType
+CALL InsertFormatType('elimination');
+CALL InsertFormatType('round_robin');
+CALL InsertFormatType('swiss');
+
+
+
 -- Insert Tournaments
-CALL InsertTournament('Chess Championship', '2024-01-15 09:00:00', 3, 16, 'solo', 'elimination', 1, 3);
-CALL InsertTournament('Team Scrabble Tournament', '2024-02-20 10:00:00', NULL, 8, 'team', 'round_robin', 4, 3);
-CALL InsertTournament('Monopoly Masters', '2024-03-25 14:00:00', 3, 16, 'team', 'elimination', 3, 3);
+CALL InsertTournament('Chess Championship', '2024-01-15 09:00:00', 3, 16, 1, 1, 1, 3);
+CALL InsertTournament('Team Scrabble Tournament', '2024-02-20 10:00:00', NULL, 8, 2, 2, 4, 3);
+CALL InsertTournament('Monopoly Masters', '2024-03-25 14:00:00', 3, 16, 2, 1, 3, 3);
 
 -- Insert Tournament Rounds
 CALL InsertTournamentRound(1, 1);
@@ -47,3 +57,5 @@ CALL InsertPlayerStats(2, 1, 10, 5, 5, 0); -- Bob's stats in Chess
 -- Insert Team Stats
 CALL InsertTeamStats(1, 4, 15, 10, 5, 0); -- Knights' stats in Scrabble
 CALL InsertTeamStats(2, 4, 15, 8, 7, 0);  -- Bishops' stats in Scrabble
+
+

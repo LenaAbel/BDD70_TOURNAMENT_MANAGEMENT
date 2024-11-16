@@ -102,6 +102,9 @@ const executeSqlFiles = async () => {
         //test
         await executeSqlFile('./database/triggers.sql');
 
+        //test la procédure elimination Brackets
+        await executeSqlFile('./database/procedureElimination.sql');
+
         console.log("All SQL files and user inserts executed successfully.");
     } catch (err) {
         console.error("Error during execution:", err);
