@@ -93,6 +93,10 @@ const executeSqlFiles = async () => {
         // Insert initial data that doesn't rely on foreign keys (e.g., activities, teams)
         await executeSqlFile('./database/insert1.sql');
 
+        await executeSqlFile('./database/removeLosers.sql');
+        
+        await executeSqlFile('./database/processPlayerQueue.sql');
+
         // Insert users with hashed passwords
         await insertHashedUsers();
 

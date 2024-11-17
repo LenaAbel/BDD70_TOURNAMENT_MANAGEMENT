@@ -247,3 +247,9 @@ CREATE TABLE IF NOT EXISTS tournament_type (
     type_name VARCHAR(50) NOT NULL,
     PRIMARY KEY (type_id)
 );
+
+CREATE TABLE IF NOT EXISTS player_tournament_queue (
+    player_id INT,
+    tournament_id INT,
+    action VARCHAR(10)
+);
