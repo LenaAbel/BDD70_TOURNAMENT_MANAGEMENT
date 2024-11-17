@@ -1,7 +1,7 @@
-DROP TRIGGER IF EXISTS after_register_insert;
+DROP TRIGGER IF EXISTS after_teamregister_insert;
 
-CREATE TRIGGER after_register_insert
-AFTER INSERT ON register
+CREATE TRIGGER after_teamregister_insert
+AFTER INSERT ON team_register
 FOR EACH ROW
 BEGIN
     DECLARE activity_players INT;
@@ -17,9 +17,8 @@ BEGIN
     SELECT tournament_type_id, format_id INTO type_id, p_format_id
     FROM tournament 
     WHERE tournament_id = new_id_tournament;
+    
     INSERT INTO debug_log (message, tournament_id) VALUES ('Trigger started', NEW.tournament_id);
-
-    INSERT INTO debug_log (message, tournament_id) VALUES ( type_id, new_id_tournament);
 
     -- Get the required number of participants for the activity
     SELECT activity_number_of_players INTO activity_players
@@ -35,15 +34,18 @@ BEGIN
     ELSEIF type_id = 2 THEN -- Team elimination tournament
         SELECT COUNT(DISTINCT team_id) INTO participant_count 
         FROM team_register 
-        WHERE tournament_id = new_id_tournament AND team_id IS NOT NULL;
+        WHERE tournament_id = new_id_tournament;
     END IF;
 
-    INSERT INTO debug_log (message, tournament_id) VALUES ('participant_count'+ participant_count, new_id_tournament);
+    INSERT INTO debug_log (message, tournament_id) VALUES (CONCAT('participant_count: ', participant_count), new_id_tournament);
+
     -- If sufficient participants are registered, generate the bracket
     IF participant_count >= activity_players THEN
         INSERT INTO debug_log (message, tournament_id) VALUES ('Generating bracket', new_id_tournament);
+        
         IF p_format_id = 1 THEN -- Elimination format
             INSERT INTO debug_log (message, tournament_id) VALUES ('Elimination format is 1', new_id_tournament);
+            
             IF type_id = 1 THEN -- Solo elimination
                 -- Log before calling the procedure
                 INSERT INTO debug_log (message, tournament_id) 

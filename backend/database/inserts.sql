@@ -47,10 +47,6 @@ CALL InsertTeam('Rooks');
 CALL InsertTeam('Pawns');
 CALL InsertTeam('Queens');
 
--- Insert Team Members
-CALL InsertTeamMember(1, 1); -- Alice to Knights
-CALL InsertTeamMember(1, 2); -- Bob to Knights
-CALL InsertTeamMember(2, 4); -- Dave to Bishops
 
 -- Insert Tournaments
 CALL InsertTournament('Chess Championship', '2024-01-15 09:00:00', 3, 16, 1, 'elimination', 1, 3);
