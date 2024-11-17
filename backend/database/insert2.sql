@@ -20,6 +20,16 @@ CALL InsertFormatType('swiss');
 CALL InsertTournament('Chess Championship', '2024-01-15 09:00:00', 3, 16, 1, 1, 1, 3);
 CALL InsertTournament('Team Scrabble Tournament', '2024-02-20 10:00:00', NULL, 8, 2, 2, 4, 3);
 CALL InsertTournament('Monopoly Masters', '2024-03-25 14:00:00', 3, 16, 2, 1, 3, 3);
+CALL InsertTournament('Catan Classic', '2024-04-30 12:00:00', 3, 16, 1, 1, 1, 3);
+CALL InsertTournament('Risk Rumble', '2024-05-15 09:00:00', 3, 16, 2, 1, 2, 3);
+CALL InsertTournament('Uno Challenge', '2024-06-20 10:00:00', 3, 4, 1, 1, 1, 3);
+CALL InsertTournament('Ticket to Ride Tour', '2024-07-25 14:00:00', 3, 4, 2, 1, 3, 3); 
+CALL InsertTournament('Pandemic Panic', '2024-08-30 12:00:00', 3, 4, 1, 1, 1, 3);
+CALL InsertTournament('Carcassonne Clash', '2024-09-15 09:00:00', 3, 4, 2, 1, 2, 3);
+CALL InsertTournament('Dominoes Duel', '2024-10-20 10:00:00', 3, 4, 1, 1, 1, 3);
+CALL InsertTournament('Life Ladder', '2024-11-25 14:00:00', 3, 4, 2, 1, 3, 3);
+CALL InsertTournament('Candy Land Challenge', '2024-12-30 12:00:00', 3, 4, 1, 1, 1, 3);
+CALL InsertTournament('Sorry! Showdown', '2025-01-15 09:00:00', 3, 4, 2, 1, 2, 3);
 
 -- Insert Tournament Rounds
 CALL InsertTournamentRound(1, 1);
@@ -30,6 +40,32 @@ CALL InsertTournamentRound(1, 3);
 CALL InsertFavoriteActivity(1, 1); -- Alice likes Chess
 CALL InsertFavoriteActivity(2, 2); -- Bob likes Checkers
 CALL InsertFavoriteActivity(3, 5); -- Carol likes Catan
+CALL InsertFavoriteActivity(4, 6); -- Dave likes Risk
+CALL InsertFavoriteActivity(5, 10); -- Eve likes Uno
+CALL InsertFavoriteActivity(6, 11); -- Frank likes Ticket to Ride
+CALL InsertFavoriteActivity(7, 12); -- Grace likes Pandemic
+CALL InsertFavoriteActivity(8, 13); -- Hank likes Carcassonne
+CALL InsertFavoriteActivity(9, 14); -- Iris likes Dominoes
+CALL InsertFavoriteActivity(10, 15); -- Jack likes Life
+CALL InsertFavoriteActivity(11, 16); -- Karen likes Candy Land
+CALL InsertFavoriteActivity(12, 17); -- Louis likes Sorry!
+CALL InsertFavoriteActivity(13, 18); -- Maria likes Stratego
+CALL InsertFavoriteActivity(14, 19); -- Nathan likes Othello
+CALL InsertFavoriteActivity(15, 20); -- Olivia likes Pictionary
+CALL InsertFavoriteActivity(16, 3); -- Peter likes Monopoly
+CALL InsertFavoriteActivity(17, 4); -- Quinn likes Scrabble
+CALL InsertFavoriteActivity(18, 7); -- Rachel likes Clue
+CALL InsertFavoriteActivity(19, 8); -- Sam likes Battleship
+CALL InsertFavoriteActivity(20, 9); -- Tina likes Connect Four
+CALL InsertFavoriteActivity(21, 1); -- Ursula likes Chess
+CALL InsertFavoriteActivity(22, 2); -- Vince likes Checkers
+CALL InsertFavoriteActivity(23, 5); -- Wendy likes Catan
+CALL InsertFavoriteActivity(24, 6); -- Xander likes Risk
+CALL InsertFavoriteActivity(25, 10); -- Yara likes Uno
+CALL InsertFavoriteActivity(26, 11); -- Zane likes Ticket to Ride
+CALL InsertFavoriteActivity(27, 12); -- Zoe likes Pandemic
+
+
 
 -- Insert Matches
 
