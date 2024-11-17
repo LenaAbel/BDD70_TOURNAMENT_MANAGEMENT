@@ -14,7 +14,14 @@ export default new Vuex.Store({
         organizers: [],
         playerStats: [],
         playerRanking: [],
-        user: JSON.parse(localStorage.getItem('user')) || null,
+        user: (() => {
+            try {
+                return JSON.parse(localStorage.getItem('user')) || null;
+            } catch {
+                return null; // Handle invalid JSON or undefined
+            }
+        })(),
+        token: localStorage.getItem('token') || null, // Fallback to `null` if `token` is not set
     },
     mutations: {
         SET_TOURNAMENTS(state, tournaments) {
@@ -38,17 +45,25 @@ export default new Vuex.Store({
         SET_ACTIVITIES(state, activities) {
             state.activities = activities;
         },
+        SET_ORGANIZERS(state, organizers) {
+            state.organizers = organizers;
+        },
         SET_USER(state, user) {
             state.user = user;
             localStorage.setItem('user', JSON.stringify(user));
         },
-        SET_ORGANIZERS(state, organizers) {
-            state.organizers = organizers;
+        SET_TOKEN(state, token) {
+            state.token = token;
+            localStorage.setItem("token", token);
+
+            // Set the default Authorization header for Axios
+            axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
         },
         CLEAR_USER(state) {
             state.user = null;
+            state.token = null;
             localStorage.removeItem('user');
-            window.location.href = '/';
+            localStorage.removeItem('token');
         },
         UPDATE_TEAM(state, updatedTeam) {
             const index = state.teams.findIndex(team => team.team_id === updatedTeam.team_id);
@@ -58,59 +73,51 @@ export default new Vuex.Store({
         },
     },
     actions: {
-        /**
-         * Fetch all tournaments from the backend
-         */
-        fetchTournaments({ commit }) {
-            return axios.get('tournament/')
-                .then(response => {
-                    commit('SET_TOURNAMENTS', response.data);
-                })
-                .catch(error => {
-                    console.error('Error fetching tournaments:', error);
-                    throw error;
-                });
+        async fetchTournaments({ commit }) {
+            try {
+                const response = await axios.get("/tournament/");
+                commit("SET_TOURNAMENTS", response.data);
+                return response.data;
+            } catch (error) {
+                console.error("Error fetching tournaments:", error);
+                throw error;
+            }
         },
-
-        /**
-         * Fetch all players from the backend
-         */
         async fetchPlayers({ commit }) {
             try {
                 const response = await axios.get('/players');
-                commit('SET_PLAYERS', response.data);  // Optional mutation if you need to store it
-                return response.data; // Make sure this returns the player data array
+                commit('SET_PLAYERS', response.data);
+                return response.data;
             } catch (error) {
                 console.error('Error fetching players:', error);
                 throw error;
             }
         },
-        /**
-        * Fetch a specific player by ID (optional)
-        */
         fetchPlayerById({ commit }, playerId) {
-            return axios.get(`players/${playerId}`)
-            .then((response) => {
-                commit('SET_PLAYER', response.data);
-            })
-            .catch((error) => {
-                console.error('Error fetching player:', error);
-                throw error;
-            });
+            return axios
+                .get(`/players/${playerId}`)
+                .then((response) => {
+                    commit("SET_PLAYER", response.data);
+                    return response.data;
+                })
+                .catch((error) => {
+                    console.error("Error fetching player:", error);
+                    throw error;
+                });
         },
-        async fetchPlayerStats(_, playerId) {
-            try {
-                const response = await axios.get(`/playerStats/${playerId}`);
-                return response.data; // Ensure it returns the array directly
-            } catch (error) {
-                console.error('Error fetching player stats:', error);
-                throw error;
-            }
+        fetchPlayerStats(_, playerId) {
+            return axios
+                .get(`/playerStats/${playerId}`)
+                .then((response) => response.data)
+                .catch((err) => {
+                    console.error("Error fetching player stats:", err);
+                    throw err;
+                });
         },
         async fetchPlayerRanking(_, playerId) {
             try {
                 const response = await axios.get(`/ranking/player/${playerId}`);
-                return response.data; // Return the player ranking data
+                return response.data;
             } catch (error) {
                 console.error('Error fetching player ranking:', error);
                 throw error;
@@ -121,10 +128,14 @@ export default new Vuex.Store({
                 return dispatch('fetchPlayers');
             });
         },
-        updatePlayer({ dispatch }, { playerId, playerData }) {
-            return axios.put(`/players/${playerId}`, playerData).then(() => {
-                return dispatch('fetchPlayers');
-            });
+        updatePlayer(_, { playerId, playerData }) {
+            return axios
+                .put(`/players/${playerId}`, playerData)
+                .then((response) => response.data)
+                .catch((err) => {
+                    console.error("Error in Vuex updatePlayer action:", err);
+                    throw err;
+                });
         },
         deletePlayer({ dispatch }, playerId) {
             return axios.delete(`/players/${playerId}`).then(() => {
@@ -141,14 +152,11 @@ export default new Vuex.Store({
                     throw error;
                 });
         },
-        /**
-         * Fetch all teams from the backend
-         */
         fetchTeams({ commit }) {
-            return axios.get('/team') // Adjust the endpoint if necessary
+            return axios.get('/team')
                 .then(response => {
                     commit('SET_TEAMS', response.data);
-                    return response.data; // Ensure teams are returned
+                    return response.data;
                 })
                 .catch(error => {
                     console.error('Error fetching teams:', error);
@@ -166,7 +174,6 @@ export default new Vuex.Store({
             }
         },
         createTeam({ dispatch }, { team_name, player_ids }) {
-            console.log('Data being sent to backend:', { team_name, player_ids });
             return axios.post('/team', { team_name, player_ids })
                 .then(() => dispatch('fetchTeams'))
                 .catch(error => {
@@ -249,30 +256,49 @@ export default new Vuex.Store({
                 });
         },
         loginUser({ commit }, credentials) {
-            return axios.post('/players/login', credentials)
-                .then(response => {
-                    const user = response.data;
-                    commit('SET_USER', user);
-                    if (user.account_type === 'admin') {
-                        window.location.href = '/admin/dashboard';
-                    } else {
-                        window.location.href = '/';
+            return axios
+                .post("/players/login", credentials)
+                .then((response) => {
+                    const { user, token } = response.data;
+
+                    if (!user || !token) {
+                        throw new Error("Invalid login response: Missing user or token");
                     }
+                    // Commit user and token to the Vuex store
+                    commit("SET_USER", user);
+                    commit("SET_TOKEN", token);
+
+                    console.log("Login successful, user:", user);
+                    console.log("Token received:", token);
+
+                    return user; // Return user for further use in the frontend
                 })
-                .catch(error => {
-                    console.error('Error logging in:', error.response ? error.response.data : error);
+                .catch((error) => {
+                    console.error("Error logging in:", error.response?.data || error.message);
                     throw error;
                 });
         },
-
-
-        /**
-         * Logout user
-         */
         logout({ commit }) {
             commit('CLEAR_USER');
+            window.location.href = '/login'; // Redirect to login page
         },
+        registerPlayer({ commit }, form) {
+            return axios
+                .post('/players/register', form)
+                .then((response) => {
+                    const { user, token } = response.data;
 
+                    // Commit user and token to the Vuex store
+                    commit('SET_USER', user);
+                    commit('SET_TOKEN', token);
+
+                    return response.data;
+                })
+                .catch((error) => {
+                    console.error('Error during registration:', error);
+                    throw error;
+                });
+        },
         createTournament({ dispatch }, tournamentData) {
             return axios.post('/tournament', tournamentData)
                 .then(() => dispatch('fetchTournaments'))
@@ -297,7 +323,38 @@ export default new Vuex.Store({
                     throw error;
                 });
         },
+        unregisterPlayerFromTournament(_, { player_id, tournament_id }) {
+            return axios
+                .delete(`/register/${player_id}/${tournament_id}`)
+                .then((response) => {
+                    return response.data;
+                })
+                .catch((err) => {
+                    console.error("Error unregistering player:", err);
+                    throw err;
+                });
+        },
+        fetchRegisteredTournaments(_, player_id) {
+            return axios
+                .get(`/register?player_id=${player_id}`)
+                .then((response) => response.data)
+                .catch((err) => {
+                    console.error("Error fetching registered tournaments:", err);
+                    throw err;
+                });
+        },
 
+        registerPlayerToTournament(_, { player_id, tournament_id }) {
+            return axios
+                .post("/register/player", { player_id, tournament_id })
+                .then((response) => {
+                    return response.data;
+                })
+                .catch((err) => {
+                    console.error("Error registering player:", err);
+                    throw err; // Re-throw error to handle it in the component
+                });
+        },
     },
     getters: {
         allTournaments: (state) => state.tournaments,
@@ -309,14 +366,8 @@ export default new Vuex.Store({
         isLoggedIn: (state) => !!state.user,
         currentUser: (state) => state.user,
         userRole: (state) => (state.user ? state.user.account_type : null),
-        totalPlayers: (state) => {
-            console.log('Total players computed:', state.players.length);
-            return state.players.length;
-        },
-        totalTournaments: (state) => {
-            console.log('Total tournaments computed:', state.tournaments.length);
-            return state.tournaments.length;
-        },
+        totalPlayers: (state) => state.players.length,
+        totalTournaments: (state) => state.tournaments.length,
         totalTeams: (state) => state.teams.length,
         totalActivities: (state) => state.activities.length,
     },

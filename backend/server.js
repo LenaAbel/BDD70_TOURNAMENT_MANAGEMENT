@@ -27,6 +27,12 @@ dotenv.config();
 server.use(cors());
 server.use(express.json());
 server.use(bodyParser.json());
+server.use(bodyParser.urlencoded({ extended: true }));
+server.use((err, req, res, next) => {
+    console.error('Unhandled server error:', err.stack || err.message);
+    res.status(500).json({ error: 'An unexpected error occurred' });
+});
+
 
 // call des routes
 server.use("/api/players", playerRoutes);

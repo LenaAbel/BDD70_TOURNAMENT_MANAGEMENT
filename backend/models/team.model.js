@@ -65,8 +65,6 @@ const assignPlayersToTeam = (teamId, playerIds) => {
 };
 
 
-
-
 // Delete a team by ID
 const deleteTeam = (team_id) => {
     return new Promise((resolve, reject) => {

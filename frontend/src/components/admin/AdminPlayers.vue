@@ -1,3 +1,4 @@
+<!-- AdminPlayers.vue -->
 <template>
   <div class="players-list">
     <b-container class="mt-5 pt-5">

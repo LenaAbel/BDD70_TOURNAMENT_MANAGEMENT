@@ -1,4 +1,3 @@
-<!-- mainHome.vue -->
 <template>
   <div class="home">
     <!-- Hero Section -->
@@ -23,6 +22,25 @@
             Go to Dashboard
           </b-button>
         </div>
+        <div v-else-if="userRole === 'player'">
+          <p class="lead">Welcome, {{ userName }}! Explore tournaments, track your stats, and compete!</p>
+          <br>
+          <b-button
+              style="background-color: #001994"
+              size="lg"
+              class="mr-2"
+              @click="$router.push('/tournaments')"
+          >
+            Explore Tournaments
+          </b-button>
+          <b-button
+              style="background-color: #001994"
+              size="lg"
+              @click="$router.push('/profile')"
+          >
+            View Profile
+          </b-button>
+        </div>
         <div v-else>
           <p class="lead">Join and compete in exciting board game tournaments!</p>
           <br>
@@ -43,6 +61,7 @@
       <b-container>
         <!-- Conditional Title -->
         <h2 class="text-center mb-5" v-if="userRole === 'admin'">Admin Features</h2>
+        <h2 class="text-center mb-5" v-else-if="userRole === 'player'">Player Features</h2>
         <h2 class="text-center mb-5" v-else>Features</h2>
         <br>
         <b-row>
@@ -65,7 +84,26 @@
             </b-col>
           </template>
 
-          <!-- Regular User Features -->
+          <!-- Player Features -->
+          <template v-else-if="userRole === 'player'">
+            <b-col md="4" class="text-center mb-4">
+              <b-icon icon="trophy-fill" class="icon-custom-color" font-scale="4"></b-icon>
+              <h4 class="mt-3">Compete in Tournaments</h4>
+              <p>Participate in ongoing tournaments and track your progress.</p>
+            </b-col>
+            <b-col md="4" class="text-center mb-4">
+              <b-icon icon="graph-up" class="icon-custom-color" font-scale="4"></b-icon>
+              <h4 class="mt-3">Track Your Stats</h4>
+              <p>View your game stats, rankings, and performance history.</p>
+            </b-col>
+            <b-col md="4" class="text-center mb-4">
+              <b-icon icon="gear-fill" font-scale="4" class="icon-custom-color"></b-icon>
+              <h4 class="mt-3">Manage Your Profile</h4>
+              <p>Update your profile and preferred games.</p>
+            </b-col>
+          </template>
+
+          <!-- Default Features -->
           <template v-else>
             <b-col md="4" class="text-center mb-4">
               <b-icon icon="people-fill" font-scale="4" class="icon-custom-color"></b-icon>
@@ -88,13 +126,17 @@
     </section>
   </div>
 </template>
+
 <script>
-import { mapGetters } from 'vuex';
+import { mapGetters } from "vuex";
 
 export default {
-  name: 'mainHome',
+  name: "mainHome",
   computed: {
-    ...mapGetters(['userRole']),
+    ...mapGetters(["userRole", "currentUser"]),
+    userName() {
+      return this.currentUser ? this.currentUser.name : "Player";
+    },
   },
 };
 </script>
@@ -109,7 +151,7 @@ export default {
       rgba(1, 4, 45, 0.7),
       rgba(1, 4, 45, 0.7)
   ),
-  url('@/assets/background.jpeg') no-repeat center center;
+  url("@/assets/background.jpeg") no-repeat center center;
   background-size: cover;
   min-height: 100vh;
 }
@@ -131,6 +173,7 @@ export default {
 h4 {
   color: var(--pink);
 }
+
 .icon-custom-color {
   color: var(--navyblue);
 }

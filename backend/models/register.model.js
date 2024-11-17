@@ -65,15 +65,16 @@ const updateRegister = (player_id, tournament_id, team_id) => {
 // Supprimer une inscription par ID de joueur et ID de tournoi
 const deleteRegister = (player_id, tournament_id) => {
     return new Promise((resolve, reject) => {
-        db.query('DELETE FROM register WHERE player_id = ? AND tournament_id = ?', [player_id, tournament_id], (err, result) => {
-            if (err) {
-                return reject(err);
+        db.query(
+            "DELETE FROM register WHERE player_id = ? AND tournament_id = ?",
+            [player_id, tournament_id],
+            (err, result) => {
+                if (err) {
+                    return reject(err);
+                }
+                resolve(result.affectedRows > 0); // Return `true` if deletion was successful
             }
-            if (result.affectedRows === 0) {
-                return resolve(null);
-            }
-            resolve(result);
-        });
+        );
     });
 };
 
@@ -86,6 +87,21 @@ const registerPlayerToTournament = (player_id, tournament_id) => {
             }
             resolve({ player_id, tournament_id });
         });
+    });
+};
+
+const isPlayerRegistered = (player_id, tournament_id) => {
+    return new Promise((resolve, reject) => {
+        db.query(
+            "SELECT * FROM register WHERE player_id = ? AND tournament_id = ?",
+            [player_id, tournament_id],
+            (err, results) => {
+                if (err) {
+                    return reject(err);
+                }
+                resolve(results.length > 0); // Return `true` if a record exists
+            }
+        );
     });
 };
 
@@ -126,5 +142,6 @@ module.exports = {
     updateRegister,
     deleteRegister,
     registerPlayerToTournament,
-    registerTeam
+    registerTeam,
+    isPlayerRegistered
 };

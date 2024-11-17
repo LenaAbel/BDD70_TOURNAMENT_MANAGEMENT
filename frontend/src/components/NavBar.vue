@@ -1,4 +1,3 @@
-<!-- NavBar.vue -->
 <template>
   <div>
     <b-navbar
@@ -43,7 +42,7 @@
             </b-nav-item>
           </template>
 
-          <!-- Admin Options - visible only if logged in and user is an admin -->
+          <!-- Admin Options -->
           <template v-if="isLoggedIn && userRole === 'admin'">
             <b-nav-item href="/admin/tournaments">
               <b-icon icon="trophy-fill" class="mr-1"></b-icon> Manage Tournaments
@@ -61,6 +60,17 @@
               <b-icon icon="bar-chart-fill" class="mr-1"></b-icon> Statistics
             </b-nav-item>
           </template>
+
+          <!-- Player Options -->
+          <template v-if="isLoggedIn && userRole === 'player'">
+            <b-nav-item href="/register-tournament">
+              <b-icon icon="trophy-fill" class="mr-1"></b-icon> Tournaments
+            </b-nav-item>
+            <b-nav-item href="/profile">
+              <b-icon icon="person-fill" class="mr-1"></b-icon> My Profile
+            </b-nav-item>
+          </template>
+
         </b-navbar-nav>
 
         <!-- Right-aligned navigation items -->

@@ -1,11 +1,17 @@
-<!-- src/components/mainLogin.vue -->
 <template>
   <div class="login mt-5 d-flex align-items-center justify-content-center">
     <b-card class="w-100" style="max-width: 500px;">
       <h2 class="text-center mb-4">Login</h2>
+
+      <!-- Display error or success messages -->
       <b-alert v-if="error" variant="danger" dismissible class="mt-3">
         {{ error }}
       </b-alert>
+      <b-alert v-if="successMessage" variant="success" dismissible class="mt-3">
+        {{ successMessage }}
+      </b-alert>
+
+      <!-- Login form -->
       <b-form @submit.prevent="login">
         <b-form-group label="Email" label-for="email">
           <b-form-input
@@ -24,55 +30,64 @@
               required
               placeholder="Enter your password"
           ></b-form-input>
+
         </b-form-group>
-        <b-button
-            type="submit"
-            variant="primary"
-            block
-            class="magical-brush-button"
-        >
+        <b-button type="submit" variant="primary" block>
           Login
         </b-button>
       </b-form>
-      <p class="text-center mt-3">
-        Don't have an account?
-        <b-link @click="$router.push('/register')" class="magical-brush-link"
-        >Register here</b-link
-        >
-      </p>
     </b-card>
   </div>
 </template>
 
 <script>
-import { mapActions } from 'vuex';
+import { mapActions } from "vuex";
 
 export default {
-  name: 'mainLogin',
+  name: "mainLogin",
   data() {
     return {
       form: {
-        email: '',
-        password: '',
+        email: "",
+        password: "",
       },
       error: null,
+      successMessage: null,
     };
   },
+  created() {
+    // Check for a success message in the query parameters
+    if (this.$route.query.message) {
+      this.successMessage = this.$route.query.message;
+
+      // Clear the query parameters after extracting the message
+      this.$router.replace({ query: null });
+    }
+  },
   methods: {
-    ...mapActions(['loginUser']),
+    ...mapActions(["loginUser"]),
     login() {
       this.error = null;
+
       this.loginUser(this.form)
-          .then(() => {
-            // Redirect all users to main home after login
-            this.$router.push('/');
+          .then((user) => {
+            if (!user || !user.account_type) {
+              throw new Error("Login response is missing account_type");
+            }
+
+            // Redirect based on account type
+            if (user.account_type === "admin") {
+              this.$router.push("/admin/dashboard");
+            } else if (user.account_type === "player") {
+              this.$router.push("/");
+            } else {
+              this.error = "Unknown account type.";
+            }
           })
           .catch((error) => {
-            console.error('Login error:', error);
-            this.error = error.response?.data?.error || 'Login failed.';
+            this.error = error.response?.data?.error || error.message || "Login failed.";
           });
-    },
-
+    }
   },
 };
 </script>

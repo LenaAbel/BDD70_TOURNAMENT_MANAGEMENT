@@ -1,4 +1,5 @@
 const registerModel = require('../models/register.model');
+const db = require('../database/db_init');
 
 // Créer une inscription
 const createRegister = (req, res) => {
@@ -72,12 +73,42 @@ const deleteRegister = (req, res) => {
 
 const registerPlayerToTournament = (req, res) => {
     const { player_id, tournament_id } = req.body;
-    registerModel.registerPlayerToTournament(player_id, tournament_id)
-        .then(newRegister => res.status(201).json(newRegister))
-        .catch(err => {
-            console.error('Error registering player to tournament:', err);
-            res.status(500).json({ error: 'Error registering player to tournament' });
-        });
+
+    if (!player_id || !tournament_id) {
+        return res.status(400).json({ error: "Player ID and Tournament ID are required" });
+    }
+
+    // Fetch the team_id associated with the player
+    db.query('SELECT team_id FROM player WHERE player_id = ?', [player_id], (err, results) => {
+        if (err) {
+            console.error("Error fetching team_id for player:", err);
+            return res.status(500).json({ error: "Error fetching team information" });
+        }
+
+        const team_id = results[0]?.team_id || null; // Use `null` if no team is assigned
+
+        // Check if the player is already registered for the tournament
+        registerModel
+            .isPlayerRegistered(player_id, tournament_id)
+            .then((isRegistered) => {
+                if (isRegistered) {
+                    return res
+                        .status(409)
+                        .json({ error: "Player is already registered for this tournament." });
+                }
+
+                // Register the player with their team_id
+                return registerModel
+                    .createRegister(player_id, team_id, tournament_id)
+                    .then((result) => {
+                        res.status(201).json(result);
+                    });
+            })
+            .catch((err) => {
+                console.error("Error registering player to tournament:", err);
+                res.status(500).json({ error: "Error registering player to tournament" });
+            });
+    });
 };
 
 const registerTeamToTournament = (req, res) => {
@@ -90,6 +121,30 @@ const registerTeamToTournament = (req, res) => {
         });
 };
 
+const unregisterPlayerFromTournament = (req, res) => {
+    const { player_id, tournament_id } = req.params;
+
+    if (!player_id || !tournament_id) {
+        return res.status(400).json({ error: "Player ID and Tournament ID are required" });
+    }
+
+    registerModel
+        .isPlayerRegistered(player_id, tournament_id)
+        .then((isRegistered) => {
+            if (!isRegistered) {
+                return res.status(404).json({ error: "Player is not registered for this tournament." });
+            }
+
+            return registerModel.deleteRegister(player_id, tournament_id).then(() => {
+                res.status(200).json({ message: "Successfully unregistered from the tournament." });
+            });
+        })
+        .catch((err) => {
+            console.error("Error unregistering player from tournament:", err);
+            res.status(500).json({ error: "Error unregistering player from tournament" });
+        });
+};
+
 module.exports = {
     createRegister,
     getRegisterById,
@@ -97,5 +152,6 @@ module.exports = {
     updateRegister,
     deleteRegister,
     registerPlayerToTournament,
-    registerTeamToTournament
+    registerTeamToTournament,
+    unregisterPlayerFromTournament
 };

@@ -1,11 +1,15 @@
-<!-- src/components/mainRegister.vue -->
 <template>
   <div class="register mt-5 d-flex align-items-center justify-content-center">
     <b-card class="w-100" style="max-width: 500px;">
       <h2 class="text-center mb-4">Register</h2>
-      <b-alert v-if="error" variant="danger" dismissible class="mt-3">
+      <!-- Display error messages -->
+      <div v-if="error" class="alert alert-danger mt-3" role="alert">
         {{ error }}
+      </div>
+      <b-alert v-if="$route.query.message" variant="success" dismissible class="mt-3">
+        {{ $route.query.message }}
       </b-alert>
+
       <b-form @submit.prevent="register">
         <b-form-group label="Email" label-for="email">
           <b-form-input
@@ -49,29 +53,19 @@
               placeholder="Enter your password"
           ></b-form-input>
         </b-form-group>
-        <b-button
-            type="submit"
-            variant="primary"
-            block
-            class="magical-brush-button"
-        >
+        <b-button type="submit" variant="primary" block>
           Register
         </b-button>
       </b-form>
       <p class="text-center mt-3">
         Already have an account?
-        <b-link
-            @click="$router.push('/login')"
-            class="magical-brush-link"
-        >Login here</b-link>
+        <b-link @click="$router.push('/login')">Login here</b-link>
       </p>
     </b-card>
   </div>
 </template>
 
 <script>
-import axios from 'axios';
-
 export default {
   name: 'mainRegister',
   data() {
@@ -87,26 +81,30 @@ export default {
     };
   },
   methods: {
-    register() {
-      this.error = null; // Reset error message
-      axios
-          .post('/players/register', this.form)
-          .then(() => {
-            // Registration successful, redirect to login page
-            this.$router.push('/login');
-          })
-          .catch((error) => {
-            console.error('Registration error:', error);
-            this.error = error.response?.data?.error || 'Registration failed.';
-          });
+    async register() {
+      this.error = null;
+      try {
+        // Dispatch the 'registerPlayer' action
+        await this.$store.dispatch('registerPlayer', this.form);
+
+        // Redirect the user to the desired page after successful registration
+        this.$router.push('/home'); // Replace with your desired route
+      } catch (err) {
+        if (err.response && err.response.status === 409) {
+          this.error = 'This email is already registered. Please log in instead.';
+        } else if (err.response && err.response.data && err.response.data.error) {
+          this.error = err.response.data.error;
+        } else {
+          this.error = 'An unexpected error occurred. Please try again.';
+        }
+      }
     },
   },
 };
 </script>
-
 <style scoped>
 .register {
-  min-height: calc(100vh - 56px); /* Adjust for navbar height if fixed-top */
+  min-height: calc(100vh - 56px);
 }
 
 .b-card {
@@ -116,25 +114,5 @@ export default {
 
 .register h2 {
   color: var(--pink);
-}
-
-label {
-  font-family: 'MagicNeys', sans-serif;
-  font-weight: normal;
-  color: var(--darkblue);
-}
-
-.magical-brush-button {
-  font-family: 'MagicalBrush', cursive;
-}
-
-.magical-brush-link {
-  font-family: 'MagicalBrush', cursive;
-  cursor: pointer;
-  color: var(--pink);
-}
-
-.magical-brush-link:hover {
-  text-decoration: underline;
 }
 </style>

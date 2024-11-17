@@ -18,6 +18,10 @@ import AdminDashboard from "@/components/admin/AdminDashboard.vue";
 import AdminPlayers from "@/components/admin/AdminPlayers.vue";
 import AdminTeams from "@/components/admin/AdminTeams.vue";
 import AdminStatistics from "../components/admin/AdminStatistics.vue";
+import PlayerHome from '../components/home/Player/PlayerHome.vue';
+import PlayerRegisterTournament from "@/components/home/Player/PlayerRegisterTournament.vue";
+import PlayerProfile from "@/components/home/Player/PlayerProfile.vue";
+
 
 Vue.use(Router);
 
@@ -110,6 +114,30 @@ const router = new Router({
             meta: { requiresAuth: true, requiresAdmin: true },
         },
         {
+            path: '/home',
+            name: 'PlayerHome',
+            component: PlayerHome,
+            meta: { requiresAuth: true },
+        },
+        {
+            path: "/register-tournament",
+            name: "PlayerRegisterTournament",
+            component: PlayerRegisterTournament,
+            meta: { requiresAuth: true },
+        },
+        {
+            path: "/profile",
+            name: "PlayerProfile",
+            component: PlayerProfile,
+            meta: { requiresAuth: true },
+        },
+        {
+            path: "/stats",
+            name: "PlayerStats",
+            component: () => import("@/components/home/Player/PlayerStats.vue"),
+            meta: { requiresAuth: true },
+        },
+        {
             path: '*',
             redirect: '/',
         },
@@ -118,18 +146,15 @@ const router = new Router({
 
 // Navigation guard
 router.beforeEach((to, from, next) => {
-    const { requiresAuth, requiresAdmin } = to.meta;
-    const isLoggedIn = store.getters.isLoggedIn;
-    const userRole = store.getters.userRole;
-
-    if (requiresAuth && !isLoggedIn) {
-        next('/login');
-    } else if (requiresAdmin && userRole !== 'admin') {
-        next('/');
+    if (to.matched.some((record) => record.meta.requiresAuth)) {
+        if (!store.getters.isLoggedIn) {
+            next('/login'); // Redirect to login if not logged in
+        } else {
+            next(); // Proceed to the route
+        }
     } else {
-        next();
+        next(); // Proceed to the route
     }
 });
-
 
 export default router;

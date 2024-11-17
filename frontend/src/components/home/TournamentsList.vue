@@ -37,7 +37,7 @@
                   aria-label="Select date range"
                   :state="dateRangeState"
                   class="magical-brush"
-              ></b-form-datepicker>
+              />
             </b-form-group>
           </b-col>
 
@@ -168,26 +168,18 @@ export default {
     filteredTournaments() {
       let filtered = this.tournaments;
 
-      // Apply text filter
-      if (this.filter) {
-        const searchTerm = this.filter.toLowerCase();
-        filtered = filtered.filter((tournament) =>
-            Object.values(tournament).some((value) =>
-                String(value).toLowerCase().includes(searchTerm)
-            )
-        );
-      }
-
       // Apply date range filter
-      if (this.dateRange && this.dateRange.length === 2) {
+      if (Array.isArray(this.dateRange) && this.dateRange.length === 2) {
         const [startDate, endDate] = this.dateRange;
-        filtered = filtered.filter((tournament) => {
-          const tournamentStart = dayjs(tournament.tournament_start_time);
-          return (
-              tournamentStart.isAfter(dayjs(startDate).subtract(1, 'day')) &&
-              tournamentStart.isBefore(dayjs(endDate).add(1, 'day'))
-          );
-        });
+        if (startDate && endDate) {
+          filtered = filtered.filter((tournament) => {
+            const tournamentStart = dayjs(tournament.tournament_start_time);
+            return (
+                tournamentStart.isAfter(dayjs(startDate).subtract(1, 'day')) &&
+                tournamentStart.isBefore(dayjs(endDate).add(1, 'day'))
+            );
+          });
+        }
       }
 
       // Apply game filter
@@ -226,7 +218,7 @@ export default {
     },
     // State for date range picker validation
     dateRangeState() {
-      if (!this.dateRange || this.dateRange.length !== 2) return null;
+      if (!Array.isArray(this.dateRange) || this.dateRange.length !== 2) return null;
       const [startDate, endDate] = this.dateRange;
       return startDate && endDate ? true : false;
     },
@@ -246,7 +238,7 @@ export default {
   data() {
     return {
       filter: '',
-      dateRange: [], // Holds [startDate, endDate]
+      dateRange: [null, null], // Initialize as an array for date range picker
       selectedGame: null,
       sortOption: null,
       fields: [

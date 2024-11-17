@@ -28,20 +28,7 @@
           </b-input-group-append>
         </b-input-group>
 
-        <!-- Date Range Filter -->
         <b-row>
-          <b-col md="6" class="mb-3">
-            <b-form-group class='date' label="Filter by Registration Date">
-              <b-form-datepicker
-                  v-model="dateRange"
-                  range
-                  aria-label="Select registration date range"
-                  :state="dateRangeState"
-                  class="magical-brush"
-              ></b-form-datepicker>
-            </b-form-group>
-          </b-col>
-
           <!-- Team Filter -->
           <b-col md="6" class="mb-3">
             <b-form-group label="Filter by Team">
@@ -107,9 +94,6 @@
         <template #cell(team)="data">
           {{ data.item.team }}
         </template>
-        <template #cell(registrationDate)="data">
-          {{ formatDate(data.item.registrationDate) }}
-        </template>
 
         <!-- Make the Name clickable to go to Player Profile -->
         <template #cell(player_name)="data">
@@ -148,9 +132,6 @@ export default {
             ? player.preferredGames
             : 'N/A', // Assuming preferredGames is an array or a string
         team: player.team_name ? player.team_name : 'No Team',
-        registrationDate: player.player_registrationDate
-            ? player.player_registrationDate
-            : null,
       }));
     },
     // Generate options for team filter
@@ -172,14 +153,6 @@ export default {
         { value: { key: 'player_lastname', order: 'desc' }, text: 'Lastname (Z-A)' },
         { value: { key: 'player_email', order: 'asc' }, text: 'Email (A-Z)' },
         { value: { key: 'player_email', order: 'desc' }, text: 'Email (Z-A)' },
-        {
-          value: { key: 'registrationDate', order: 'asc' },
-          text: 'Registration Date (Oldest First)',
-        },
-        {
-          value: { key: 'registrationDate', order: 'desc' },
-          text: 'Registration Date (Newest First)',
-        },
         { value: { key: 'team', order: 'asc' }, text: 'Team (A-Z)' },
         { value: { key: 'team', order: 'desc' }, text: 'Team (Z-A)' },
       ];
@@ -197,20 +170,6 @@ export default {
             )
         );
       }
-
-      // Apply date range filter
-      if (this.dateRange && this.dateRange.length === 2) {
-        const [startDate, endDate] = this.dateRange;
-        filtered = filtered.filter((player) => {
-          if (!player.registrationDate) return false;
-          const regDate = dayjs(player.registrationDate);
-          return (
-              regDate.isAfter(dayjs(startDate).subtract(1, 'day')) &&
-              regDate.isBefore(dayjs(endDate).add(1, 'day'))
-          );
-        });
-      }
-
       // Apply team filter
       if (this.selectedTeam) {
         filtered = filtered.filter((player) => player.team === this.selectedTeam);
@@ -269,7 +228,6 @@ export default {
         { key: 'player_email', label: 'Email', sortable: true },
         { key: 'preferredGames', label: 'Preferred Games', sortable: false },
         { key: 'team', label: 'Team', sortable: true },
-        { key: 'registrationDate', label: 'Registration Date', sortable: true },
       ],
       currentPage: 1,
       perPage: 10,

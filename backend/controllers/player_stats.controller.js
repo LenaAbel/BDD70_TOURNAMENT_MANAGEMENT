@@ -10,7 +10,6 @@ const createPlayerStats = (req, res) => {
             res.status(500).json({ error: 'Error creating player stats' });
         });
 };
-
 // Obtenir les statistiques d'un joueur par ID de joueur
 const getPlayerStatsByPlayerId = (req, res) => {
     const { player_id } = req.params;

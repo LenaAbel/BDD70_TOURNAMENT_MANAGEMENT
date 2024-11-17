@@ -26,33 +26,36 @@ const createPlayer = (email, name, lastname, nickname, password, account_type, t
     });
 };
 
-
-
-// Register a new player with hashed password
 const registerPlayer = (email, name, lastname, nickname, password, account_type, team_id) => {
     return new Promise((resolve, reject) => {
         // Check if email already exists
         db.query('SELECT * FROM player WHERE player_email = ?', [email], (err, results) => {
             if (err) {
-                return reject(err);
+                console.error('Database query error:', err);
+                return reject(new Error('Database error occurred'));
             }
             if (results.length > 0) {
+                console.warn('Attempt to register with an existing email:', email);
                 return reject(new Error('Email already exists'));
             }
 
             // Hash the password
-            bcrypt.hash(password, SALT_ROUNDS, (err, hashedPassword) => {
+            bcrypt.hash(password, 10, (err, hashedPassword) => {
                 if (err) {
-                    return reject(err);
+                    console.error('Password hashing error:', err);
+                    return reject(new Error('Failed to hash password'));
                 }
-                // Insert the new player with the hashed password
+
+                // Insert the new player into the database
                 db.query(
                     'INSERT INTO player (player_email, player_name, player_lastname, player_nickname, player_password, player_account_type, team_id) VALUES (?, ?, ?, ?, ?, ?, ?)',
                     [email, name, lastname, nickname, hashedPassword, account_type, team_id],
                     (err, result) => {
                         if (err) {
-                            return reject(err);
+                            console.error('Error inserting player:', err);
+                            return reject(new Error('Database error occurred'));
                         }
+
                         resolve({
                             player_id: result.insertId,
                             email,
@@ -60,7 +63,7 @@ const registerPlayer = (email, name, lastname, nickname, password, account_type,
                             lastname,
                             nickname,
                             account_type,
-                            team_id
+                            team_id,
                         });
                     }
                 );
@@ -69,43 +72,45 @@ const registerPlayer = (email, name, lastname, nickname, password, account_type,
     });
 };
 
+
 // Login a player by verifying password
 const loginPlayer = (email, password) => {
     return new Promise((resolve, reject) => {
-        // Find the player by email
         db.query(
             'SELECT * FROM player WHERE player_email = ?',
             [email],
             (err, results) => {
                 if (err) {
+                    console.error('Database error:', err);
                     return reject(err);
                 }
                 if (results.length === 0) {
+                    console.warn('Login attempt with non-existent email:', email);
                     return resolve(null); // User not found
                 }
+
                 const player = results[0];
-                // Compare the password with the hashed password
+                console.log('User found:', player);
+
+                // Compare the provided password with the stored hashed password
                 bcrypt.compare(password, player.player_password, (err, isMatch) => {
                     if (err) {
+                        console.error('Password comparison error:', err);
                         return reject(err);
                     }
                     if (isMatch) {
-                        // Passwords match
+                        console.log('Password match for email:', email);
                         resolve({
                             player_id: player.player_id,
                             email: player.player_email,
                             name: player.player_name,
                             lastname: player.player_lastname,
                             nickname: player.player_nickname,
-                            account_type: player.player_account_type, // Include account_type
+                            account_type: player.player_account_type,
                             team_id: player.team_id,
                         });
-                        console.log('Login attempt:', email);
-                        console.log('Password match:', isMatch);
-                        console.log('Database password:', player.player_password);
-
                     } else {
-                        // Passwords do not match
+                        console.warn('Invalid password for email:', email);
                         resolve(null);
                     }
                 });
@@ -165,23 +170,83 @@ const getPlayerById = (player_id) => {
         );
     });
 };
-
-// Update a player by ID
 const updatePlayer = (player_id, email, name, lastname, nickname, password, account_type, team_id) => {
     return new Promise((resolve, reject) => {
-        db.query(
-            'UPDATE player SET player_email = ?, player_name = ?, player_lastname = ?, player_nickname = ?, player_password = ?, player_account_type = ?, team_id = ? WHERE player_id = ?',
-            [email, name, lastname, nickname, password, account_type, team_id, player_id],
-            (err, result) => {
-                if (err) {
-                    return reject(err);
-                }
-                if (result.affectedRows === 0) {
-                    return resolve(null);
-                }
-                resolve({ player_id, email, name, lastname, nickname, account_type, team_id });
+        // Fetch the existing player data first
+        db.query('SELECT * FROM player WHERE player_id = ?', [player_id], (err, results) => {
+            if (err) {
+                return reject(err);
             }
-        );
+            if (results.length === 0) {
+                return resolve(null); // Player not found
+            }
+
+            // Get existing player data
+            const existingPlayer = results[0];
+
+            // Use existing values if new values are not provided
+            const updatedEmail = email || existingPlayer.player_email;
+            const updatedName = name || existingPlayer.player_name;
+            const updatedLastname = lastname || existingPlayer.player_lastname;
+            const updatedNickname = nickname || existingPlayer.player_nickname;
+            const updatedAccountType = account_type || existingPlayer.player_account_type;
+            const updatedTeamId = team_id !== undefined ? team_id : existingPlayer.team_id; // Allow null for team_id
+
+            // Hash the password if provided, else retain the existing hashed password
+            if (password) {
+                bcrypt.hash(password, SALT_ROUNDS, (err, hashedPassword) => {
+                    if (err) {
+                        return reject(err);
+                    }
+                    performUpdate(
+                        player_id,
+                        updatedEmail,
+                        updatedName,
+                        updatedLastname,
+                        updatedNickname,
+                        hashedPassword,
+                        updatedAccountType,
+                        updatedTeamId
+                    );
+                });
+            } else {
+                // Retain existing password if not provided
+                performUpdate(
+                    player_id,
+                    updatedEmail,
+                    updatedName,
+                    updatedLastname,
+                    updatedNickname,
+                    existingPlayer.player_password,
+                    updatedAccountType,
+                    updatedTeamId
+                );
+            }
+
+            function performUpdate(player_id, email, name, lastname, nickname, password, account_type, team_id) {
+                db.query(
+                    'UPDATE player SET player_email = ?, player_name = ?, player_lastname = ?, player_nickname = ?, player_password = ?, player_account_type = ?, team_id = ? WHERE player_id = ?',
+                    [email, name, lastname, nickname, password, account_type, team_id, player_id],
+                    (err, result) => {
+                        if (err) {
+                            return reject(err);
+                        }
+                        if (result.affectedRows === 0) {
+                            return resolve(null);
+                        }
+                        resolve({
+                            player_id,
+                            email,
+                            name,
+                            lastname,
+                            nickname,
+                            account_type,
+                            team_id,
+                        });
+                    }
+                );
+            }
+        });
     });
 };
 

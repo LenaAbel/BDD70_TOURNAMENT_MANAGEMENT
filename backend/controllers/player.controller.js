@@ -1,5 +1,6 @@
 const playerModel = require('../models/player.model');
 const pool = require("../database/db_init");
+const jwt = require('jsonwebtoken');
 
 // Get all players
 const getAllPlayers = (req, res) => {
@@ -25,40 +26,89 @@ const createPlayer = (req, res) => {
 
 const registerPlayer = (req, res) => {
     const { email, name, lastname, nickname, password } = req.body;
-    const account_type = 'player'; // Default account type
-    const team_id = null; // Default team
+    const account_type = 'player';
+    const team_id = null;
 
-    playerModel.registerPlayer(email, name, lastname, nickname, password, account_type, team_id, pool)
-        .then(newPlayer => res.status(201).json(newPlayer))
-        .catch(err => {
-            console.error('Error registering player:', err);
+    // Ensure all required fields are present
+    if (!email || !name || !lastname || !nickname || !password) {
+        return res.status(400).json({ error: 'All fields are required' });
+    }
+
+    playerModel
+        .registerPlayer(email, name, lastname, nickname, password, account_type, team_id)
+        .then((newPlayer) => {
+            const token = jwt.sign(
+                { id: newPlayer.player_id, email: newPlayer.email, account_type: newPlayer.account_type },
+                process.env.JWT_SECRET,
+                { expiresIn: '1h' }
+            );
+
+            res.status(201).json({
+                token,
+                user: {
+                    player_id: newPlayer.player_id,
+                    email: newPlayer.email,
+                    name: newPlayer.name,
+                    lastname: newPlayer.lastname,
+                    nickname: newPlayer.nickname,
+                    account_type: newPlayer.account_type,
+                },
+            });
+        })
+        .catch((err) => {
+            console.error('Error registering player:', err.message);
+
             if (err.message === 'Email already exists') {
                 res.status(409).json({ error: 'Email already exists' });
             } else {
-                res.status(500).json({ error: 'Error registering player' });
+                res.status(500).json({ error: 'Internal server error' });
             }
         });
 };
-
-// Login a player
 const loginPlayer = (req, res) => {
     const { email, password } = req.body;
-    playerModel.loginPlayer(email, password, pool)
-        .then(player => {
+
+    console.log("Login request body:", req.body); // Debug log
+
+    if (!email || !password) {
+        console.warn("Missing email or password in login request");
+        return res.status(400).json({ error: "Email and password are required" });
+    }
+
+    playerModel
+        .loginPlayer(email, password)
+        .then((player) => {
             if (!player) {
-                console.log('Invalid credentials');
-                return res.status(401).json({ error: 'Invalid email or password' });
+                console.warn("Unauthorized login attempt for email:", email);
+                return res.status(401).json({ error: "Invalid email or password" });
             }
-            res.json(player);
+
+            // Generate token
+            const token = jwt.sign(
+                { id: player.player_id, email: player.email, account_type: player.account_type },
+                process.env.JWT_SECRET,
+                { expiresIn: "1h" }
+            );
+
+            // Send response
+            res.json({
+                token,
+                user: {
+                    player_id: player.player_id,
+                    email: player.email,
+                    name: player.name,
+                    lastname: player.lastname,
+                    nickname: player.nickname,
+                    account_type: player.account_type,
+                    team_id: player.team_id,
+                },
+            });
         })
-        .catch(err => {
-            console.error('Error logging in player:', err);
-            res.status(500).json({ error: 'Error logging in player' });
+        .catch((err) => {
+            console.error("Error logging in player:", err);
+            res.status(500).json({ error: "Error logging in player" });
         });
 };
-
-
-
 
 // Get a player by ID
 const getPlayerById = (req, res) => {
@@ -80,18 +130,20 @@ const getPlayerById = (req, res) => {
 const updatePlayer = (req, res) => {
     const { id } = req.params;
     const { email, name, lastname, nickname, password, account_type, team_id } = req.body;
+
     playerModel.updatePlayer(id, email, name, lastname, nickname, password, account_type, team_id)
-        .then(updatedPlayer => {
+        .then((updatedPlayer) => {
             if (!updatedPlayer) {
-                return res.status(404).json({ error: 'Player not found or not updated' });
+                return res.status(404).json({ error: "Player not found or not updated" });
             }
             res.json(updatedPlayer);
         })
-        .catch(err => {
-            console.error('Error updating player:', err);
-            res.status(500).json({ error: 'Error updating player' });
+        .catch((err) => {
+            console.error("Error in updatePlayer controller:", err);
+            res.status(500).json({ error: "Error updating player" });
         });
 };
+
 
 // Delete a player by ID
 const deletePlayer = (req, res) => {
