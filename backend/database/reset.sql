@@ -20,5 +20,7 @@ DROP TABLE IF EXISTS debug_log;
 DROP TABLE IF EXISTS format;
 DROP TABLE IF EXISTS tournament_type;
 DROP TABLE IF EXISTS player_tournament_queue;
+DROP TABLE IF EXISTS team_register;
+DROP TABLE IF EXISTS team_tournament_queue;
 
 SET FOREIGN_KEY_CHECKS = 1;

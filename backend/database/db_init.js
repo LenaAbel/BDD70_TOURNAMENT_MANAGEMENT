@@ -2,6 +2,7 @@ const mysql = require("mysql2");
 const dotenv = require("dotenv").config();
 const fs = require("fs").promises;
 const bcrypt = require("bcrypt");
+const { exec } = require("child_process");
 
 const SALT_ROUNDS = 5; // Lower salt rounds for faster hashing of dummy data
 
@@ -92,10 +93,7 @@ const executeSqlFiles = async () => {
 
         // Insert initial data that doesn't rely on foreign keys (e.g., activities, teams)
         await executeSqlFile('./database/insert1.sql');
-
-        await executeSqlFile('./database/removeLosers.sql');
-        
-        await executeSqlFile('./database/processPlayerQueue.sql');
+    
 
         await executeSqlFile('./database/procElimTeams.sql');
 
@@ -115,6 +113,8 @@ const executeSqlFiles = async () => {
 
         //test la procédure random winner
         await executeSqlFile('./database/procedureRandomWinner.sql');
+
+        await executeSqlFile('./database/triggerTeam.sql');
 
         console.log("All SQL files and user inserts executed successfully.");
     } catch (err) {

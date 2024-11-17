@@ -15,7 +15,7 @@ BEGIN
             LIMIT 1
         );
 
-        -- Fetch teams for this match
+        -- Fetch teams for this match from the matchpairing table
         SELECT 
             MAX(CASE WHEN rn = 1 THEN team_id END) AS team1_id,
             MAX(CASE WHEN rn = 2 THEN team_id END) AS team2_id
@@ -47,15 +47,19 @@ BEGIN
             SET matchs_status = 'Ended'
             WHERE matchs_id = @match_id;
 
-            -- Insert results with team details
+            -- Insert results into the results table
             INSERT INTO results (match_id, winner_team_id, loser_team_id)
             VALUES (@match_id, @winner_team_id, @loser_team_id);
 
-            -- Queue losing team for removal
-            INSERT INTO player_tournament_queue (team_id, tournament_id, action)
+            -- Queue loser team for removal from the tournament (using team_register)
+            INSERT INTO team_tournament_queue (team_id, tournament_id, action)
             VALUES (@loser_team_id, @tournament_id, 'remove');
+
+            -- Optionally, you could remove the team from the `team_register` table if it's eliminated
+            -- DELETE FROM team_register WHERE team_id = @loser_team_id AND tournament_id = @tournament_id;
+
         ELSE
-            -- Handle invalid matches
+            -- Handle invalid matches if the teams are not valid or duplicate
             UPDATE matchs
             SET matchs_status = 'Invalid'
             WHERE matchs_id = @match_id;

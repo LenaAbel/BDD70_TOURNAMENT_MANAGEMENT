@@ -14,7 +14,7 @@ BEGIN
     DROP TEMPORARY TABLE IF EXISTS temp_participants;
     CREATE TEMPORARY TABLE temp_participants AS
     SELECT DISTINCT team_id
-    FROM register
+    FROM team_register
     WHERE tournament_id = p_tournament_id AND team_id IS NOT NULL;
 
     -- Initial count of participating teams

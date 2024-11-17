@@ -10,6 +10,8 @@ BEGIN
     DECLARE participant1_id INT;
     DECLARE participant2_id INT;
 
+    INSERT INTO debug_log (message, tournament_id) VALUES ('Starting GenerateEliminationBracket', p_tournament_id);
+
     -- Temporary table to hold participants (player_id for solo, team_id for team)
     DROP TEMPORARY TABLE IF EXISTS temp_participants;
     IF p_tournament_type_id = 1 THEN
@@ -22,9 +24,10 @@ BEGIN
         -- Team tournament
         CREATE TEMPORARY TABLE temp_participants AS
         SELECT DISTINCT team_id AS participant_id
-        FROM register
+        FROM team_register
         WHERE tournament_id = p_tournament_id AND team_id IS NOT NULL;
     END IF;
+    
 
     -- Initial count of participants
     SELECT COUNT(*) INTO remaining_participants FROM temp_participants;

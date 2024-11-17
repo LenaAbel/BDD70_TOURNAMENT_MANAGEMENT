@@ -50,6 +50,18 @@ CREATE TABLE IF NOT EXISTS rules (
     CONSTRAINT fk_rules_activity FOREIGN KEY (activity_id) REFERENCES activity (activity_id) ON DELETE CASCADE
 );
 
+CREATE TABLE IF NOT EXISTS format_type (
+    format_id INT NOT NULL AUTO_INCREMENT,
+    format_name VARCHAR(50) NOT NULL,
+    PRIMARY KEY (format_id)
+);
+
+CREATE TABLE IF NOT EXISTS tournament_type (
+    type_id INT NOT NULL AUTO_INCREMENT,
+    type_name VARCHAR(50) NOT NULL,
+    PRIMARY KEY (type_id)
+);
+
 -- Table tournament with prefixed columns
 CREATE TABLE IF NOT EXISTS tournament (
     tournament_id int NOT NULL AUTO_INCREMENT,
@@ -103,6 +115,15 @@ CREATE TABLE IF NOT EXISTS register (
     FOREIGN KEY (team_id) REFERENCES team (team_id) ON DELETE SET NULL,
     FOREIGN KEY (tournament_id) REFERENCES tournament (tournament_id) ON DELETE CASCADE
 );
+
+CREATE TABLE IF NOT EXISTS team_register (
+    team_id INT NOT NULL,
+    tournament_id INT NOT NULL,
+    PRIMARY KEY (team_id, tournament_id),
+    FOREIGN KEY (team_id) REFERENCES team (team_id) ON DELETE CASCADE,
+    FOREIGN KEY (tournament_id) REFERENCES tournament (tournament_id) ON DELETE CASCADE
+);
+
 
 -- Table results with prefixed columns
 CREATE TABLE IF NOT EXISTS results (
@@ -236,20 +257,16 @@ CREATE TABLE IF NOT EXISTS trigger_log (
     log_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE IF NOT EXISTS format_type (
-    format_id INT NOT NULL AUTO_INCREMENT,
-    format_name VARCHAR(50) NOT NULL,
-    PRIMARY KEY (format_id)
-);
 
-CREATE TABLE IF NOT EXISTS tournament_type (
-    type_id INT NOT NULL AUTO_INCREMENT,
-    type_name VARCHAR(50) NOT NULL,
-    PRIMARY KEY (type_id)
-);
 
 CREATE TABLE IF NOT EXISTS player_tournament_queue (
     player_id INT,
+    tournament_id INT,
+    action VARCHAR(10)
+);
+
+CREATE TABLE IF NOT EXISTS team_tournament_queue (
+    team_id INT,
     tournament_id INT,
     action VARCHAR(10)
 );
