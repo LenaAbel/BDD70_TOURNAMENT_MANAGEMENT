@@ -99,3 +99,13 @@ CALL InsertReward('Gold Medal', 'medal', 0, 'Awarded to the top player or team i
 CALL InsertReward('Champion Trophy', 'trophy', 0, 'Given to the winner of the championship.');
 CALL InsertReward('Participation Points', 'points', 100, 'Awarded for participation in a tournament.');
 CALL InsertReward('Top Scorer Badge', 'badge', 0, 'Given to the player with the highest score in a tournament.');
+
+INSERT INTO reward_assignment (tournament_id, reward_id, player_id, team_id)
+VALUES 
+    (1, 1, 1, NULL), -- Gold Medal assigned to player 101 in tournament 1
+    (1, 2, NULL, 1), -- Silver Trophy assigned to team 201 in tournament 1
+    (2, 3, 2, NULL), -- Participation Points assigned to player 102 in tournament 2
+    (3, 4, NULL, 2);
+
+Select * from reward;
+Select * from reward_assignment;

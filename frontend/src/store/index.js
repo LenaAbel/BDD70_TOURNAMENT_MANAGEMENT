@@ -15,6 +15,8 @@ export default new Vuex.Store({
         playerStats: [],
         playerRanking: [],
         user: JSON.parse(localStorage.getItem('user')) || null,
+        rewards: [],
+        rewardAssignments: [],
     },
     mutations: {
         SET_TOURNAMENTS(state, tournaments) {
@@ -55,6 +57,12 @@ export default new Vuex.Store({
             if (index !== -1) {
                 Vue.set(state.teams, index, updatedTeam);
             }
+        },
+        SET_REWARDS(state, rewards) { // Added mutation for setting rewards
+            state.rewards = rewards;
+        },
+        SET_REWARD_ASSIGNMENTS(state, rewardAssignments) { // Added mutation for setting reward assignments
+            state.rewardAssignments = rewardAssignments;
         },
     },
     actions: {
@@ -294,6 +302,28 @@ export default new Vuex.Store({
                 .then(() => dispatch('fetchTournaments'))
                 .catch(error => {
                     console.error('Error deleting tournament:', error);
+                    throw error;
+                });
+        },
+        fetchRewards({ commit }) {
+            return axios.get('/rewards')
+                .then(response => {
+                    commit('SET_REWARDS', response.data);
+                })
+                .catch(error => {
+                    console.error('Error fetching rewards:', error);
+                    throw error;
+                });
+        },
+        fetchRewardAssignments({ commit }) {
+            return axios.get('/rewards/assignments')
+                .then(response => {
+                    console.log('Reward assignments:', response.data);
+                    
+                    commit('SET_REWARD_ASSIGNMENTS', response.data);
+                })
+                .catch(error => {
+                    console.error('Error fetching reward assignments:', error);
                     throw error;
                 });
         },

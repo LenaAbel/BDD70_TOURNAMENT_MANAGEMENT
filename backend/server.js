@@ -22,6 +22,7 @@ const resultRoutes = require("./routes/result_routes");
 const matchPairingRoutes = require("./routes/matchpairing_routes");
 const registerRoutes = require("./routes/register_routes");
 const registerTeamss = require("./routes/registerTeam");
+const rewardsRoutes = require("./routes/rewards_routes");
 
 dotenv.config();
 
@@ -46,6 +47,7 @@ server.use("/api/result", resultRoutes);
 server.use("/api/matchpairing", matchPairingRoutes);
 server.use("/api/register", registerRoutes);
 server.use("/api/registerTeam", registerTeamss);
+server.use("/api/rewards", rewardsRoutes);
 
 
 const PORT = process.env.PORT || 3000;

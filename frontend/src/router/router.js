@@ -18,6 +18,7 @@ import AdminDashboard from "@/components/admin/AdminDashboard.vue";
 import AdminPlayers from "@/components/admin/AdminPlayers.vue";
 import AdminTeams from "@/components/admin/AdminTeams.vue";
 import AdminStatistics from "../components/admin/AdminStatistics.vue";
+import RewardsAndRankings from "@/components/home/RewardsAndRankings.vue";
 
 Vue.use(Router);
 
@@ -68,6 +69,12 @@ const router = new Router({
             path: '/activities/:id',
             name: 'ActivityDisplay',
             component: ActivityDisplay,
+            props: true, // Pass the route parameter as a prop to the component
+        },
+        {
+            path: '/rewards',
+            name: 'RewardsAndRankings',
+            component: RewardsAndRankings,
             props: true, // Pass the route parameter as a prop to the component
         },
         {
