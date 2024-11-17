@@ -97,6 +97,10 @@ const executeSqlFiles = async () => {
         
         await executeSqlFile('./database/processPlayerQueue.sql');
 
+        await executeSqlFile('./database/procElimTeams.sql');
+
+        await executeSqlFile('./database/procRandWinnerTeam.sql');
+
         // Insert users with hashed passwords
         await insertHashedUsers();
 

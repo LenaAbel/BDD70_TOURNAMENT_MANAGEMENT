@@ -2,8 +2,9 @@
 
 -- Insert Team Members
 CALL InsertTeamMember(1, 1); -- Alice to Knights
-CALL InsertTeamMember(1, 2); -- Bob to Knights
-CALL InsertTeamMember(2, 4); -- Dave to Bishops
+CALL InsertTeamMember(2, 2); -- Bob to Knights
+CALL InsertTeamMember(3, 3); -- Dave to Bishops
+CALL InsertTeamMember(4, 4); -- Eve to Bishops
 
 CALL InsertTournamentType('solo');
 CALL InsertTournamentType('team');
