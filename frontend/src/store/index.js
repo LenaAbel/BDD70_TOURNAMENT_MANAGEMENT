@@ -14,6 +14,8 @@ export default new Vuex.Store({
         organizers: [],
         playerStats: [],
         playerRanking: [],
+        formatTypes: [],
+        tournamentTypes: [],
         user: (() => {
             try {
                 return JSON.parse(localStorage.getItem('user')) || null;
@@ -22,6 +24,8 @@ export default new Vuex.Store({
             }
         })(),
         token: localStorage.getItem('token') || null, // Fallback to `null` if `token` is not set
+        rewards: [],
+        rewardAssignments: [],
     },
     mutations: {
         SET_TOURNAMENTS(state, tournaments) {
@@ -56,6 +60,12 @@ export default new Vuex.Store({
             state.user = user;
             localStorage.setItem('user', JSON.stringify(user));
         },
+        SET_FORMAT_TYPES(state, formatTypes) {
+            state.formatTypes = formatTypes;
+        },
+        SET_TOURNAMENT_TYPES(state, tournamentTypes) {
+            state.tournamentTypes = tournamentTypes;
+        },
         SET_TOKEN(state, token) {
             state.token = token;
             localStorage.setItem("token", token);
@@ -74,6 +84,12 @@ export default new Vuex.Store({
             if (index !== -1) {
                 Vue.set(state.teams, index, updatedTeam);
             }
+        },
+        SET_REWARDS(state, rewards) { // Added mutation for setting rewards
+            state.rewards = rewards;
+        },
+        SET_REWARD_ASSIGNMENTS(state, rewardAssignments) { // Added mutation for setting reward assignments
+            state.rewardAssignments = rewardAssignments;
         },
     },
     actions: {
@@ -170,7 +186,6 @@ export default new Vuex.Store({
         async fetchTeamStats(_, teamId) {
             try {
                 const response = await axios.get(`/teamStats/team/${teamId}`);
-                console.log('API response for team stats:', response.data); // Debugging log
                 return response.data; // Ensure it returns the array directly
             } catch (error) {
                 console.error('Error fetching team stats:', error);
@@ -186,7 +201,6 @@ export default new Vuex.Store({
                 });
         },
         updateTeam({ dispatch }, { teamId, teamData }) {
-            console.log('Updating team:', teamId, 'with data:', teamData);
 
             if (!teamId || !teamData.team_name) {
                 console.error("Missing teamId or team_name for update");
@@ -345,6 +359,27 @@ export default new Vuex.Store({
                     throw err;
                 });
         },
+        fetchRewards({ commit }) {
+            return axios.get('/rewards')
+                .then(response => {
+                    commit('SET_REWARDS', response.data);
+                })
+                .catch(error => {
+                    console.error('Error fetching rewards:', error);
+                    throw error;
+                });
+        },
+        fetchRewardAssignments({ commit }) {
+            return axios.get('/rewards/assignments')
+                .then(response => {
+
+                    commit('SET_REWARD_ASSIGNMENTS', response.data);
+                })
+                .catch(error => {
+                    console.error('Error fetching reward assignments:', error);
+                    throw error;
+                });
+        },
 
         registerPlayerToTournament(_, { player_id, tournament_id }) {
             return axios
@@ -355,6 +390,26 @@ export default new Vuex.Store({
                 .catch((err) => {
                     console.error("Error registering player:", err);
                     throw err; // Re-throw error to handle it in the component
+                });
+        },
+        fetchFormatTypes({ commit }) {
+            return axios.get('/tournament/format_types') // Adjusted endpoint
+                .then(response => {
+                    commit('SET_FORMAT_TYPES', response.data);
+                })
+                .catch(error => {
+                    console.error('Error fetching format types:', error);
+                    throw error;
+                });
+        },
+        fetchTournamentTypes({ commit }) {
+            return axios.get('/tournament/tournament_types') // Adjusted endpoint
+                .then(response => {
+                    commit('SET_TOURNAMENT_TYPES', response.data);
+                })
+                .catch(error => {
+                    console.error('Error fetching tournament types:', error);
+                    throw error;
                 });
         },
     },

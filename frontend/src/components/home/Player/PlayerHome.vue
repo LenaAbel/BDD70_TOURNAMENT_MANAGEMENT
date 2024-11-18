@@ -8,7 +8,8 @@
       </p>
 
       <!-- Player Options -->
-      <b-row class="text-center mt-5">
+      <!-- Added 'justify-content-center' to center the cards -->
+      <b-row class="justify-content-center text-center mt-5">
         <b-col md="4" class="mb-3">
           <b-card @click="goToTournaments" class="navigation-card">
             <b-icon icon="trophy-fill" font-scale="3" class="mb-3"></b-icon>
@@ -23,13 +24,16 @@
             <p>View and update your profile.</p>
           </b-card>
         </b-col>
-<!--        <b-col md="4" class="mb-3">
+        <!-- Uncomment this section if you want to include the third card -->
+        <!--
+        <b-col md="4" class="mb-3">
           <b-card @click="goToStats" class="navigation-card">
             <b-icon icon="bar-chart-fill" font-scale="3" class="mb-3"></b-icon>
             <h5>My Stats</h5>
             <p>Check your game statistics and progress.</p>
           </b-card>
-        </b-col>-->
+        </b-col>
+        -->
       </b-row>
     </b-container>
   </div>

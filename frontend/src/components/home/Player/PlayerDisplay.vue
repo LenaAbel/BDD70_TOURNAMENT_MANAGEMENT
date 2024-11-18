@@ -60,7 +60,6 @@
             };
         },
         mounted() {
-            console.log('Player ID:', this.playerId);
             this.fetchPlayerData();
         },
         methods: {

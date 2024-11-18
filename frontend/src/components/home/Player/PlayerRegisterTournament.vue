@@ -95,7 +95,7 @@ export default {
       fields: [
         { key: "tournament_name", label: "Name" },
         { key: "tournament_start_time", label: "Start Time" },
-        { key: "tournament_type", label: "Type" },
+        { key: "tournament_type_name", label: "Type" }, // Updated field
         { key: "actions", label: "Actions" },
       ],
       currentPage: 1,
@@ -110,8 +110,8 @@ export default {
       },
       typeOptions: [
         { value: null, text: "All Types" },
-        { value: "solo", text: "Solo" },
-        { value: "team", text: "Team" },
+        { value: "Solo", text: "Solo" },
+        { value: "Team", text: "Team" },
       ],
     };
   },
@@ -123,7 +123,7 @@ export default {
             : true;
 
         const matchesType = this.filters.type
-            ? tournament.tournament_type === this.filters.type
+            ? tournament.tournament_type_name === this.filters.type
             : true;
 
         const matchesStartDate = this.filters.startDate

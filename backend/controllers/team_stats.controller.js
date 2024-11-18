@@ -14,10 +14,8 @@ const createTeamStats = (req, res) => {
 // Obtenir les statistiques d'une équipe par ID d'équipe
 const getTeamStatsByTeamId = (req, res) => {
     const { team_id } = req.params;
-    console.log(`Fetching stats for team ID: ${team_id}`); // Debug log
     teamStatsModel.getTeamStatsByTeamId(team_id)
         .then(stats => {
-            console.log('Fetched stats:', stats); // Debug log
             res.json(stats);
         })
         .catch(err => {

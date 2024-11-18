@@ -50,6 +50,18 @@ CREATE TABLE IF NOT EXISTS rules (
     CONSTRAINT fk_rules_activity FOREIGN KEY (activity_id) REFERENCES activity (activity_id) ON DELETE CASCADE
 );
 
+CREATE TABLE IF NOT EXISTS format_type (
+    format_id INT NOT NULL AUTO_INCREMENT,
+    format_name VARCHAR(50) NOT NULL,
+    PRIMARY KEY (format_id)
+);
+
+CREATE TABLE IF NOT EXISTS tournament_type (
+    type_id INT NOT NULL AUTO_INCREMENT,
+    type_name VARCHAR(50) NOT NULL,
+    PRIMARY KEY (type_id)
+);
+
 -- Table tournament with prefixed columns
 CREATE TABLE IF NOT EXISTS tournament (
     tournament_id int NOT NULL AUTO_INCREMENT,
@@ -57,15 +69,17 @@ CREATE TABLE IF NOT EXISTS tournament (
     tournament_start_time datetime NOT NULL,
     tournament_bestOfX int DEFAULT NULL,
     tournament_poolSize int DEFAULT NULL,
-    tournament_type enum('solo', 'team') NOT NULL,
-    tournament_format enum('elimination', 'round_robin', 'swiss') DEFAULT 'elimination',
+    tournament_type_id int NOT NULL,
+    format_id int DEFAULT 1,
     rule_id int NOT NULL,
     organizer_id int NOT NULL,
     PRIMARY KEY (tournament_id),
     KEY idx_rule_id (rule_id),
     KEY idx_organizer_id (organizer_id),
     CONSTRAINT fk_tournament_rules FOREIGN KEY (rule_id) REFERENCES rules (rules_id) ON DELETE CASCADE,
-    CONSTRAINT fk_tournament_organizer FOREIGN KEY (organizer_id) REFERENCES player (player_id) ON DELETE CASCADE
+    CONSTRAINT fk_tournament_organizer FOREIGN KEY (organizer_id) REFERENCES player (player_id) ON DELETE CASCADE,
+    CONSTRAINT fk_tournament_format FOREIGN KEY (format_id) REFERENCES format_type (format_id) ON DELETE CASCADE,
+    CONSTRAINT fk_tournament_type FOREIGN KEY (tournament_type_id) REFERENCES tournament_type (type_id) ON DELETE CASCADE
 );
 
 -- Table favoriteactivity with prefixed columns
@@ -101,6 +115,15 @@ CREATE TABLE IF NOT EXISTS register (
     FOREIGN KEY (team_id) REFERENCES team (team_id) ON DELETE SET NULL,
     FOREIGN KEY (tournament_id) REFERENCES tournament (tournament_id) ON DELETE CASCADE
 );
+
+CREATE TABLE IF NOT EXISTS team_register (
+    team_id INT NOT NULL,
+    tournament_id INT NOT NULL,
+    PRIMARY KEY (team_id, tournament_id),
+    FOREIGN KEY (team_id) REFERENCES team (team_id) ON DELETE CASCADE,
+    FOREIGN KEY (tournament_id) REFERENCES tournament (tournament_id) ON DELETE CASCADE
+);
+
 
 -- Table results with prefixed columns
 CREATE TABLE IF NOT EXISTS results (
@@ -193,7 +216,8 @@ CREATE TABLE IF NOT EXISTS debug_log (
     message VARCHAR(255),
     tournament_id INT,
     activity_players INT,
-    tournament_type VARCHAR(50),
+    tournament_type_id INT,
+    tournament_format VARCHAR(50),
     player_count INT,
     match_start_time DATETIME,
     matchs_id INT,
@@ -231,4 +255,18 @@ CREATE TABLE IF NOT EXISTS trigger_log (
     log_id INT AUTO_INCREMENT PRIMARY KEY,
     log_message VARCHAR(255),
     log_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+
+CREATE TABLE IF NOT EXISTS player_tournament_queue (
+    player_id INT,
+    tournament_id INT,
+    action VARCHAR(10)
+);
+
+CREATE TABLE IF NOT EXISTS team_tournament_queue (
+    team_id INT,
+    tournament_id INT,
+    action VARCHAR(10)
 );

@@ -118,7 +118,7 @@ const registerTeam = (team_id, tournament_id) => {
             }
 
             // Use the first player found in the team
-            const player_id = players[0].player_id;
+            //const player_id = players[0].player_id;
 
             // Register this player along with the team to the tournament
             db.query(

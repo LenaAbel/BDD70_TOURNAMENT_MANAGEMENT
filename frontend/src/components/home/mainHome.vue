@@ -29,7 +29,7 @@
               style="background-color: #001994"
               size="lg"
               class="mr-2"
-              @click="$router.push('/tournaments')"
+              @click="$router.push('/register-tournament')"
           >
             Explore Tournaments
           </b-button>

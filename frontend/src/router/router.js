@@ -21,7 +21,7 @@ import AdminStatistics from "../components/admin/AdminStatistics.vue";
 import PlayerHome from '../components/home/Player/PlayerHome.vue';
 import PlayerRegisterTournament from "@/components/home/Player/PlayerRegisterTournament.vue";
 import PlayerProfile from "@/components/home/Player/PlayerProfile.vue";
-
+import RewardsAndRankings from "@/components/home/RewardsAndRankings.vue";
 
 Vue.use(Router);
 
@@ -72,6 +72,12 @@ const router = new Router({
             path: '/activities/:id',
             name: 'ActivityDisplay',
             component: ActivityDisplay,
+            props: true, // Pass the route parameter as a prop to the component
+        },
+        {
+            path: '/rewards',
+            name: 'RewardsAndRankings',
+            component: RewardsAndRankings,
             props: true, // Pass the route parameter as a prop to the component
         },
         {

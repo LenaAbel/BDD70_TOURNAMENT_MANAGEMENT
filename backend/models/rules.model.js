@@ -76,7 +76,6 @@ const deleteRule = (rules_id) => {
 // Obtenir toutes les règles par ID de jeu (activité)
 const getRulesByGameId = (activity_id) => {
     return new Promise((resolve, reject) => {
-        console.log("Activity ID:", activity_id);
 
         db.query(
             'SELECT * FROM rules WHERE activity_id = ?', 

@@ -14,7 +14,6 @@ const getAllTeams = (req, res) => {
 // Create a new team
 const createTeam = (req, res) => {
     const { team_name, player_ids } = req.body;
-    console.log('Received data on backend:', { team_name, player_ids })
 
     if (!team_name) {
         return res.status(400).json({ error: 'Team name is required' });
@@ -57,7 +56,6 @@ const updateTeam = (req, res) => {
     const { id } = req.params;
     const { team_name } = req.body;
 
-    console.log("Updating team with ID:", id, "and name:", team_name);
 
     if (!team_name) {
         return res.status(400).json({ error: 'Team name is required' });

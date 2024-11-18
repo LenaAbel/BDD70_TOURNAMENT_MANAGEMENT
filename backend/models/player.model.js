@@ -90,7 +90,6 @@ const loginPlayer = (email, password) => {
                 }
 
                 const player = results[0];
-                console.log('User found:', player);
 
                 // Compare the provided password with the stored hashed password
                 bcrypt.compare(password, player.player_password, (err, isMatch) => {
@@ -99,7 +98,6 @@ const loginPlayer = (email, password) => {
                         return reject(err);
                     }
                     if (isMatch) {
-                        console.log('Password match for email:', email);
                         resolve({
                             player_id: player.player_id,
                             email: player.player_email,

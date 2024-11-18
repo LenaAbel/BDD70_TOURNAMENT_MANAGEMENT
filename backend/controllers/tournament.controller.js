@@ -12,29 +12,39 @@ const getAllTournaments = (req, res) => {
 };
 
 const createTournament = (req, res) => {
-    const { name, start_time, bestofX, poolSize, type, format, rule_id, organizer_id } = req.body;
-    console.log("Received Data in API:", req.body); // Log the request payload for verification
+    const {
+        name,
+        start_time,
+        bestofX,
+        poolSize,
+        tournament_type_id,
+        format_id,
+        rule_id,
+        organizer_id,
+    } = req.body;
 
-    // Check missing fields and log each one specifically
-    if (!name) console.error("Missing field: name");
-    if (!start_time) console.error("Missing field: start_time");
-    if (!type) console.error("Missing field: type");
-    if (!rule_id) console.error("Missing field: rule_id");
-    if (!organizer_id) console.error("Missing field: organizer_id");
-
-    if (!name || !start_time || !type || !rule_id || !organizer_id) {
+    // Validate required fields
+    if (!name || !start_time || !tournament_type_id || !rule_id || !organizer_id) {
         return res.status(400).json({ error: "Required fields are missing" });
     }
 
-    tournamentModel.createTournament(name, start_time, bestofX, poolSize, type, format, rule_id, organizer_id)
-        .then(newTournament => res.status(201).json(newTournament))
-        .catch(err => {
+    tournamentModel
+        .createTournament(
+            name,
+            start_time,
+            bestofX,
+            poolSize,
+            tournament_type_id,
+            format_id,
+            rule_id,
+            organizer_id
+        )
+        .then((newTournament) => res.status(201).json(newTournament))
+        .catch((err) => {
             console.error('Error creating tournament:', err);
             res.status(500).json({ error: 'Error adding tournament' });
         });
 };
-
-
 
 const getTournamentById = (req, res) => {
     const { id } = req.params;
@@ -53,16 +63,36 @@ const getTournamentById = (req, res) => {
 
 const updateTournament = (req, res) => {
     const { id: tournament_id } = req.params;
-    const { name, start_time, bestofX, poolSize, type, format, rule_id, organizer_id } = req.body;
+    const {
+        name,
+        start_time,
+        bestofX,
+        poolSize,
+        tournament_type_id,
+        format_id,
+        rule_id,
+        organizer_id,
+    } = req.body;
 
-    tournamentModel.updateTournament(tournament_id, name, start_time, bestofX, poolSize, type, format, rule_id, organizer_id)
-        .then(updatedTournament => {
+    tournamentModel
+        .updateTournament(
+            tournament_id,
+            name,
+            start_time,
+            bestofX,
+            poolSize,
+            tournament_type_id,
+            format_id,
+            rule_id,
+            organizer_id
+        )
+        .then((updatedTournament) => {
             if (!updatedTournament) {
                 return res.status(404).json({ error: 'Tournament not found or not updated' });
             }
             res.json(updatedTournament);
         })
-        .catch(err => {
+        .catch((err) => {
             console.error('Error updating tournament:', err);
             res.status(500).json({ error: 'Error updating tournament' });
         });
@@ -85,6 +115,23 @@ const deleteTournament = (req, res) => {
         });
 };
 
+const getFormatTypes = (req, res) => {
+    tournamentModel.getFormatTypes()
+        .then(formatTypes => res.json(formatTypes))
+        .catch(err => {
+            console.error('Error fetching format types:', err);
+            res.status(500).json({ error: 'Error fetching format types' });
+        });
+};
+
+const getTournamentTypes = (req, res) => {
+    tournamentModel.getTournamentTypes()
+        .then(tournamentTypes => res.json(tournamentTypes))
+        .catch(err => {
+            console.error('Error fetching tournament types:', err);
+            res.status(500).json({ error: 'Error fetching tournament types' });
+        });
+};
 
 module.exports = {
     createTournament,
@@ -92,4 +139,6 @@ module.exports = {
     getTournamentById,
     updateTournament,
     deleteTournament,
+    getFormatTypes,
+    getTournamentTypes
 };

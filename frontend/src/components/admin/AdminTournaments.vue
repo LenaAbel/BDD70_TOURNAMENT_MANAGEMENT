@@ -128,20 +128,23 @@
             <b-form-input type="number" v-model="form.tournament_poolSize" min="2"></b-form-input>
           </b-form-group>
 
+          <!-- Type Field -->
           <b-form-group label="Type">
             <b-form-select
-                v-model="form.tournament_type"
-                :options="[{ value: 'solo', text: 'Solo' }, { value: 'team', text: 'Team' }]"
+                v-model="form.tournament_type_id"
+                :options="typeOptions"
                 required
             ></b-form-select>
           </b-form-group>
 
+          <!-- Format Field -->
           <b-form-group label="Format">
             <b-form-select
-                v-model="form.tournament_format"
-                :options="[ { value: 'elimination', text: 'Elimination' }, { value: 'round_robin', text: 'Round Robin' }, { value: 'swiss', text: 'Swiss' } ]"
+                v-model="form.format_id"
+                :options="formatOptions"
             ></b-form-select>
           </b-form-group>
+
 
           <b-form-group label="Organizer">
             <b-form-select
@@ -174,15 +177,17 @@ export default {
       showAddModal: false,
       editing: false,
       modalKey: 0,
-      emailInvalid: false, // Track email validation status
+      emailInvalid: false,
+      formatOptions: [],
+      typeOptions: [],
       form: {
         tournament_name: '',
         activity_id: null,
         tournament_start_time: null,
         tournament_bestOfX: null,
         tournament_poolSize: null,
-        tournament_type: 'solo',
-        tournament_format: 'elimination',
+        tournament_type_id: null,
+        format_id: null,
         rule_id: null,
         organizer_id: null,
       },
@@ -233,12 +238,29 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['fetchTournaments', 'fetchActivities', 'fetchOrganizers', 'createTournament', 'updateTournament', 'deleteTournament']),
+    ...mapActions([
+      'fetchTournaments',
+      'fetchActivities',
+      'fetchOrganizers',
+      'fetchFormatTypes',
+      'fetchTournamentTypes',
+      'createTournament',
+      'updateTournament',
+      'deleteTournament'
+    ]),
     fetchData() {
+      console.log('Fetching data...');
+
       this.loading = true;
       this.fetchError = null;
 
-      Promise.all([this.fetchTournaments(), this.fetchActivities(), this.fetchOrganizers()])
+      Promise.all([
+        this.fetchTournaments(),
+        this.fetchActivities(),
+        this.fetchOrganizers(),
+        this.fetchFormatTypes(),
+        this.fetchTournamentTypes(),
+      ])
           .then(() => {
             // Populate game options
             if (this.allActivities && this.allActivities.length > 0) {
@@ -246,8 +268,6 @@ export default {
                 value: activity.activity_id,
                 text: activity.activity_name,
               }));
-            } else {
-              console.warn("No activities found in allActivities.");
             }
 
             // Populate organizer options
@@ -257,41 +277,36 @@ export default {
                 text: `${organizer.player_name} ${organizer.player_lastname}`,
                 email: organizer.player_email, // Track email for validation
               }));
-            } else {
-              console.warn("No organizers found in allOrganizers.");
+            }
+
+            // Populate format options
+            if (this.$store.state.formatTypes && this.$store.state.formatTypes.length > 0) {
+              this.formatOptions = this.$store.state.formatTypes.map(format => ({
+                value: format.format_id,
+                text: format.format_name,
+              }));
+            }
+
+            // Populate tournament type options
+            if (this.$store.state.tournamentTypes && this.$store.state.tournamentTypes.length > 0) {
+              this.typeOptions = this.$store.state.tournamentTypes.map(type => ({
+                value: type.type_id,
+                text: type.type_name,
+              }));
             }
           })
           .catch(error => {
-            this.fetchError = 'Failed to load tournaments, activities, or organizers.';
+            this.fetchError = 'Failed to load data.';
             console.error('Error fetching data:', error);
           })
           .finally(() => {
             this.loading = false;
           });
     },
-    validateEmail() {
-      // Check the selected organizer's email to see if it contains '@'
-      const selectedOrganizer = this.organizerOptions.find(o => o.value === this.form.organizer_id);
-      this.emailInvalid = selectedOrganizer && !selectedOrganizer.email.includes('@');
-    },
-    editTournament(tournament) {
-      this.form = {
-        tournament_id: tournament.tournament_id,
-        tournament_name: tournament.tournament_name,
-        activity_id: tournament.activity_id,
-        tournament_start_time: tournament.tournament_start_time,
-        tournament_bestOfX: tournament.tournament_bestOfX,
-        tournament_poolSize: tournament.tournament_poolSize,
-        tournament_type: tournament.tournament_type,
-        tournament_format: tournament.tournament_format,
-        rule_id: tournament.rule_id,
-        organizer_id: tournament.organizer_id,
-      };
-      this.editing = true;
+    openAddModal() {
+      this.clearForm();
+      this.modalKey += 1;
       this.showAddModal = true;
-    },
-    formatDate(date) {
-      return dayjs(date).format('MMMM D, YYYY');
     },
     clearFilter() {
       this.filter = '';
@@ -305,8 +320,8 @@ export default {
         tournament_start_time: null,
         tournament_bestOfX: null,
         tournament_poolSize: null,
-        tournament_type: 'solo',
-        tournament_format: 'elimination',
+        tournament_type_id: null,
+        format_id: null,
         rule_id: null,
         organizer_id: null,
       };
@@ -317,6 +332,11 @@ export default {
       this.$nextTick(() => {
         this.$refs.tournamentNameInput.focus();
       });
+    },
+    validateEmail() {
+      // Check the selected organizer's email to see if it contains '@'
+      const selectedOrganizer = this.organizerOptions.find(o => o.value === this.form.organizer_id);
+      this.emailInvalid = selectedOrganizer && !selectedOrganizer.email.includes('@');
     },
     assignRuleId() {
       const selectedActivity = this.allActivities.find(activity => activity.activity_id === this.form.activity_id);
@@ -333,10 +353,10 @@ export default {
         start_time: this.form.tournament_start_time,
         bestofX: this.form.tournament_bestOfX,
         poolSize: this.form.tournament_poolSize,
-        type: this.form.tournament_type,
-        format: this.form.tournament_format,
+        tournament_type_id: this.form.tournament_type_id,
+        format_id: this.form.format_id,
         rule_id: this.form.rule_id,
-        organizer_id: this.form.organizer_id
+        organizer_id: this.form.organizer_id,
       };
 
       if (!formData.rule_id || this.emailInvalid) {
@@ -362,6 +382,25 @@ export default {
             .catch(error => console.error('Error creating tournament:', error));
       }
     },
+    editTournament(tournament) {
+      this.form = {
+        tournament_id: tournament.tournament_id,
+        tournament_name: tournament.tournament_name,
+        activity_id: tournament.activity_id,
+        tournament_start_time: tournament.tournament_start_time,
+        tournament_bestOfX: tournament.tournament_bestOfX,
+        tournament_poolSize: tournament.tournament_poolSize,
+        tournament_type_id: tournament.tournament_type_id,
+        format_id: tournament.format_id,
+        rule_id: tournament.rule_id,
+        organizer_id: tournament.organizer_id,
+      };
+      this.editing = true;
+      this.showAddModal = true;
+    },
+    formatDate(date) {
+      return dayjs(date).format('MMMM D, YYYY');
+    },
     async deleteTournament(tournamentId) {
       const confirmed = confirm('Are you sure you want to delete this tournament?');
       if (confirmed) {
@@ -373,13 +412,9 @@ export default {
         }
       }
     },
-    openAddModal() {
-      this.clearForm();
-      this.modalKey += 1;
-      this.showAddModal = true;
-    },
   },
   mounted() {
+    console.log('Component mounted');
     this.fetchData();
   },
   watch: {
@@ -390,3 +425,9 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.admin-statistics {
+  color: var(--navyblue);
+}
+</style>
