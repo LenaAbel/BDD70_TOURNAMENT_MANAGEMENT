@@ -22,8 +22,8 @@
             <p><strong>Start Time:</strong> {{ formatDate(tournament.tournament_start_time) }}</p>
             <p><strong>Best of:</strong> {{ tournament.tournament_bestOfX }} rounds</p>
             <p><strong>Pool Size:</strong> {{ tournament.tournament_poolSize }}</p>
-            <p><strong>Type:</strong> {{ tournament.tournament_type || 'N/A' }}</p>
-            <p><strong>Format:</strong> {{ tournament.tournament_format || 'N/A' }}</p>
+            <p><strong>Type:</strong> {{ tournament.tournament_type_name || 'N/A' }}</p>
+            <p><strong>Format:</strong> {{ tournament.format_name || 'N/A' }}</p>
             <p><strong>Rules:</strong> {{ tournament.rules_ruleSet }}</p>
             <p><strong>Activity:</strong> {{ tournament.activity_name }}
               ({{ tournament.activity_category }})</p>

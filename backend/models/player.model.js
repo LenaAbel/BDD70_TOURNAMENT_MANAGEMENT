@@ -122,12 +122,23 @@ const loginPlayer = (email, password) => {
 const getAllPlayers = (account_type = null) => {
     return new Promise((resolve, reject) => {
         let query = `
-            SELECT p.player_id, p.player_email, p.player_name, p.player_lastname, p.player_nickname, p.player_account_type, 
-                   p.team_id, GROUP_CONCAT(a.activity_name) AS preferredGames, t.team_name
-            FROM player p 
-            LEFT JOIN favoriteactivity f ON p.player_id = f.player_id 
-            LEFT JOIN activity a ON f.activity_id = a.activity_id 
-            LEFT JOIN team t ON p.team_id = t.team_id
+            SELECT
+                p.player_id,
+                p.player_email,
+                p.player_name,
+                p.player_lastname,
+                p.player_nickname,
+                p.player_account_type,
+                p.team_id,
+                t.team_name,
+                (
+                    SELECT GROUP_CONCAT(a.activity_name)
+                    FROM favoriteactivity f
+                             JOIN activity a ON f.activity_id = a.activity_id
+                    WHERE f.player_id = p.player_id
+                ) AS preferredGames
+            FROM player p
+                     LEFT JOIN team t ON p.team_id = t.team_id
         `;
 
         const params = [];
@@ -137,8 +148,6 @@ const getAllPlayers = (account_type = null) => {
             query += ' WHERE p.player_account_type = ?';
             params.push(account_type);
         }
-
-        query += ' GROUP BY p.player_id';
 
         db.query(query, params, (err, results) => {
             if (err) {
@@ -154,7 +163,27 @@ const getAllPlayers = (account_type = null) => {
 const getPlayerById = (player_id) => {
     return new Promise((resolve, reject) => {
         db.query(
-            'SELECT * FROM player WHERE player_id = ?',
+            `
+            SELECT 
+                p.player_id, 
+                p.player_email, 
+                p.player_name, 
+                p.player_lastname, 
+                p.player_nickname, 
+                p.player_account_type, 
+                p.team_id, 
+                t.team_name,
+                (
+                    SELECT GROUP_CONCAT(a.activity_name)
+                    FROM favoriteactivity f
+                    JOIN activity a ON f.activity_id = a.activity_id
+                    WHERE f.player_id = p.player_id
+                ) AS preferredGames,
+                p.player_registragtionDate
+            FROM player p
+            LEFT JOIN team t ON p.team_id = t.team_id
+            WHERE p.player_id = ?
+            `,
             [player_id],
             (err, results) => {
                 if (err) {

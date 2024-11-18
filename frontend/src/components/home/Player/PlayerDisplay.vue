@@ -20,7 +20,7 @@
                         <p><strong>Nickname:</strong> {{ player.player_nickname }}</p>
                         <p><strong>Email:</strong> {{ player.player_email }}</p>
                         <p><strong>Account Type:</strong> {{ player.player_account_type || 'N/A' }}</p>
-                        <p><strong>Team:</strong> {{ player.team ? player.team : 'No Team' }}</p>
+                      <p><strong>Team:</strong> {{ player.team_name ? player.team_name : 'No Team' }}</p>
                         <p><strong>Registration Date:</strong> {{ formatDate(player.registrationDate) }}</p>
                     </b-card-body>
                 </b-card>

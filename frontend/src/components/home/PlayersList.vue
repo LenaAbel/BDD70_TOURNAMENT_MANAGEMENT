@@ -126,14 +126,17 @@ export default {
     ...mapGetters(['allPlayers']),
     // Processed players with team names and formatted preferred games
     players() {
-      return this.allPlayers.map((player) => ({
-        ...player,
-        preferredGames: player.preferredGames
-            ? player.preferredGames
-            : 'N/A', // Assuming preferredGames is an array or a string
-        team: player.team_name ? player.team_name : 'No Team',
-      }));
+      console.log('All Players:', this.allPlayers);
+      return this.allPlayers.map((player) => {
+        console.log('Player Data:', player);
+        return {
+          ...player,
+          preferredGames: player.preferredGames ? player.preferredGames : 'N/A',
+          team: player.team_name ? player.team_name : 'No Team',
+        };
+      });
     },
+
     // Generate options for team filter
     teamOptions() {
       // Extract unique teams from players
