@@ -75,7 +75,7 @@ Ensure that the MySQL server is running and you have access to it.
 Clone the project repository to your local machine:
 
 ```bash
-git clone [https://github.com/yourusername/your-repo-name.git](https://github.com/LenaAbel/BDD70_TOURNAMENT_MANAGEMENT.git)
+git clone https://github.com/LenaAbel/BDD70_TOURNAMENT_MANAGEMENT.git
 ```
 
 Replace `yourusername` and `your-repo-name` with your GitHub username and repository name.
