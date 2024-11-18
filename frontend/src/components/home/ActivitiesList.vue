@@ -65,7 +65,7 @@
           responsive
           aria-label="Activities Table"
       >
-      <template #cell(activity_name)="data">
+        <template #cell(activity_name)="data">
           <router-link :to="`/activities/${data.item.activity_id}`">{{ data.item.activity_name }}</router-link>
         </template>
       </b-table>
@@ -89,8 +89,6 @@ import { mapGetters, mapActions } from 'vuex';
 
 export default {
   name: 'ActivitiesList',
-  isLoading: false,
-  error: null,
   computed: {
     // Access activities from Vuex store
     ...mapGetters(['allActivities']),
@@ -101,11 +99,11 @@ export default {
     sortOptions() {
       return [
         { value: null, text: 'No Sorting' },
-        { value: { key: 'name', order: 'asc' }, text: 'Name (A-Z)' },
-        { value: { key: 'name', order: 'desc' }, text: 'Name (Z-A)' },
+        { value: { key: 'activity_name', order: 'asc' }, text: 'Name (A-Z)' },
+        { value: { key: 'activity_name', order: 'desc' }, text: 'Name (Z-A)' },
       ];
     },
-    // Computed property for filtered activities
+    // Computed property for filtered and sorted activities
     filteredActivities() {
       let filtered = this.activities;
 
@@ -122,11 +120,13 @@ export default {
       // Apply sorting
       if (this.sortOption && this.sortOption.key) {
         const { key, order } = this.sortOption;
-        filtered.sort((a, b) => {
-          let comparison = 0;
-          if (a[key] > b[key]) comparison = 1;
-          if (a[key] < b[key]) comparison = -1;
-          return order === 'asc' ? comparison : -comparison;
+        filtered = filtered.slice().sort((a, b) => {
+          const aValue = a[key] ? a[key].toLowerCase() : '';
+          const bValue = b[key] ? b[key].toLowerCase() : '';
+
+          if (aValue < bValue) return order === 'asc' ? -1 : 1;
+          if (aValue > bValue) return order === 'asc' ? 1 : -1;
+          return 0;
         });
       }
 
@@ -136,7 +136,13 @@ export default {
       const start = (this.currentPage - 1) * this.perPage;
       const end = this.currentPage * this.perPage;
       return this.filteredActivities.slice(start, end);
-    }
+    },
+    isLoading() {
+      return this.loading;
+    },
+    error() {
+      return this.fetchError;
+    },
   },
   data() {
     return {
