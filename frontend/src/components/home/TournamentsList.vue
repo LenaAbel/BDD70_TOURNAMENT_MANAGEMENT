@@ -104,7 +104,9 @@
           {{ formatDate(data.item.tournament_start_time) }}
         </template>
         <template #cell(tournament_name)="data">
-          <router-link :to="`/tournaments/${data.item.tournament_id}`">{{ data.item.tournament_name }}</router-link>
+          <router-link
+              :to="`/tournaments/${data.item.tournament_id}`"
+          >{{ data.item.tournament_name }}</router-link>
         </template>
       </b-table>
 
@@ -128,6 +130,23 @@ import { mapGetters, mapActions } from 'vuex';
 
 export default {
   name: 'TournamentsList',
+  data() {
+    return {
+      filter: '',
+      dateRange: [], // Initialize as an empty array for date range picker
+      selectedGame: null,
+      sortOption: null,
+      fields: [
+        { key: 'tournament_name', label: 'Name', sortable: true },
+        { key: 'activity_name', label: 'Game', sortable: true },
+        { key: 'tournament_start_time', label: 'Start Time', sortable: true },
+      ],
+      currentPage: 1,
+      perPage: 10,
+      loading: false,
+      fetchError: null,
+    };
+  },
   computed: {
     // Access tournaments from Vuex store
     ...mapGetters(['allTournaments']),
@@ -167,6 +186,14 @@ export default {
     // Computed property for filtered tournaments based on all filters
     filteredTournaments() {
       let filtered = this.tournaments;
+
+      // Apply search filter
+      if (this.filter) {
+        const searchTerm = this.filter.toLowerCase();
+        filtered = filtered.filter((tournament) =>
+            tournament.tournament_name.toLowerCase().includes(searchTerm)
+        );
+      }
 
       // Apply date range filter
       if (Array.isArray(this.dateRange) && this.dateRange.length === 2) {
@@ -218,9 +245,9 @@ export default {
     },
     // State for date range picker validation
     dateRangeState() {
-      if (!Array.isArray(this.dateRange) || this.dateRange.length !== 2) return null;
+      if (!Array.isArray(this.dateRange)) return null;
       const [startDate, endDate] = this.dateRange;
-      return startDate && endDate ? true : false;
+      return startDate && endDate ? true : null;
     },
     // State for game select validation
     gameState() {
@@ -234,23 +261,6 @@ export default {
     error() {
       return this.fetchError;
     },
-  },
-  data() {
-    return {
-      filter: '',
-      dateRange: [null, null], // Initialize as an array for date range picker
-      selectedGame: null,
-      sortOption: null,
-      fields: [
-        { key: 'tournament_name', label: 'Name', sortable: true },
-        { key: 'activity_name', label: 'Game', sortable: true },
-        { key: 'tournament_start_time', label: 'Start Time', sortable: true },
-      ],
-      currentPage: 1,
-      perPage: 10,
-      loading: false,
-      fetchError: null,
-    };
   },
   methods: {
     ...mapActions(['fetchTournaments']),

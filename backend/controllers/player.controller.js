@@ -68,11 +68,9 @@ const registerPlayer = (req, res) => {
 const loginPlayer = (req, res) => {
     const { email, password } = req.body;
 
-    console.log("Login request body:", req.body); // Debug log
-
     if (!email || !password) {
         console.warn("Missing email or password in login request");
-        return res.status(400).json({ error: "Email and password are required" });
+        return res.status(400).json({ error: "Email and password are required." });
     }
 
     playerModel
@@ -80,7 +78,7 @@ const loginPlayer = (req, res) => {
         .then((player) => {
             if (!player) {
                 console.warn("Unauthorized login attempt for email:", email);
-                return res.status(401).json({ error: "Invalid email or password" });
+                return res.status(401).json({ error: "Invalid email or password." }); // Return specific error message
             }
 
             // Generate token
@@ -106,11 +104,12 @@ const loginPlayer = (req, res) => {
         })
         .catch((err) => {
             console.error("Error logging in player:", err);
-            res.status(500).json({ error: "Error logging in player" });
+            res.status(500).json({ error: "Internal server error." });
         });
 };
 
 // Get a player by ID
+// Modify getPlayerById to exclude password
 const getPlayerById = (req, res) => {
     const { id } = req.params;
     playerModel.getPlayerById(id)
@@ -118,7 +117,9 @@ const getPlayerById = (req, res) => {
             if (!player) {
                 return res.status(404).json({ error: 'Player not found' });
             }
-            res.json(player);
+            // Exclude the password from the response
+            const { player_password, ...playerData } = player;
+            res.json(playerData);
         })
         .catch(err => {
             console.error('Error fetching player by ID:', err);

@@ -126,7 +126,6 @@ export default {
       this.$store
           .dispatch("fetchPlayerById", playerId)
           .then((data) => {
-            console.log("Player data fetched:", data); // Debug log
             this.player = data;
             this.loading = false;
           })
@@ -162,17 +161,18 @@ export default {
         name: this.editablePlayer.player_name,
         lastname: this.editablePlayer.player_lastname,
         nickname: this.editablePlayer.player_nickname,
-        password: this.passwordChange.newPassword || this.player.player_password,
         account_type: this.player.player_account_type,
         team_id: this.player.team_id,
       };
 
-      console.log("Sending updated player data:", updatedPlayerData);
+      // Include the password only if a new password is provided
+      if (this.passwordChange.newPassword) {
+        updatedPlayerData.password = this.passwordChange.newPassword;
+      }
 
       this.$store
           .dispatch("updatePlayer", { playerId, playerData: updatedPlayerData })
           .then(() => {
-            console.log("Player update succeeded");
             this.$bvToast.toast("Profile updated successfully!", {
               title: "Success",
               variant: "success",
@@ -203,7 +203,6 @@ export default {
   },
 };
 </script>
-
 <style scoped>
 .player-profile {
   color: var(--navyblue);

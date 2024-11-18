@@ -30,7 +30,6 @@
               required
               placeholder="Enter your password"
           ></b-form-input>
-
         </b-form-group>
         <b-button type="submit" variant="primary" block>
           Login
@@ -85,9 +84,11 @@ export default {
             }
           })
           .catch((error) => {
-            this.error = error.response?.data?.error || error.message || "Login failed.";
+            // Capture the error message from the backend or use a default message
+            this.error =
+                error.response?.data?.error || "Invalid email or password.";
           });
-    }
+    },
   },
 };
 </script>

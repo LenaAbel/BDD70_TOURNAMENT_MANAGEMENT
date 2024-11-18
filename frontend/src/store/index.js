@@ -31,8 +31,12 @@ export default new Vuex.Store({
             state.players = players;
         },
         SET_PLAYER(state, player) {
-            state.player = player;
+            // Exclude the password from the player data
+            const playerData = { ...player };
+            delete playerData.player_password;
+            state.player = playerData;
         },
+
         SET_PLAYER_STATS(state, playerStats) {
             state.playerStats = playerStats;
         },
@@ -268,13 +272,11 @@ export default new Vuex.Store({
                     commit("SET_USER", user);
                     commit("SET_TOKEN", token);
 
-                    console.log("Login successful, user:", user);
-                    console.log("Token received:", token);
-
                     return user; // Return user for further use in the frontend
                 })
                 .catch((error) => {
                     console.error("Error logging in:", error.response?.data || error.message);
+                    // Throw the error to be caught in the component
                     throw error;
                 });
         },
