@@ -393,7 +393,7 @@ export default new Vuex.Store({
                 });
         },
         fetchFormatTypes({ commit }) {
-            return axios.get('/tournament/format_types') // Adjusted endpoint
+            return axios.get('/tournament/format_types')
                 .then(response => {
                     commit('SET_FORMAT_TYPES', response.data);
                 })
@@ -403,7 +403,7 @@ export default new Vuex.Store({
                 });
         },
         fetchTournamentTypes({ commit }) {
-            return axios.get('/tournament/tournament_types') // Adjusted endpoint
+            return axios.get('/tournament/tournament_types')
                 .then(response => {
                     commit('SET_TOURNAMENT_TYPES', response.data);
                 })
