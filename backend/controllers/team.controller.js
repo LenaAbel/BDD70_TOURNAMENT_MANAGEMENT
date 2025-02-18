@@ -3,13 +3,18 @@ const db = require('../database/db_init');
 
 // Get all teams
 const getAllTeams = (req, res) => {
-    teamModel.getAllTeams()
+    const limit = parseInt(req.query.limit) || 10;
+    const offset = parseInt(req.query.offset) || 0;
+
+    teamModel.getAllTeams(limit, offset)
         .then(teams => res.json(teams))
         .catch(err => {
             console.error('Error fetching teams:', err);
             res.status(500).json({ error: 'Error fetching teams' });
         });
 };
+
+
 
 // Create a new team
 const createTeam = (req, res) => {

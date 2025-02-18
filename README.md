@@ -1,5 +1,9 @@
 # BDD70_TOURNAMENT_MANAGEMENT : Board Game Tournament Management System 🎲
 
+# Link
+
+https://github.com/LenaAbel/BDD70_TOURNAMENT_MANAGEMENT
+
 ## Objective
 This project aims to develop a relational database system for managing board game tournaments. This system enables organizers to register players, schedule matches, track scores, and generate rankings for various popular board games.
 

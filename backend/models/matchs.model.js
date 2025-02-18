@@ -25,15 +25,18 @@ const getMatchById = (matchId) => {
 };
 
 // Obtenir tous les matchs
-const getAllMatchs = () => {
-    return new Promise((resolve, reject) => {
-        db.query("SELECT * FROM matchs", (err, results) => {
-            if (err) {
-                return reject(err);
-            }
-            resolve(results);
-        });
-    });
+const getAllMatchs = async () => {
+    const startTime = process.hrtime(); // Start timing
+    try {
+        const [results] = await db.query("SELECT * FROM matchs"); // Use promise-based query
+        const endTime = process.hrtime(startTime); // End timing
+        const executionTime = (endTime[0] * 1000 + endTime[1] / 1e6).toFixed(3); // Convert to ms
+        console.log(`getAllMatchs execution time: ${executionTime} ms`); // Log execution time
+        return results; // Return query results
+    } catch (err) {
+        console.error("Error fetching matches:", err);
+        throw err; // Re-throw error to be handled upstream
+    }
 };
 
 // Mettre à jour un match par son ID

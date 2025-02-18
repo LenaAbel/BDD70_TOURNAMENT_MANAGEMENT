@@ -2,15 +2,20 @@ const playerModel = require('../models/player.model');
 const pool = require("../database/db_init");
 const jwt = require('jsonwebtoken');
 
-// Get all players
-const getAllPlayers = (req, res) => {
-    const { account_type } = req.query;
-    playerModel.getAllPlayers(account_type)
-        .then(players => res.json(players))
-        .catch(err => {
-            console.error('Error fetching players:', err);
-            res.status(500).json({ error: 'Error fetching players' });
-        });
+const getAllPlayers = async (req, res) => {
+    try {
+        const controllerStart = Date.now(); // Start time for the controller
+
+        const players = await playerModel.getAllPlayers();
+
+        const controllerEnd = Date.now(); // End time for the controller
+        const controllerDuration = controllerEnd - controllerStart;
+        console.log(`Controller (getAllPlayers) took ${controllerDuration} ms`); // Log the duration
+
+        res.status(200).json(players);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
 };
 
 // Create a new player

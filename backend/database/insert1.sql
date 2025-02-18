@@ -1,7 +1,6 @@
 -- insert1.sql
 
 -- Insert Activities
--- Insert Activities
 CALL InsertActivity('Chess', 2, 'solo', 'A strategy board game played between two players on an 8x8 grid.', 'Strategy');
 CALL InsertActivity('Checkers', 2, 'solo', 'A simple game where two players try to capture each other\'s pieces.', 'Classic');
 CALL InsertActivity('Monopoly', 2, 'team', 'Players compete to buy, trade, and build properties to bankrupt opponents.', 'Economic');
@@ -53,6 +52,27 @@ CALL InsertActivity('Rock-Paper-Scissors', 2, 'solo', 'A simple hand game where 
 CALL InsertActivity('King of Tokyo', 2, 'solo', 'A board game where players control monsters and try to conquer Tokyo.', 'Strategy');
 CALL InsertActivity('Tug of War', 2, 'team', 'A physical contest between two teams who pull on opposite ends of a rope.', 'Physical');
 CALL InsertActivity('Ultimate Frisbee', 2, 'team', 'A team sport that involves passing a flying disc to score points.', 'Sports');
+CALL InsertActivity('Dungeons & Dragons', 5, 'team', 'A tabletop role-playing game where players create characters and go on adventures.', 'Role-Playing');
+CALL InsertActivity('Poker', 6, 'solo', 'A classic card game where players bet based on the strength of their hand.', 'Card');
+CALL InsertActivity('Magic: The Gathering', 4, 'solo', 'A collectible card game where players cast spells and summon creatures.', 'Card');
+CALL InsertActivity('League of Legends', 10, 'team', 'A team-based online multiplayer battle game.', 'Video Game');
+CALL InsertActivity('Fortnite', 10, 'solo', 'A battle royale game where players compete to be the last one standing.', 'Video Game');
+CALL InsertActivity('Apex Legends', 10, 'team', 'A fast-paced battle royale game with unique characters and abilities.', 'Video Game');
+CALL InsertActivity('Call of Duty', 10, 'team', 'A first-person shooter game featuring team-based combat.', 'Video Game');
+CALL InsertActivity('Halo', 8, 'team', 'A sci-fi first-person shooter game with a strong narrative.', 'Video Game');
+CALL InsertActivity('Rainbow Six Siege', 10, 'team', 'A tactical shooter where teams strategize to complete objectives.', 'Video Game');
+CALL InsertActivity('PUBG', 10, 'team', 'A battle royale game where players fight to survive on an island.', 'Video Game');
+CALL InsertActivity('Minecraft', 10, 'team', 'A sandbox game where players create, build, and explore in a block-based world.', 'Sandbox');
+CALL InsertActivity('Among Us', 10, 'team', 'A social deduction game where players must find the impostor among the crew.', 'Party');
+CALL InsertActivity('Valorant', 10, 'team', 'A tactical shooter game with unique agents and abilities.', 'Video Game');
+CALL InsertActivity('StarCraft', 2, 'solo', 'A sci-fi real-time strategy game featuring resource management and combat.', 'Strategy');
+CALL InsertActivity('Diablo', 4, 'team', 'An action role-playing game set in a dark fantasy world.', 'Role-Playing');
+CALL InsertActivity('Overwatch', 12, 'team', 'A team-based shooter with unique heroes and abilities.', 'Video Game');
+CALL InsertActivity('Rocket League', 8, 'team', 'A sports game combining soccer and rocket-powered cars.', 'Sports');
+CALL InsertActivity('The Settlers of Catan', 4, 'team', 'A strategy game where players build settlements and trade resources.', 'Strategy');
+CALL InsertActivity('Civilization', 8, 'solo', 'A strategy game where players develop civilizations through time.', 'Strategy');
+CALL InsertActivity('Age of Empires', 8, 'team', 'A real-time strategy game set in historical eras.', 'Strategy');
+CALL InsertActivity('World of Warcraft', 10, 'team', 'A massively multiplayer online role-playing game.', 'Role-Playing');
 
 -- Insert Rules with activity IDs
 CALL InsertRule('The game is played on an 8x8 board with pieces moving in specific ways.', 1);  -- Chess
@@ -105,6 +125,27 @@ CALL InsertRule('Players aim to throw the most accurate darts to score points on
 CALL InsertRule('Players use strategy to create long word chains on the board for points.', 48);  -- Scrabble
 CALL InsertRule('Players set up scenarios and try to beat the clock in various challenges.', 49);  -- Escape Room
 CALL InsertRule('Players compete to build the best city using various tiles and cards.', 50);  -- Carcassonne
+CALL InsertRule('Players create characters and engage in campaigns guided by a dungeon master.', 51); -- Dungeons & Dragons
+CALL InsertRule('Players aim to create the best five-card hand or bluff their opponents.', 52); -- Poker
+CALL InsertRule('Players summon creatures and cast spells to defeat their opponent.', 53); -- Magic: The Gathering
+CALL InsertRule('Players work as a team to destroy the opposing base in a multiplayer battle arena.', 54); -- League of Legends
+CALL InsertRule('Players drop into an island and compete to be the last one standing.', 55); -- Fortnite
+CALL InsertRule('Teams fight to eliminate opponents and survive until the end.', 56); -- Apex Legends
+CALL InsertRule('Teams compete in various maps with tactical gameplay.', 57); -- Call of Duty
+CALL InsertRule('Players battle in a futuristic setting with advanced weaponry.', 58); -- Halo
+CALL InsertRule('Players complete objectives while defending or attacking a location.', 59); -- Rainbow Six Siege
+CALL InsertRule('Players survive on a map, finding weapons and resources.', 60); -- PUBG
+CALL InsertRule('Players build structures and explore a procedurally generated world.', 61); -- Minecraft
+CALL InsertRule('Players deduce the impostor in a space-themed survival setting.', 62); -- Among Us
+CALL InsertRule('Players control agents and compete in a tactical 5v5 shooter.', 63); -- Valorant
+CALL InsertRule('Players collect resources and construct units to outwit opponents.', 64); -- StarCraft
+CALL InsertRule('Players battle through dungeons and defeat enemies for loot.', 65); -- Diablo
+CALL InsertRule('Teams use unique characters to compete in objective-based gameplay.', 66); -- Overwatch
+CALL InsertRule('Players score goals in a soccer-like game with rocket-powered cars.', 67); -- Rocket League
+CALL InsertRule('Players trade and build settlements to score victory points.', 68); -- Settlers of Catan
+CALL InsertRule('Players grow their civilization through technology, warfare, and diplomacy.', 69); -- Civilization
+CALL InsertRule('Players create armies and expand their kingdom to defeat enemies.', 70); -- Age of Empires
+CALL InsertRule('Players complete quests, defeat enemies, and explore a fantasy world.', 71); -- World of Warcraft
 
 -- Insert Teams
 CALL InsertTeam('Knights');
@@ -127,3 +168,88 @@ CALL InsertTeam('Warriors');
 CALL InsertTeam('Phoenixes');
 CALL InsertTeam('Vikings');
 CALL InsertTeam('Samurais');
+CALL InsertTeam('Pirates');
+CALL InsertTeam('Ninjas');
+CALL InsertTeam('Trojans');
+CALL InsertTeam('Spartans');
+CALL InsertTeam('Gladiators');
+CALL InsertTeam('Barbarians');
+CALL InsertTeam('Romans');
+CALL InsertTeam('Greeks');
+CALL InsertTeam('Egyptians');
+CALL InsertTeam('Mayans');
+CALL InsertTeam('Aztecs');
+CALL InsertTeam('Incas');
+CALL InsertTeam('Alchemists');
+CALL InsertTeam('Wizards');
+CALL InsertTeam('Sorcerers');
+CALL InsertTeam('Magicians');
+CALL InsertTeam('Warlocks');
+CALL InsertTeam('Druids');
+CALL InsertTeam('Shamans');
+CALL InsertTeam('Witches');
+CALL InsertTeam('Warriors');
+CALL InsertTeam('Archers');
+CALL InsertTeam('Mages');
+CALL InsertTeam('Clerics');
+CALL InsertTeam('Paladins');
+CALL InsertTeam('Rogues');
+CALL InsertTeam('Bards');
+CALL InsertTeam('Monks');
+CALL InsertTeam('WorldOfWarcraft');
+CALL InsertTeam('LeagueOfLegends');
+CALL InsertTeam('Dota2');
+CALL InsertTeam('Overwatch');
+CALL InsertTeam('Fortnite');
+CALL InsertTeam('ApexLegends');
+CALL InsertTeam('PUBG');
+CALL InsertTeam('CallOfDuty');
+CALL InsertTeam('Halo');
+CALL InsertTeam('Destiny');
+CALL InsertTeam('Battlefield');
+CALL InsertTeam('RainbowSixSiege');
+CALL InsertTeam('CounterStrike');
+CALL InsertTeam('Minecraft');
+CALL InsertTeam('Terraria');
+CALL InsertTeam('StardewValley');
+CALL InsertTeam('AnimalCrossing');
+CALL InsertTeam('TheSims');
+CALL InsertTeam('SimCity');
+CALL InsertTeam('CitiesSkylines');
+CALL InsertTeam('RollerCoasterTycoon');
+CALL InsertTeam('ZooTycoon');
+CALL InsertTeam('PlanetCoaster');
+CALL InsertTeam('JurassicWorldEvolution');
+CALL InsertTeam('Guardians');
+CALL InsertTeam('Hawks');
+CALL InsertTeam('Cobras');
+CALL InsertTeam('Panthers');
+CALL InsertTeam('Leopards');
+CALL InsertTeam('Centaurs');
+CALL InsertTeam('Cyclops');
+CALL InsertTeam('Griffins');
+CALL InsertTeam('Hydras');
+CALL InsertTeam('Cerberus');
+CALL InsertTeam('Chimeras');
+CALL InsertTeam('Gorgons');
+CALL InsertTeam('Minotaurs');
+CALL InsertTeam('Medusas');
+CALL InsertTeam('Kraken');
+CALL InsertTeam('Phoenixes');
+CALL InsertTeam('Pegasus');
+CALL InsertTeam('Dragons');
+CALL InsertTeam('Unicorns');
+CALL InsertTeam('Behemoths');
+CALL InsertTeam('Titans');
+CALL InsertTeam('Amazons');
+CALL InsertTeam('Giants');
+CALL InsertTeam('Valkyries');
+CALL InsertTeam('Trolls');
+CALL InsertTeam('Dwarves');
+CALL InsertTeam('Elves');
+CALL InsertTeam('Goblins');
+CALL InsertTeam('Orcs');
+CALL InsertTeam('Demons');
+CALL InsertTeam('Angels');
+
+
